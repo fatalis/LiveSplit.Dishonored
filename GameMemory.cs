@@ -31,17 +31,20 @@ namespace LiveSplit.Dishonored
         private Task _thread;
         private CancellationTokenSource _cancelSource;
         private SynchronizationContext _uiThread;
+        private List<int> _ignorePIDs; 
 
         private DeepPointer _currentLevelPtr;
         private DeepPointer _isLoadingPtr;
         private DeepPointer _currentBikMoviePtr;
         private DeepPointer _cutsceneActivePtr;
-        private DeepPointer _playerPosPtr;
         private DeepPointer _missionStatsScreenFlagsPtr;
+        private int _stringBase;
 
         private enum ExpectedDllSizes
         {
-            DishonoredExe12Reloaded = 18219008,
+            DishonoredExe12 = 18219008,
+            DishonoredExe14Reloaded = 18862080,
+            DishonoredExe14Steam = 19427328,
             BinkW32Dll = 241664
         }
 
@@ -54,12 +57,8 @@ namespace LiveSplit.Dishonored
 
         public GameMemory()
         {
-            _currentLevelPtr = new DeepPointer(0xFB7838, 0x2c0, 0x314, 0, 0x38);
             _isLoadingPtr = new DeepPointer("binkw32.dll", 0x312F4);
-            _currentBikMoviePtr = new DeepPointer(0xFC6AD4, 0x48, 0);
-            _cutsceneActivePtr = new DeepPointer(0xFB51CC, 0x744);
-            _playerPosPtr = new DeepPointer(0xFCCBDC, 0xC4);
-            _missionStatsScreenFlagsPtr = new DeepPointer(0xFDEB08, 0x24, 0x41C, 0x2E0, 0xC4);
+            _ignorePIDs = new List<int>();
         }
 
         public void StartMonitoring()
@@ -97,36 +96,9 @@ namespace LiveSplit.Dishonored
                     Trace.WriteLine("[NoLoads] Waiting for dishonored.exe...");
 
                     Process game;
-                    var ignorePIDs = new List<int>();
-                    while (true)
+                    while ((game = GetGameProcess()) == null)
                     {
-                        game = Process.GetProcesses().FirstOrDefault(p => p.ProcessName.ToLower() == "dishonored"
-                            && !p.HasExited && !ignorePIDs.Contains(p.Id));
-
-                        if (game != null)
-                        {
-                            ProcessModule binkw32 = game.Modules.Cast<ProcessModule>().FirstOrDefault(p => p.ModuleName.ToLower() == "binkw32.dll");
-                            if (binkw32 != null)
-                            {
-                                if (game.MainModule.ModuleMemorySize != (int)ExpectedDllSizes.DishonoredExe12Reloaded)
-                                {
-                                    ignorePIDs.Add(game.Id);
-                                    _uiThread.Send(d => MessageBox.Show("Unexpected game version. Dishonored 1.2 is required.", "LiveSplit.Dishonored",
-                                        MessageBoxButtons.OK, MessageBoxIcon.Error), null);
-                                }
-                                else if (binkw32.ModuleMemorySize != (int) ExpectedDllSizes.BinkW32Dll)
-                                {
-                                    ignorePIDs.Add(game.Id);
-                                    _uiThread.Send(d => MessageBox.Show("binkw32.dll was not the expected version.", "LiveSplit.Dishonored",
-                                        MessageBoxButtons.OK, MessageBoxIcon.Error), null);
-                                }
-                                else
-                                    break;
-                            }
-                        }
-
                         Thread.Sleep(250);
-
                         if (_cancelSource.IsCancellationRequested)
                             return;
                     }
@@ -140,6 +112,7 @@ namespace LiveSplit.Dishonored
                     uint frameCounter = 0;
                     string prevCurrentMovie = String.Empty;
                     bool loadingStarted = false;
+                    bool oncePerLevelFlag = false;
                     while (!game.HasExited)
                     {
                         int currentLevel;
@@ -151,9 +124,6 @@ namespace LiveSplit.Dishonored
 
                         bool cutsceneActive;
                         _cutsceneActivePtr.Deref(game, out cutsceneActive);
-
-                        Vector3f playerPos;
-                        _playerPosPtr.Deref(game, out playerPos);
 
                         int missionStatsScreenFlags;
                         _missionStatsScreenFlagsPtr.Deref(game, out missionStatsScreenFlags);
@@ -188,20 +158,22 @@ namespace LiveSplit.Dishonored
                         {
                             Trace.WriteLine(String.Format("{0} [NoLoads] Level Changed - {1} -> {2} '{3}'", frameCounter, prevCurrentLevel, currentLevel, currentLevelStr));
 
-                            if (currentLevelStr == "l_tower_p")
+                            if (currentLevelStr == "l_tower_p" || currentLevelStr == "L_DLC07_BaseIntro_P" || currentLevelStr == "DLC06_Tower_P")
                             {
                                 _uiThread.Post(d => {
                                     if (this.OnFirstLevelLoading != null)
                                         this.OnFirstLevelLoading(this, EventArgs.Empty);
                                 }, null);
                             }
+
+                            oncePerLevelFlag = true;
                         }
 
                         if (isLoading != prevIsLoading)
                         {
                             if (isLoading)
                             {
-                                Trace.WriteLine(String.Format("{0} [NoLoads] Load Start - {1} - Pos={2}", frameCounter, currentMovie + "|" + currentLevelStr, playerPos));
+                                Trace.WriteLine(String.Format("{0} [NoLoads] Load Start - {1}", frameCounter, currentMovie + "|" + currentLevelStr));
 
                                 // ignore the beginning load screen and the dishonored logo screen
                                 if (currentMovie != "LoadingEmpressTower" && currentMovie != "Dishonored" && currentMovie != "INTRO_LOC")
@@ -241,7 +213,8 @@ namespace LiveSplit.Dishonored
                                     }, null);
                                 }
 
-                                if ((currentMovie == "LoadingEmpressTower" || currentMovie == "INTRO_LOC") && currentLevelStr == "l_tower_p")
+                                if (((currentMovie == "LoadingEmpressTower" || currentMovie == "INTRO_LOC") && currentLevelStr == "l_tower_p")
+                                    || (currentMovie == "Loading" || currentMovie == "LoadingDLC06Tower") && currentLevelStr == "DLC06_Tower_P") // KoD
                                 {
                                     _uiThread.Post(d => {
                                         if (this.OnPlayerGainedControl != null)
@@ -260,6 +233,15 @@ namespace LiveSplit.Dishonored
                                 _uiThread.Post(d => {
                                     if (this.OnPlayerLostControl != null)
                                         this.OnPlayerLostControl(this, EventArgs.Empty);
+                                }, null);
+                            }
+                            else if (!cutsceneActive && currentLevelStr == "L_DLC07_BaseIntro_P" && oncePerLevelFlag)
+                            {
+                                oncePerLevelFlag = false;
+
+                                _uiThread.Post(d => {
+                                    if (this.OnPlayerGainedControl != null)
+                                        this.OnPlayerGainedControl(this, EventArgs.Empty);
                                 }, null);
                             }
                         }
@@ -295,10 +277,56 @@ namespace LiveSplit.Dishonored
             }
         }
 
+        Process GetGameProcess()
+        {
+            Process game = Process.GetProcesses().FirstOrDefault(p => p.ProcessName.ToLower() == "dishonored"
+                && !p.HasExited && !_ignorePIDs.Contains(p.Id));
+            if (game == null)
+                return null;
+
+            ProcessModule binkw32 = game.Modules.Cast<ProcessModule>().FirstOrDefault(p => p.ModuleName.ToLower() == "binkw32.dll");
+            if (binkw32 == null)
+                return null;
+
+            if (binkw32.ModuleMemorySize != (int)ExpectedDllSizes.BinkW32Dll)
+            {
+                _ignorePIDs.Add(game.Id);
+                _uiThread.Send(d => MessageBox.Show("binkw32.dll was not the expected version.", "LiveSplit.Dishonored",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error), null);
+                return null;
+            }
+
+            if (game.MainModule.ModuleMemorySize == (int)ExpectedDllSizes.DishonoredExe12)
+            {
+                _currentLevelPtr = new DeepPointer(0xFB7838, 0x2c0, 0x314, 0, 0x38);
+                _currentBikMoviePtr = new DeepPointer(0xFC6AD4, 0x48, 0);
+                _cutsceneActivePtr = new DeepPointer(0xFB51CC, 0x744);
+                _missionStatsScreenFlagsPtr = new DeepPointer(0xFDEB08, 0x24, 0x41C, 0x2E0, 0xC4);
+                _stringBase = 0xFA3624;
+            }
+            else if (game.MainModule.ModuleMemorySize == (int)ExpectedDllSizes.DishonoredExe14Reloaded || game.MainModule.ModuleMemorySize == (int)ExpectedDllSizes.DishonoredExe14Steam)
+            {
+                _currentLevelPtr = new DeepPointer(0x103D878, 0x2c0, 0x314, 0, 0x38);
+                _currentBikMoviePtr = new DeepPointer(0x104CB18, 0x48, 0);
+                _cutsceneActivePtr = new DeepPointer(0x103B20C, 0x744);
+                _missionStatsScreenFlagsPtr = new DeepPointer(0x1065184, 0x24, 0x41C, 0x2F4, 0xC4);
+                _stringBase = 0x1029664;
+            }
+            else
+            {
+                _ignorePIDs.Add(game.Id);
+                _uiThread.Send(d => MessageBox.Show("Unexpected game version. Dishonored 1.2 or 1.4 is required.", "LiveSplit.Dishonored",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error), null);
+                return null;
+            }
+
+            return game;
+        }
+
         string GetEngineStringByID(Process p, int id)
         {
             string str;
-            var ptr = new DeepPointer(0xFA3624, (id*4), 0x10);
+            var ptr = new DeepPointer(_stringBase, (id*4), 0x10);
             ptr.Deref(p, out str, 32);
             return str;
         }
