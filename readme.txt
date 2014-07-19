@@ -10,7 +10,7 @@ Features:
 
 Requirements:
 
-	Dishonored (PC) v1.2
+	Dishonored (PC) v1.2 or v1.4 (latest)
 	LiveSplit 1.3+
 
 Install:
