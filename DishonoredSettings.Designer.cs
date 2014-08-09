@@ -167,7 +167,7 @@
             this.gbLoadRemoval.Size = new System.Drawing.Size(470, 51);
             this.gbLoadRemoval.TabIndex = 6;
             this.gbLoadRemoval.TabStop = false;
-            this.gbLoadRemoval.Text = "Load Time Removal";
+            this.gbLoadRemoval.Text = "Show Alternate Timing Time";
             // 
             // tlpLoadRemoval
             // 

@@ -26,24 +26,15 @@ namespace LiveSplit.Dishonored
         private LiveSplitState _state;
         private GraphicsCache _cache;
 
-        private TripleDateTime _loadStartTime;
-        private TimeSpan _totalLoadTime;
-        private TimeSpan _timeAtLoadStart;
-        private bool _isLoading;
-
         public DishonoredComponent(LiveSplitState state)
         {
             this.Settings = new DishonoredSettings();
             this.ContextMenuControls = new Dictionary<String, Action>();
             this.InternalComponent = new InfoTimeComponent("Without Loads", null, new RegularTimeFormatter(TimeAccuracy.Hundredths));
 
-            _totalLoadTime = TimeSpan.Zero;
             _cache = new GraphicsCache();
             _timer = new TimerModel { CurrentState = state };
             _state = state;
-
-            state.OnReset += state_OnReset;
-            state.OnStart += state_OnStart;
 
             _gameMemory = new GameMemory();
             _gameMemory.OnFirstLevelLoading += gameMemory_OnFirstLevelLoading;
@@ -55,10 +46,10 @@ namespace LiveSplit.Dishonored
             _gameMemory.StartMonitoring();
         }
 
-        ~DishonoredComponent()
+        public void Dispose()
         {
-            // TODO: in LiveSplit 1.4, components will be IDisposable
-            //_gameMemory.Stop();
+            if (_gameMemory != null)
+                _gameMemory.Stop();
         }
 
         public void Update(IInvalidator invalidator, LiveSplitState state, float width, float height, LayoutMode mode)
@@ -66,19 +57,15 @@ namespace LiveSplit.Dishonored
             if (!this.Settings.DrawWithoutLoads)
                 return;
 
-            if (state.CurrentTime.HasValue && state.CurrentPhase != TimerPhase.NotRunning)
-            {
-                this.InternalComponent.TimeValue = _isLoading
-                    ? _timeAtLoadStart - _totalLoadTime
-                    : _state.CurrentTime - _totalLoadTime;
-            }
-            else
-            {
-                this.InternalComponent.TimeValue = TimeSpan.Zero;
-            }
+            this.InternalComponent.TimeValue =
+                state.CurrentTime[state.CurrentTimingMethod == TimingMethod.GameTime
+                    ? TimingMethod.RealTime : TimingMethod.GameTime];
+            this.InternalComponent.InformationName = state.CurrentTimingMethod == TimingMethod.GameTime
+                ? "Real Time" : "Game Time";
 
             _cache.Restart();
             _cache["TimeValue"] = this.InternalComponent.ValueLabel.Text;
+            _cache["TimingMethod"] = state.CurrentTimingMethod;
             if (invalidator != null && _cache.HasChanged)
                 invalidator.Invalidate(0f, 0f, width, height);
         }
@@ -116,20 +103,12 @@ namespace LiveSplit.Dishonored
 
         void gameMemory_OnLoadStarted(object sender, EventArgs e)
         {
-            _isLoading = true;
-            _loadStartTime = TripleDateTime.Now;
-            _timeAtLoadStart = _state.CurrentTime.HasValue ? _state.CurrentTime.Value : TimeSpan.Zero;
+            _state.IsGameTimePaused = true;
         }
 
         void gameMemory_OnLoadFinished(object sender, EventArgs e)
         {
-            _isLoading = false;
-
-            if (_loadStartTime == null)
-                return;
-
-            if (_state.CurrentPhase == TimerPhase.Running || _state.CurrentPhase == TimerPhase.Paused)
-                _totalLoadTime = _totalLoadTime.Add(TripleDateTime.Now - _loadStartTime);
+            _state.IsGameTimePaused = false;
         }
 
         void gameMemory_OnPlayerLostControl(object sender, EventArgs e)
@@ -148,16 +127,6 @@ namespace LiveSplit.Dishonored
             {
                 _timer.Split();
             }
-        }
-
-        void state_OnStart(object sender, EventArgs e)
-        {
-            _totalLoadTime = TimeSpan.Zero;
-        }
-
-        void state_OnReset(object sender, EventArgs e)
-        {
-            _totalLoadTime = TimeSpan.Zero;
         }
 
         public XmlNode GetSettings(XmlDocument document)
