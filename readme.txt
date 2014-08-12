@@ -11,23 +11,15 @@ Features:
 Requirements:
 
 	Dishonored (PC) v1.2 or v1.4 (latest)
-	LiveSplit 1.3+
+	LiveSplit 1.4+
 
 Install:
 
-	Run LiveSplit32BitPatcher.exe once. This makes LiveSplit run as 32-bit
-	and won't be required in the next version of LiveSplit.
-
-	Extract LiveSplit.Dishonored.dll to your LiveSplit\Components
-	folder. Restart LiveSplit.
-
-	Add "Dishonored" in LiveSplit's Layout Editor. Configure where it
-	should split by going to Layout Settings.
+	Enter "Dishonored" in LiveSplit's splits editor. Click activate.
 
 Source Code:
 
 	https://github.com/fatalis/LiveSplit.Dishonored
-	https://github.com/fatalis/LiveSplit32BitPatcher
 
 
 @fatalis_
