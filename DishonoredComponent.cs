@@ -30,7 +30,7 @@ namespace LiveSplit.Dishonored
         {
             this.Settings = new DishonoredSettings();
             this.ContextMenuControls = new Dictionary<String, Action>();
-            this.InternalComponent = new InfoTimeComponent("Without Loads", null, new RegularTimeFormatter(TimeAccuracy.Hundredths));
+            this.InternalComponent = new InfoTimeComponent(null, null, new RegularTimeFormatter(TimeAccuracy.Hundredths));
 
             _cache = new GraphicsCache();
             _timer = new TimerModel { CurrentState = state };
@@ -61,7 +61,7 @@ namespace LiveSplit.Dishonored
                 state.CurrentTime[state.CurrentTimingMethod == TimingMethod.GameTime
                     ? TimingMethod.RealTime : TimingMethod.GameTime];
             this.InternalComponent.InformationName = state.CurrentTimingMethod == TimingMethod.GameTime
-                ? "Real Time" : "Game Time";
+                ? "Real Time" : "Without Loads";
 
             _cache.Restart();
             _cache["TimeValue"] = this.InternalComponent.ValueLabel.Text;
