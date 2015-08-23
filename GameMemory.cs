@@ -132,7 +132,7 @@ namespace LiveSplit.Dishonored
 
                         if (currentMovie != prevCurrentMovie && prevCurrentMovie != String.Empty)
                         {
-                            Trace.WriteLine(String.Format("{0} [NoLoads] Movie Changed - {1} -> {2}", frameCounter, prevCurrentMovie, currentMovie));
+                            Trace.WriteLine($"{frameCounter} [NoLoads] Movie Changed - {prevCurrentMovie} -> {currentMovie}");
 
                             // special case for Intro End split because two movies play back-to-back
                             // which can cause isLoading to not detect changes
@@ -140,28 +140,18 @@ namespace LiveSplit.Dishonored
                             {
                                 loadingStarted = true;
 
-                                _uiThread.Post(d => {
-                                    if (this.OnLoadStarted != null)
-                                        this.OnLoadStarted(this, EventArgs.Empty);
-                                }, null);
-
-                                _uiThread.Post(d => {
-                                    if (this.OnAreaCompleted != null)
-                                        this.OnAreaCompleted(this, AreaCompletionType.IntroEnd);
-                                }, null);
+                                _uiThread.Post(d => this.OnLoadStarted?.Invoke(this, EventArgs.Empty), null);
+                                _uiThread.Post(d => this.OnAreaCompleted?.Invoke(this, AreaCompletionType.IntroEnd), null);
                             }
                         }
 
                         if (currentLevel != prevCurrentLevel)
                         {
-                            Trace.WriteLine(String.Format("{0} [NoLoads] Level Changed - {1} -> {2} '{3}'", frameCounter, prevCurrentLevel, currentLevel, currentLevelStr));
+                            Trace.WriteLine($"{frameCounter} [NoLoads] Level Changed - {prevCurrentLevel} -> {currentLevel} '{currentLevelStr}'");
 
                             if (currentLevelStr == "l_tower_p" || currentLevelStr == "L_DLC07_BaseIntro_P" || currentLevelStr == "DLC06_Tower_P")
                             {
-                                _uiThread.Post(d => {
-                                    if (this.OnFirstLevelLoading != null)
-                                        this.OnFirstLevelLoading(this, EventArgs.Empty);
-                                }, null);
+                                _uiThread.Post(d => this.OnFirstLevelLoading?.Invoke(this, EventArgs.Empty), null);
                             }
 
                             oncePerLevelFlag = true;
@@ -171,7 +161,7 @@ namespace LiveSplit.Dishonored
                         {
                             if (isLoading)
                             {
-                                Trace.WriteLine(String.Format("{0} [NoLoads] Load Start - {1}", frameCounter, currentMovie + "|" + currentLevelStr));
+                                Trace.WriteLine($"{frameCounter} [NoLoads] Load Start - {currentMovie + "|" + currentLevelStr}");
 
                                 // ignore the beginning load screen and the dishonored logo screen
                                 if (currentMovie != "LoadingEmpressTower" && currentMovie != "Dishonored" && currentMovie != "INTRO_LOC")
@@ -180,78 +170,54 @@ namespace LiveSplit.Dishonored
                                     if (!(currentMovie == "LoadingPrison" && currentLevelStr.ToLower().StartsWith("L_Tower_")))
                                     {
                                         loadingStarted = true;
-
-                                        _uiThread.Post(d => {
-                                            if (this.OnLoadStarted != null)
-                                                this.OnLoadStarted(this, EventArgs.Empty);
-                                        }, null);
+                                        _uiThread.Post(d => this.OnLoadStarted?.Invoke(this, EventArgs.Empty), null);
                                     }
                                 }
 
                                 AreaCompletionType completionType = _areaCompletions.Where(c => (currentMovie.ToLower() + "|" + currentLevelStr.ToLower()).StartsWith(c.Key.ToLower())).Select(c => c.Value).FirstOrDefault();
                                 if (completionType != AreaCompletionType.None)
                                 {
-                                    _uiThread.Post(d => {
-                                        if (this.OnAreaCompleted != null)
-                                            this.OnAreaCompleted(this, completionType);
-                                    }, null);
+                                    _uiThread.Post(d => this.OnAreaCompleted?.Invoke(this, completionType), null);
                                 }
                             }
                             else
                             {
-                                Trace.WriteLine(String.Format("{0} [NoLoads] Load End - {1}", frameCounter, currentMovie + "|" + currentLevelStr));
+                                Trace.WriteLine($"{frameCounter} [NoLoads] Load End - {currentMovie + "|" + currentLevelStr}");
 
                                 if (loadingStarted)
                                 {
                                     loadingStarted = false;
 
-                                    _uiThread.Post(d => {
-                                        if (this.OnLoadFinished != null)
-                                            this.OnLoadFinished(this, EventArgs.Empty);
-                                    }, null);
+                                    _uiThread.Post(d => this.OnLoadFinished?.Invoke(this, EventArgs.Empty), null);
                                 }
 
                                 if (((currentMovie == "LoadingEmpressTower" || currentMovie == "INTRO_LOC") && currentLevelStr == "l_tower_p")
                                     || (currentMovie == "Loading" || currentMovie == "LoadingDLC06Tower") && currentLevelStr == "DLC06_Tower_P") // KoD
                                 {
-                                    _uiThread.Post(d => {
-                                        if (this.OnPlayerGainedControl != null)
-                                            this.OnPlayerGainedControl(this, EventArgs.Empty);
-                                    }, null);
+                                    _uiThread.Post(d => this.OnPlayerGainedControl?.Invoke(this, EventArgs.Empty), null);
                                 }
                             }
                         }
 
                         if (cutsceneActive != prevCutsceneActive)
                         {
-                            Trace.WriteLine(String.Format("{0} [NoLoads] In-Game Cutscene {1}", frameCounter, cutsceneActive ? "Start" : "End"));
+                            Trace.WriteLine($"{frameCounter} [NoLoads] In-Game Cutscene {(cutsceneActive ? "Start" : "End")}");
 
                             if (cutsceneActive && currentLevelStr == "L_LightH_LowChaos_P")
                             {
-                                _uiThread.Post(d => {
-                                    if (this.OnPlayerLostControl != null)
-                                        this.OnPlayerLostControl(this, EventArgs.Empty);
-                                }, null);
+                                _uiThread.Post(d => this.OnPlayerLostControl?.Invoke(this, EventArgs.Empty), null);
                             }
                             else if (!cutsceneActive && currentLevelStr == "L_DLC07_BaseIntro_P" && oncePerLevelFlag)
                             {
                                 oncePerLevelFlag = false;
-
-                                _uiThread.Post(d => {
-                                    if (this.OnPlayerGainedControl != null)
-                                        this.OnPlayerGainedControl(this, EventArgs.Empty);
-                                }, null);
+                                _uiThread.Post(d => this.OnPlayerGainedControl?.Invoke(this, EventArgs.Empty), null);
                             }
                         }
 
                         if (missionStatsScreenActive != prevMissionStatsScreenActive && missionStatsScreenActive)
                         {
-                            Trace.WriteLine(String.Format("{0} [NoLoads] Mission End", frameCounter));
-
-                            _uiThread.Post(d => {
-                                if (this.OnAreaCompleted != null)
-                                    this.OnAreaCompleted(this, AreaCompletionType.MissionEnd);
-                            }, null);
+                            Trace.WriteLine($"{frameCounter} [NoLoads] Mission End");
+                            _uiThread.Post(d => this.OnAreaCompleted?.Invoke(this, AreaCompletionType.MissionEnd), null);
                         }
 
                         prevCurrentLevel = currentLevel;

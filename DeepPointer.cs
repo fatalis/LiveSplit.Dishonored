@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -194,9 +193,9 @@ namespace LiveSplit.Dishonored
         public float Y { get; set; }
         public float Z { get; set; }
 
-        public int IX { get { return (int)this.X; } }
-        public int IY { get { return (int)this.Y; } }
-        public int IZ { get { return (int)this.Z; } }
+        public int IX => (int)this.X;
+        public int IY => (int)this.Y;
+        public int IZ => (int)this.Z;
 
         public Vector3f() { }
 
