@@ -36,6 +36,8 @@ namespace LiveSplit.Dishonored
             _timer = new TimerModel { CurrentState = state };
             _state = state;
 
+            _timer.CurrentState.OnStart += timer_OnStart;
+
             _gameMemory = new GameMemory();
             _gameMemory.OnFirstLevelLoading += gameMemory_OnFirstLevelLoading;
             _gameMemory.OnPlayerGainedControl += gameMemory_OnPlayerGainedControl;
@@ -48,8 +50,15 @@ namespace LiveSplit.Dishonored
 
         public void Dispose()
         {
+            _timer.CurrentState.OnStart -= timer_OnStart;
+
             if (_gameMemory != null)
                 _gameMemory.Stop();
+        }
+
+        void timer_OnStart(object sender, EventArgs e)
+        {
+            _timer.InitializeGameTime();
         }
 
         public void Update(IInvalidator invalidator, LiveSplitState state, float width, float height, LayoutMode mode)

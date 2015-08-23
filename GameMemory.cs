@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using LiveSplit.ComponentUtil;
 
 namespace LiveSplit.Dishonored
 {
@@ -281,7 +282,7 @@ namespace LiveSplit.Dishonored
             if (game == null)
                 return null;
 
-            ProcessModule binkw32 = game.Modules.Cast<ProcessModule>().FirstOrDefault(p => p.ModuleName.ToLower() == "binkw32.dll");
+            ProcessModuleWow64Safe binkw32 = game.ModulesWow64Safe().FirstOrDefault(p => p.ModuleName.ToLower() == "binkw32.dll");
             if (binkw32 == null)
                 return null;
 
@@ -293,7 +294,7 @@ namespace LiveSplit.Dishonored
                 return null;
             }
 
-            if (game.MainModule.ModuleMemorySize == (int)ExpectedDllSizes.DishonoredExe12)
+            if (game.MainModuleWow64Safe().ModuleMemorySize == (int)ExpectedDllSizes.DishonoredExe12)
             {
                 _currentLevelPtr = new DeepPointer(0xFB7838, 0x2c0, 0x314, 0, 0x38);
                 _currentBikMoviePtr = new DeepPointer(0xFC6AD4, 0x48, 0);
@@ -301,7 +302,7 @@ namespace LiveSplit.Dishonored
                 _missionStatsScreenFlagsPtr = new DeepPointer(0xFDEB08, 0x24, 0x41C, 0x2E0, 0xC4);
                 _stringBase = 0xFA3624;
             }
-            else if (game.MainModule.ModuleMemorySize == (int)ExpectedDllSizes.DishonoredExe14Reloaded || game.MainModule.ModuleMemorySize == (int)ExpectedDllSizes.DishonoredExe14Steam)
+            else if (game.MainModuleWow64Safe().ModuleMemorySize == (int)ExpectedDllSizes.DishonoredExe14Reloaded || game.MainModuleWow64Safe().ModuleMemorySize == (int)ExpectedDllSizes.DishonoredExe14Steam)
             {
                 _currentLevelPtr = new DeepPointer(0x103D878, 0x2c0, 0x314, 0, 0x38);
                 _currentBikMoviePtr = new DeepPointer(0x104CB18, 0x48, 0);

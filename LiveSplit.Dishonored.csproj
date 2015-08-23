@@ -31,7 +31,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="LiveSplit.Core">
-      <HintPath>C:\Files\Apps\Gaming\LiveSplit 1.4\LiveSplit.Core.dll</HintPath>
+      <HintPath>..\..\public\LiveSplit\LiveSplit\bin\Debug\LiveSplit.Core.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System" />
@@ -41,7 +41,7 @@
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Xml" />
     <Reference Include="UpdateManager">
-      <HintPath>C:\Files\Apps\Gaming\LiveSplit 1.4\UpdateManager.dll</HintPath>
+      <HintPath>..\..\public\LiveSplit\LiveSplit\bin\Debug\UpdateManager.dll</HintPath>
       <Private>False</Private>
     </Reference>
   </ItemGroup>

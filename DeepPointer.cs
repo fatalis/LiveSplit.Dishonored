@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
+using LiveSplit.ComponentUtil;
 
 namespace LiveSplit.Dishonored
 {
@@ -84,8 +85,7 @@ namespace LiveSplit.Dishonored
         {
             if (!String.IsNullOrEmpty(_module))
             {
-                ProcessModule module = process.Modules.Cast<ProcessModule>()
-                    .FirstOrDefault(m => Path.GetFileName(m.FileName).ToLower() == _module.ToLower());
+                ProcessModuleWow64Safe module = process.ModulesWow64Safe().FirstOrDefault(m => m.ModuleName.ToLower() == _module.ToLower());
                 if (module == null)
                 {
                     ptr = IntPtr.Zero;
@@ -96,7 +96,7 @@ namespace LiveSplit.Dishonored
             }
             else
             {
-                ptr = process.MainModule.BaseAddress + _base;
+                ptr = process.MainModuleWow64Safe().BaseAddress + _base;
             }
 
 
