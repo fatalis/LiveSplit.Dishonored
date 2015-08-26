@@ -51,9 +51,9 @@ namespace LiveSplit.Dishonored
 
         private Dictionary<string, AreaCompletionType> _areaCompletions = new Dictionary<string, AreaCompletionType>
         {
-            {"LoadingSewers|L_Prison_",    AreaCompletionType.PrisonEscape},
-            {"LoadingStreets|L_Pub_Dusk_", AreaCompletionType.OutsidersDream},
-            {"LoadingStreets|L_Pub_Day_",  AreaCompletionType.Weepers},
+            ["LoadingSewers|L_Prison_"]    = AreaCompletionType.PrisonEscape,
+            ["LoadingStreets|L_Pub_Dusk_"] = AreaCompletionType.OutsidersDream,
+            ["LoadingStreets|L_Pub_Day_"]  = AreaCompletionType.Weepers
         };
 
         public GameMemory()
@@ -113,22 +113,16 @@ namespace LiveSplit.Dishonored
                     bool oncePerLevelFlag = false;
                     while (!game.HasExited)
                     {
-                        int currentLevel;
-                        _currentLevelPtr.Deref(game, out currentLevel);
-                        string currentLevelStr = GetEngineStringByID(game, currentLevel);
+                        var currentLevel = _currentLevelPtr.Deref<int>(game);
+                        var currentLevelStr = GetEngineStringByID(game, currentLevel);
 
-                        bool isLoading;
-                        _isLoadingPtr.Deref(game, out isLoading);
+                        var isLoading = _isLoadingPtr.Deref<bool>(game);
+                        var cutsceneActive = _cutsceneActivePtr.Deref<bool>(game);
 
-                        bool cutsceneActive;
-                        _cutsceneActivePtr.Deref(game, out cutsceneActive);
-
-                        int missionStatsScreenFlags;
-                        _missionStatsScreenFlagsPtr.Deref(game, out missionStatsScreenFlags);
+                        var missionStatsScreenFlags = _missionStatsScreenFlagsPtr.Deref<int>(game);
                         bool missionStatsScreenActive = (missionStatsScreenFlags & 1) != 0;
 
-                        string currentMovie;
-                        _currentBikMoviePtr.Deref(game, out currentMovie, 64);
+                        string currentMovie = _currentBikMoviePtr.DerefString(game, 64);
 
                         if (currentMovie != prevCurrentMovie && prevCurrentMovie != String.Empty)
                         {
@@ -289,10 +283,8 @@ namespace LiveSplit.Dishonored
 
         string GetEngineStringByID(Process p, int id)
         {
-            string str;
             var ptr = new DeepPointer(_stringBase, (id*4), 0x10);
-            ptr.Deref(p, out str, 32);
-            return str;
+            return ptr.DerefString(p, 32);
         }
     }
 }
