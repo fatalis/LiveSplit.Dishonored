@@ -10,44 +10,18 @@ namespace LiveSplit.Dishonored
 {
     public class DishonoredFactory : IComponentFactory
     {
-        public string ComponentName
-        {
-            get { return "Dishonored"; }
-        }
-
-        public string Description
-        {
-            get { return "Automates splitting and load removal for Dishonored."; }
-        }
-
-        public ComponentCategory Category
-        {
-            get {  return ComponentCategory.Control; }
-        }
+        public string ComponentName => "Dishonored";
+        public string Description => "Automates splitting and load removal for Dishonored.";
+        public ComponentCategory Category => ComponentCategory.Control;
 
         public IComponent Create(LiveSplitState state)
         {
             return new DishonoredComponent(state);
         }
 
-        public string UpdateName
-        {
-            get { return this.ComponentName; }
-        }
-
-        public string UpdateURL
-        {
-            get { return "http://fatalis.pw/livesplit/update/"; }
-        }
-
-        public Version Version
-        {
-            get { return Assembly.GetExecutingAssembly().GetName().Version; }
-        }
-
-        public string XMLURL
-        {
-            get { return this.UpdateURL + "Components/update.LiveSplit.Dishonored.xml"; }
-        }
+        public string UpdateName => this.ComponentName;
+        public string UpdateURL => "http://fatalis.pw/livesplit/update/";
+        public Version Version => Assembly.GetExecutingAssembly().GetName().Version;
+        public string XMLURL => this.UpdateURL + "Components/update.LiveSplit.Dishonored.xml";
     }
 }

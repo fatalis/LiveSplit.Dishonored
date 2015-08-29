@@ -2,6 +2,9 @@
 using LiveSplit.UI.Components;
 using LiveSplit.UI;
 using System;
+using System.Diagnostics;
+using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Xml;
 using System.Windows.Forms;
 
@@ -15,13 +18,24 @@ namespace LiveSplit.Dishonored
 
         private TimerModel _timer;
         private GameMemory _gameMemory;
+        private Timer _updateTimer;
 
         public DishonoredComponent(LiveSplitState state)
         {
+            while (Debug.Listeners.Count > 0)
+                Debug.Listeners.RemoveAt(0);
+            Debug.Listeners.Add(TimedTraceListener.Instance);
+            while (Trace.Listeners.Count > 0)
+                Trace.Listeners.RemoveAt(0);
+            Trace.Listeners.Add(TimedTraceListener.Instance); // is it okay to use the same instance?
+
             this.Settings = new DishonoredSettings();
 
             _timer = new TimerModel { CurrentState = state };
             _timer.CurrentState.OnStart += timer_OnStart;
+
+            _updateTimer = new Timer() { Interval = 15, Enabled = true };
+            _updateTimer.Tick += updateTimer_Tick;
 
             _gameMemory = new GameMemory();
             _gameMemory.OnFirstLevelLoading += gameMemory_OnFirstLevelLoading;
@@ -30,13 +44,33 @@ namespace LiveSplit.Dishonored
             _gameMemory.OnLoadFinished += gameMemory_OnLoadFinished;
             _gameMemory.OnPlayerLostControl += gameMemory_OnPlayerLostControl;
             _gameMemory.OnAreaCompleted += gameMemory_OnAreaCompleted;
-            _gameMemory.StartMonitoring();
         }
 
         public override void Dispose()
         {
             _timer.CurrentState.OnStart -= timer_OnStart;
-            _gameMemory?.Stop();
+            _updateTimer?.Dispose();
+
+            var listener = Debug.Listeners.Cast<TraceListener>().FirstOrDefault(x => x is TimedTraceListener);
+            if (listener != null)
+                Debug.Listeners.Remove(listener);
+            listener = Trace.Listeners.Cast<TraceListener>().FirstOrDefault(x => x is TimedTraceListener);
+            if (listener != null)
+                Trace.Listeners.Remove(listener);
+            Debug.Listeners.Add(new DefaultTraceListener());
+            Trace.Listeners.Add(new DefaultTraceListener()); // TODO: check if correct
+        }
+
+        void updateTimer_Tick(object sender, EventArgs eventArgs)
+        {
+            try
+            {
+                _gameMemory.Update();
+            }
+            catch (Exception ex)
+            {
+                Trace.WriteLine(ex.ToString());
+            }
         }
 
         void timer_OnStart(object sender, EventArgs e)
@@ -102,6 +136,27 @@ namespace LiveSplit.Dishonored
         public override void SetSettings(XmlNode settings)
         {
             this.Settings.SetSettings(settings);
+        }
+    }
+
+    public class TimedTraceListener : DefaultTraceListener
+    {
+        private static TimedTraceListener _instance;
+        public static TimedTraceListener Instance => _instance ?? (_instance = new TimedTraceListener());
+
+        private TimedTraceListener() { }
+
+        public int UpdateCount
+        {
+            [MethodImpl(MethodImplOptions.Synchronized)]
+            get;
+            [MethodImpl(MethodImplOptions.Synchronized)]
+            set;
+        }
+
+        public override void WriteLine(string message)
+        {
+            base.WriteLine("Dishonored: " + this.UpdateCount + " " + message);
         }
     }
 }

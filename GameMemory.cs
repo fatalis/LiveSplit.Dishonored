@@ -2,13 +2,56 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Diagnostics;
-using System.Threading;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using LiveSplit.ComponentUtil;
 
 namespace LiveSplit.Dishonored
 {
+    class GameData : MemoryWatcherList
+    {
+        public MemoryWatcher<bool> IsLoading { get; }
+        public MemoryWatcher<int> CurrentLevel { get; }
+        public StringWatcher CurrentBikMovie { get; }
+        public MemoryWatcher<bool> CutsceneActive { get; }
+        public MemoryWatcher<int> MissionStatsScreenFlags { get; }
+
+        public FakeMemoryWatcher<bool> MissionStatsScreenActive => new FakeMemoryWatcher<bool>(
+            (this.MissionStatsScreenFlags.Old & 1) != 0,
+            (this.MissionStatsScreenFlags.Current & 1) != 0);
+
+        public int StringTableBase { get; }
+
+        public GameData(GameVersion version)
+        {
+            if (version == GameVersion.v12)
+            {
+                this.CurrentLevel = new MemoryWatcher<int>(new DeepPointer(0xFB7838, 0x2c0, 0x314, 0, 0x38));
+                this.CurrentBikMovie = new StringWatcher(new DeepPointer(0xFC6AD4, 0x48, 0), 64);
+                this.CutsceneActive = new MemoryWatcher<bool>(new DeepPointer(0xFB51CC, 0x744));
+                this.MissionStatsScreenFlags = new MemoryWatcher<int>(new DeepPointer(0xFDEB08, 0x24, 0x41C, 0x2E0, 0xC4));
+                this.StringTableBase = 0xFA3624;
+            }
+            else if (version == GameVersion.v14)
+            {
+                this.CurrentLevel = new MemoryWatcher<int>(new DeepPointer(0x103D878, 0x2c0, 0x314, 0, 0x38));
+                this.CurrentBikMovie = new StringWatcher(new DeepPointer(0x104CB18, 0x48, 0), 64);
+                this.CutsceneActive = new MemoryWatcher<bool>(new DeepPointer(0x103B20C, 0x744));
+                this.MissionStatsScreenFlags = new MemoryWatcher<int>(new DeepPointer(0x1065184, 0x24, 0x41C, 0x2F4, 0xC4));
+                this.StringTableBase = 0x1029664;
+            }
+
+            this.IsLoading = new MemoryWatcher<bool>(new DeepPointer("binkw32.dll", 0x312F4));
+
+            this.AddRange(new MemoryWatcher[] {
+                this.IsLoading,
+                this.CurrentLevel,
+                this.CurrentBikMovie,
+                this.CutsceneActive,
+                this.MissionStatsScreenFlags
+            });
+        }
+    }
+
     class GameMemory
     {
         public enum AreaCompletionType
@@ -29,17 +72,12 @@ namespace LiveSplit.Dishonored
         public delegate void AreaCompletedEventHandler(object sender, AreaCompletionType type);
         public event AreaCompletedEventHandler OnAreaCompleted;
 
-        private Task _thread;
-        private CancellationTokenSource _cancelSource;
-        private SynchronizationContext _uiThread;
-        private List<int> _ignorePIDs; 
+        private List<int> _ignorePIDs;
 
-        private DeepPointer _currentLevelPtr;
-        private DeepPointer _isLoadingPtr;
-        private DeepPointer _currentBikMoviePtr;
-        private DeepPointer _cutsceneActivePtr;
-        private DeepPointer _missionStatsScreenFlagsPtr;
-        private int _stringBase;
+        private GameData _data;
+        private Process _process;
+        private bool _loadingStarted;
+        private bool _oncePerLevelFlag;
 
         private enum ExpectedDllSizes
         {
@@ -58,233 +96,177 @@ namespace LiveSplit.Dishonored
 
         public GameMemory()
         {
-            _isLoadingPtr = new DeepPointer("binkw32.dll", 0x312F4);
             _ignorePIDs = new List<int>();
         }
 
-        public void StartMonitoring()
+        public void Update()
         {
-            if (_thread != null && _thread.Status == TaskStatus.Running)
-                throw new InvalidOperationException();
-            if (!(SynchronizationContext.Current is WindowsFormsSynchronizationContext))
-                throw new InvalidOperationException("SynchronizationContext.Current is not a UI thread.");
-
-            _uiThread = SynchronizationContext.Current;
-            _cancelSource = new CancellationTokenSource();
-            _thread = Task.Factory.StartNew(MemoryReadThread);
-        }
-
-        public void Stop()
-        {
-            if (_cancelSource == null || _thread == null || _thread.Status != TaskStatus.Running)
-                return;
-
-            _cancelSource.Cancel();
-            _thread.Wait();
-        }
-
-        void MemoryReadThread()
-        {
-            Trace.WriteLine("[NoLoads] MemoryReadThread");
-
-            while (!_cancelSource.IsCancellationRequested)
+            if (_process == null || _process.HasExited)
             {
-                try
-                {
-                    Trace.WriteLine("[NoLoads] Waiting for dishonored.exe...");
+                if (!this.TryGetGameProcess())
+                    return;
+            }
 
-                    Process game;
-                    while ((game = GetGameProcess()) == null)
+            TimedTraceListener.Instance.UpdateCount++;
+
+            _data.UpdateAll(_process);
+
+            if (_data.CurrentBikMovie.Changed && _data.CurrentBikMovie.Old != String.Empty)
+            {
+                Trace.WriteLine($"Movie Changed - {_data.CurrentBikMovie.Old} -> {_data.CurrentBikMovie.Current}");
+
+                // special case for Intro End split because two movies play back-to-back
+                // which can cause isLoading to not detect changes
+                if (_data.CurrentBikMovie.Current == "LoadingPrison" && _data.CurrentBikMovie.Old == "Dishonored")
+                {
+                    _loadingStarted = true;
+
+                    this.OnLoadStarted?.Invoke(this, EventArgs.Empty);
+                    this.OnAreaCompleted?.Invoke(this, AreaCompletionType.IntroEnd);
+                }
+            }
+
+            if (_data.CurrentLevel.Changed)
+            {
+                string currentLevelStr = this.GetEngineStringByID(_data.CurrentLevel.Current);
+                Trace.WriteLine($"Level Changed - {_data.CurrentLevel.Old} -> {_data.CurrentLevel.Current} '{currentLevelStr}'");
+
+                if (currentLevelStr == "l_tower_p" || currentLevelStr == "L_DLC07_BaseIntro_P" || currentLevelStr == "DLC06_Tower_P")
+                    this.OnFirstLevelLoading?.Invoke(this, EventArgs.Empty);
+
+                _oncePerLevelFlag = true;
+            }
+
+            if (_data.IsLoading.Changed)
+            {
+                string currentMovie = _data.CurrentBikMovie.Current;
+                string currentLevelStr = this.GetEngineStringByID(_data.CurrentLevel.Current);
+
+                if (_data.IsLoading.Current)
+                {
+                    Trace.WriteLine($"Load Start - {currentMovie + "|" + currentLevelStr}");
+
+                    // ignore the beginning load screen and the dishonored logo screen
+                    if (currentMovie != "LoadingEmpressTower" && currentMovie != "Dishonored" && currentMovie != "INTRO_LOC")
                     {
-                        Thread.Sleep(250);
-                        if (_cancelSource.IsCancellationRequested)
-                            return;
+                        // ignore intro end if it happens, see special case above
+                        if (!(currentMovie == "LoadingPrison" && currentLevelStr.ToLower().StartsWith("L_Tower_")))
+                        {
+                            _loadingStarted = true;
+                            this.OnLoadStarted?.Invoke(this, EventArgs.Empty);
+                        }
                     }
 
-                    Trace.WriteLine("[NoLoads] Got dishonored.exe!");
+                    AreaCompletionType completionType = _areaCompletions.Where(c => (currentMovie.ToLower() + "|" + currentLevelStr.ToLower()).StartsWith(c.Key.ToLower())).Select(c => c.Value).FirstOrDefault();
+                    if (completionType != AreaCompletionType.None)
+                        this.OnAreaCompleted?.Invoke(this, completionType);
+                }
+                else
+                {
+                    Trace.WriteLine($"Load End - {currentMovie + "|" + currentLevelStr}");
 
-                    int prevCurrentLevel = 0;
-                    bool prevIsLoading = false;
-                    bool prevCutsceneActive = false;
-                    bool prevMissionStatsScreenActive = false;
-                    uint frameCounter = 0;
-                    string prevCurrentMovie = String.Empty;
-                    bool loadingStarted = false;
-                    bool oncePerLevelFlag = false;
-                    while (!game.HasExited)
+                    if (_loadingStarted)
                     {
-                        var currentLevel = _currentLevelPtr.Deref<int>(game);
-                        var currentLevelStr = GetEngineStringByID(game, currentLevel);
+                        _loadingStarted = false;
+                        this.OnLoadFinished?.Invoke(this, EventArgs.Empty);
+                    }
 
-                        var isLoading = _isLoadingPtr.Deref<bool>(game);
-                        var cutsceneActive = _cutsceneActivePtr.Deref<bool>(game);
-
-                        var missionStatsScreenFlags = _missionStatsScreenFlagsPtr.Deref<int>(game);
-                        bool missionStatsScreenActive = (missionStatsScreenFlags & 1) != 0;
-
-                        string currentMovie = _currentBikMoviePtr.DerefString(game, 64);
-
-                        if (currentMovie != prevCurrentMovie && prevCurrentMovie != String.Empty)
-                        {
-                            Trace.WriteLine($"{frameCounter} [NoLoads] Movie Changed - {prevCurrentMovie} -> {currentMovie}");
-
-                            // special case for Intro End split because two movies play back-to-back
-                            // which can cause isLoading to not detect changes
-                            if (currentMovie == "LoadingPrison" && prevCurrentMovie == "Dishonored")
-                            {
-                                loadingStarted = true;
-
-                                _uiThread.Post(d => this.OnLoadStarted?.Invoke(this, EventArgs.Empty), null);
-                                _uiThread.Post(d => this.OnAreaCompleted?.Invoke(this, AreaCompletionType.IntroEnd), null);
-                            }
-                        }
-
-                        if (currentLevel != prevCurrentLevel)
-                        {
-                            Trace.WriteLine($"{frameCounter} [NoLoads] Level Changed - {prevCurrentLevel} -> {currentLevel} '{currentLevelStr}'");
-
-                            if (currentLevelStr == "l_tower_p" || currentLevelStr == "L_DLC07_BaseIntro_P" || currentLevelStr == "DLC06_Tower_P")
-                            {
-                                _uiThread.Post(d => this.OnFirstLevelLoading?.Invoke(this, EventArgs.Empty), null);
-                            }
-
-                            oncePerLevelFlag = true;
-                        }
-
-                        if (isLoading != prevIsLoading)
-                        {
-                            if (isLoading)
-                            {
-                                Trace.WriteLine($"{frameCounter} [NoLoads] Load Start - {currentMovie + "|" + currentLevelStr}");
-
-                                // ignore the beginning load screen and the dishonored logo screen
-                                if (currentMovie != "LoadingEmpressTower" && currentMovie != "Dishonored" && currentMovie != "INTRO_LOC")
-                                {
-                                    // ignore intro end if it happens, see special case above
-                                    if (!(currentMovie == "LoadingPrison" && currentLevelStr.ToLower().StartsWith("L_Tower_")))
-                                    {
-                                        loadingStarted = true;
-                                        _uiThread.Post(d => this.OnLoadStarted?.Invoke(this, EventArgs.Empty), null);
-                                    }
-                                }
-
-                                AreaCompletionType completionType = _areaCompletions.Where(c => (currentMovie.ToLower() + "|" + currentLevelStr.ToLower()).StartsWith(c.Key.ToLower())).Select(c => c.Value).FirstOrDefault();
-                                if (completionType != AreaCompletionType.None)
-                                {
-                                    _uiThread.Post(d => this.OnAreaCompleted?.Invoke(this, completionType), null);
-                                }
-                            }
-                            else
-                            {
-                                Trace.WriteLine($"{frameCounter} [NoLoads] Load End - {currentMovie + "|" + currentLevelStr}");
-
-                                if (loadingStarted)
-                                {
-                                    loadingStarted = false;
-
-                                    _uiThread.Post(d => this.OnLoadFinished?.Invoke(this, EventArgs.Empty), null);
-                                }
-
-                                if (((currentMovie == "LoadingEmpressTower" || currentMovie == "INTRO_LOC") && currentLevelStr == "l_tower_p")
-                                    || (currentMovie == "Loading" || currentMovie == "LoadingDLC06Tower") && currentLevelStr == "DLC06_Tower_P") // KoD
-                                {
-                                    _uiThread.Post(d => this.OnPlayerGainedControl?.Invoke(this, EventArgs.Empty), null);
-                                }
-                            }
-                        }
-
-                        if (cutsceneActive != prevCutsceneActive)
-                        {
-                            Trace.WriteLine($"{frameCounter} [NoLoads] In-Game Cutscene {(cutsceneActive ? "Start" : "End")}");
-
-                            if (cutsceneActive && currentLevelStr == "L_LightH_LowChaos_P")
-                            {
-                                _uiThread.Post(d => this.OnPlayerLostControl?.Invoke(this, EventArgs.Empty), null);
-                            }
-                            else if (!cutsceneActive && currentLevelStr == "L_DLC07_BaseIntro_P" && oncePerLevelFlag)
-                            {
-                                oncePerLevelFlag = false;
-                                _uiThread.Post(d => this.OnPlayerGainedControl?.Invoke(this, EventArgs.Empty), null);
-                            }
-                        }
-
-                        if (missionStatsScreenActive != prevMissionStatsScreenActive && missionStatsScreenActive)
-                        {
-                            Trace.WriteLine($"{frameCounter} [NoLoads] Mission End");
-                            _uiThread.Post(d => this.OnAreaCompleted?.Invoke(this, AreaCompletionType.MissionEnd), null);
-                        }
-
-                        prevCurrentLevel = currentLevel;
-                        prevIsLoading = isLoading;
-                        prevCutsceneActive = cutsceneActive;
-                        prevMissionStatsScreenActive = missionStatsScreenActive;
-                        prevCurrentMovie = currentMovie;
-                        frameCounter++;
-
-                        Thread.Sleep(15);
-
-                        if (_cancelSource.IsCancellationRequested)
-                            return;
+                    if (((currentMovie == "LoadingEmpressTower" || currentMovie == "INTRO_LOC") && currentLevelStr == "l_tower_p")
+                        || (currentMovie == "Loading" || currentMovie == "LoadingDLC06Tower") && currentLevelStr == "DLC06_Tower_P") // KoD
+                    {
+                        this.OnPlayerGainedControl?.Invoke(this, EventArgs.Empty);
                     }
                 }
-                catch (Exception ex)
+            }
+
+            if (_data.CutsceneActive.Changed)
+            {
+                string currentLevelStr = this.GetEngineStringByID(_data.CurrentLevel.Current);
+                Trace.WriteLine($"In-Game Cutscene {(_data.CutsceneActive.Current ? "Start" : "End")}");
+
+                if (_data.CutsceneActive.Current && currentLevelStr == "L_LightH_LowChaos_P")
                 {
-                    Trace.WriteLine(ex.ToString());
-                    Thread.Sleep(1000);
+                    this.OnPlayerLostControl?.Invoke(this, EventArgs.Empty);
                 }
+                else if (!_data.CutsceneActive.Current && currentLevelStr == "L_DLC07_BaseIntro_P" && _oncePerLevelFlag)
+                {
+                    _oncePerLevelFlag = false;
+                    this.OnPlayerGainedControl?.Invoke(this, EventArgs.Empty);
+                }
+            }
+
+            if (_data.MissionStatsScreenFlags.Changed && _data.MissionStatsScreenActive.Current)
+            {
+                Trace.WriteLine("Mission End");
+                this.OnAreaCompleted?.Invoke(this, AreaCompletionType.MissionEnd);
             }
         }
 
-        Process GetGameProcess()
+        bool TryGetGameProcess()
         {
             Process game = Process.GetProcesses().FirstOrDefault(p => p.ProcessName.ToLower() == "dishonored"
                 && !p.HasExited && !_ignorePIDs.Contains(p.Id));
             if (game == null)
-                return null;
+                return false;
 
             ProcessModuleWow64Safe binkw32 = game.ModulesWow64Safe().FirstOrDefault(p => p.ModuleName.ToLower() == "binkw32.dll");
             if (binkw32 == null)
-                return null;
+                return false;
 
             if (binkw32.ModuleMemorySize != (int)ExpectedDllSizes.BinkW32Dll)
             {
                 _ignorePIDs.Add(game.Id);
-                _uiThread.Send(d => MessageBox.Show("binkw32.dll was not the expected version.", "LiveSplit.Dishonored",
-                    MessageBoxButtons.OK, MessageBoxIcon.Error), null);
-                return null;
+                MessageBox.Show("binkw32.dll was not the expected version.", "LiveSplit.Dishonored",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return false;
             }
 
+            GameVersion version;
             if (game.MainModuleWow64Safe().ModuleMemorySize == (int)ExpectedDllSizes.DishonoredExe12)
             {
-                _currentLevelPtr = new DeepPointer(0xFB7838, 0x2c0, 0x314, 0, 0x38);
-                _currentBikMoviePtr = new DeepPointer(0xFC6AD4, 0x48, 0);
-                _cutsceneActivePtr = new DeepPointer(0xFB51CC, 0x744);
-                _missionStatsScreenFlagsPtr = new DeepPointer(0xFDEB08, 0x24, 0x41C, 0x2E0, 0xC4);
-                _stringBase = 0xFA3624;
+                version = GameVersion.v12;
             }
             else if (game.MainModuleWow64Safe().ModuleMemorySize == (int)ExpectedDllSizes.DishonoredExe14Reloaded || game.MainModuleWow64Safe().ModuleMemorySize == (int)ExpectedDllSizes.DishonoredExe14Steam)
             {
-                _currentLevelPtr = new DeepPointer(0x103D878, 0x2c0, 0x314, 0, 0x38);
-                _currentBikMoviePtr = new DeepPointer(0x104CB18, 0x48, 0);
-                _cutsceneActivePtr = new DeepPointer(0x103B20C, 0x744);
-                _missionStatsScreenFlagsPtr = new DeepPointer(0x1065184, 0x24, 0x41C, 0x2F4, 0xC4);
-                _stringBase = 0x1029664;
+                version = GameVersion.v14;
             }
             else
             {
                 _ignorePIDs.Add(game.Id);
-                _uiThread.Send(d => MessageBox.Show("Unexpected game version. Dishonored 1.2 or 1.4 is required.", "LiveSplit.Dishonored",
-                    MessageBoxButtons.OK, MessageBoxIcon.Error), null);
-                return null;
+                MessageBox.Show("Unexpected game version. Dishonored 1.2 or 1.4 is required.", "LiveSplit.Dishonored",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);    
+                return false;
             }
 
-            return game;
+            Trace.WriteLine("game version " + version);
+            _data = new GameData(version);
+            _process = game;
+
+            return true;
         }
 
-        string GetEngineStringByID(Process p, int id)
+        string GetEngineStringByID(int id)
         {
-            var ptr = new DeepPointer(_stringBase, (id*4), 0x10);
-            return ptr.DerefString(p, 32);
+            var ptr = new DeepPointer(_data.StringTableBase, (id*4), 0x10);
+            return ptr.DerefString(_process, 32);
+        }
+    }
+
+    enum GameVersion
+    {
+        v12,
+        v14
+    }
+
+    class FakeMemoryWatcher<T>
+    {
+        public T Current { get; set; }
+        public T Old { get; set; }
+
+        public FakeMemoryWatcher(T old, T current)
+        {
+            this.Old = old;
+            this.Current = current;
         }
     }
 }
