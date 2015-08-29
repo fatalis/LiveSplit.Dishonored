@@ -113,7 +113,7 @@ namespace LiveSplit.Dishonored
 
             if (_data.CurrentBikMovie.Changed && _data.CurrentBikMovie.Old != String.Empty)
             {
-                Trace.WriteLine($"Movie Changed - {_data.CurrentBikMovie.Old} -> {_data.CurrentBikMovie.Current}");
+                Debug.WriteLine($"Movie Changed - {_data.CurrentBikMovie.Old} -> {_data.CurrentBikMovie.Current}");
 
                 // special case for Intro End split because two movies play back-to-back
                 // which can cause isLoading to not detect changes
@@ -129,7 +129,7 @@ namespace LiveSplit.Dishonored
             if (_data.CurrentLevel.Changed)
             {
                 string currentLevelStr = this.GetEngineStringByID(_data.CurrentLevel.Current);
-                Trace.WriteLine($"Level Changed - {_data.CurrentLevel.Old} -> {_data.CurrentLevel.Current} '{currentLevelStr}'");
+                Debug.WriteLine($"Level Changed - {_data.CurrentLevel.Old} -> {_data.CurrentLevel.Current} '{currentLevelStr}'");
 
                 if (currentLevelStr == "l_tower_p" || currentLevelStr == "L_DLC07_BaseIntro_P" || currentLevelStr == "DLC06_Tower_P")
                     this.OnFirstLevelLoading?.Invoke(this, EventArgs.Empty);
@@ -144,7 +144,7 @@ namespace LiveSplit.Dishonored
 
                 if (_data.IsLoading.Current)
                 {
-                    Trace.WriteLine($"Load Start - {currentMovie + "|" + currentLevelStr}");
+                    Debug.WriteLine($"Load Start - {currentMovie + "|" + currentLevelStr}");
 
                     // ignore the beginning load screen and the dishonored logo screen
                     if (currentMovie != "LoadingEmpressTower" && currentMovie != "Dishonored" && currentMovie != "INTRO_LOC")
@@ -163,7 +163,7 @@ namespace LiveSplit.Dishonored
                 }
                 else
                 {
-                    Trace.WriteLine($"Load End - {currentMovie + "|" + currentLevelStr}");
+                    Debug.WriteLine($"Load End - {currentMovie + "|" + currentLevelStr}");
 
                     if (_loadingStarted)
                     {
@@ -182,7 +182,7 @@ namespace LiveSplit.Dishonored
             if (_data.CutsceneActive.Changed)
             {
                 string currentLevelStr = this.GetEngineStringByID(_data.CurrentLevel.Current);
-                Trace.WriteLine($"In-Game Cutscene {(_data.CutsceneActive.Current ? "Start" : "End")}");
+                Debug.WriteLine($"In-Game Cutscene {(_data.CutsceneActive.Current ? "Start" : "End")}");
 
                 if (_data.CutsceneActive.Current && currentLevelStr == "L_LightH_LowChaos_P")
                 {
@@ -197,7 +197,7 @@ namespace LiveSplit.Dishonored
 
             if (_data.MissionStatsScreenFlags.Changed && _data.MissionStatsScreenActive.Current)
             {
-                Trace.WriteLine("Mission End");
+                Debug.WriteLine("Mission End");
                 this.OnAreaCompleted?.Invoke(this, AreaCompletionType.MissionEnd);
             }
         }
@@ -238,7 +238,7 @@ namespace LiveSplit.Dishonored
                 return false;
             }
 
-            Trace.WriteLine("game version " + version);
+            Debug.WriteLine("game version " + version);
             _data = new GameData(version);
             _process = game;
 

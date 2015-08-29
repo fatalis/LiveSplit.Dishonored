@@ -22,12 +22,10 @@ namespace LiveSplit.Dishonored
 
         public DishonoredComponent(LiveSplitState state)
         {
-            while (Debug.Listeners.Count > 0)
-                Debug.Listeners.RemoveAt(0);
+#if DEBUG
+            Debug.Listeners.Clear();
             Debug.Listeners.Add(TimedTraceListener.Instance);
-            while (Trace.Listeners.Count > 0)
-                Trace.Listeners.RemoveAt(0);
-            Trace.Listeners.Add(TimedTraceListener.Instance); // is it okay to use the same instance?
+#endif
 
             this.Settings = new DishonoredSettings();
 
@@ -50,15 +48,6 @@ namespace LiveSplit.Dishonored
         {
             _timer.CurrentState.OnStart -= timer_OnStart;
             _updateTimer?.Dispose();
-
-            var listener = Debug.Listeners.Cast<TraceListener>().FirstOrDefault(x => x is TimedTraceListener);
-            if (listener != null)
-                Debug.Listeners.Remove(listener);
-            listener = Trace.Listeners.Cast<TraceListener>().FirstOrDefault(x => x is TimedTraceListener);
-            if (listener != null)
-                Trace.Listeners.Remove(listener);
-            Debug.Listeners.Add(new DefaultTraceListener());
-            Trace.Listeners.Add(new DefaultTraceListener()); // TODO: check if correct
         }
 
         void updateTimer_Tick(object sender, EventArgs eventArgs)
