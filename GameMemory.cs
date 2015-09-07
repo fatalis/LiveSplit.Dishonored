@@ -42,13 +42,10 @@ namespace LiveSplit.Dishonored
 
             this.IsLoading = new MemoryWatcher<bool>(new DeepPointer("binkw32.dll", 0x312F4));
 
-            this.AddRange(new MemoryWatcher[] {
-                this.IsLoading,
-                this.CurrentLevel,
-                this.CurrentBikMovie,
-                this.CutsceneActive,
-                this.MissionStatsScreenFlags
-            });
+            this.AddRange(this.GetType().GetProperties()
+                .Where(p => !p.GetIndexParameters().Any())
+                .Select(p => p.GetValue(this, null) as MemoryWatcher)
+                .Where(p => p != null));
         }
     }
 
