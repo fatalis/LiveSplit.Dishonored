@@ -7,7 +7,6 @@ namespace LiveSplit.Dishonored
 {
     public partial class DishonoredSettings : UserControl
     {
-        public bool DrawWithoutLoads { get; set; }
         public bool AutoStartEnd { get; set; }
         public bool AutoSplitIntroEnd { get; set; }
         public bool AutoSplitMissionEnd { get; set; }
@@ -19,7 +18,6 @@ namespace LiveSplit.Dishonored
         {
             InitializeComponent();
 
-            this.chkDisplayWithoutLoads.DataBindings.Add("Checked", this, "DrawWithoutLoads", false, DataSourceUpdateMode.OnPropertyChanged);
             this.chkAutoStartEnd.DataBindings.Add("Checked", this, "AutoStartEnd", false, DataSourceUpdateMode.OnPropertyChanged);
             this.chkAutoSplitIntroEnd.DataBindings.Add("Checked", this, "AutoSplitIntroEnd", false, DataSourceUpdateMode.OnPropertyChanged);
             this.chkAutoSplitMissionEnd.DataBindings.Add("Checked", this, "AutoSplitMissionEnd", false, DataSourceUpdateMode.OnPropertyChanged);
@@ -28,7 +26,6 @@ namespace LiveSplit.Dishonored
             this.chkAutoSplitWeepers.DataBindings.Add("Checked", this, "AutoSplitWeepers", false, DataSourceUpdateMode.OnPropertyChanged);
 
             // defaults
-            this.DrawWithoutLoads = true;
             this.AutoStartEnd = true;
         }
 
@@ -38,7 +35,6 @@ namespace LiveSplit.Dishonored
 
             settingsNode.AppendChild(ToElement(doc, "Version", Assembly.GetExecutingAssembly().GetName().Version.ToString(3)));
 
-            settingsNode.AppendChild(ToElement(doc, "DrawWithoutLoads", this.DrawWithoutLoads));
             settingsNode.AppendChild(ToElement(doc, "AutoStartEnd", this.AutoStartEnd));
             settingsNode.AppendChild(ToElement(doc, "AutoSplitIntroEnd", this.AutoSplitIntroEnd));
             settingsNode.AppendChild(ToElement(doc, "AutoSplitMissionEnd", this.AutoSplitMissionEnd));
@@ -51,7 +47,6 @@ namespace LiveSplit.Dishonored
 
         public void SetSettings(XmlNode settings)
         {
-            this.DrawWithoutLoads = ParseBool(settings, "DrawWithoutLoads", true);
             this.AutoStartEnd = ParseBool(settings, "AutoStartEnd", true);
             this.AutoSplitIntroEnd = ParseBool(settings, "AutoSplitIntroEnd");
             this.AutoSplitMissionEnd = ParseBool(settings, "AutoSplitMissionEnd");

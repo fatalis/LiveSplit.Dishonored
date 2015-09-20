@@ -37,14 +37,9 @@
             this.chkAutoSplitPrisonEscape = new System.Windows.Forms.CheckBox();
             this.chkAutoSplitWeepers = new System.Windows.Forms.CheckBox();
             this.chkAutoSplitOutsidersDream = new System.Windows.Forms.CheckBox();
-            this.gbLoadRemoval = new System.Windows.Forms.GroupBox();
-            this.tlpLoadRemoval = new System.Windows.Forms.TableLayoutPanel();
-            this.chkDisplayWithoutLoads = new System.Windows.Forms.CheckBox();
             this.tlpMain.SuspendLayout();
             this.gbAutoSplit.SuspendLayout();
             this.tlpAutoSplit.SuspendLayout();
-            this.gbLoadRemoval.SuspendLayout();
-            this.tlpLoadRemoval.SuspendLayout();
             this.SuspendLayout();
             // 
             // tlpMain
@@ -52,7 +47,6 @@
             this.tlpMain.ColumnCount = 1;
             this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tlpMain.Controls.Add(this.gbAutoSplit, 1, 0);
-            this.tlpMain.Controls.Add(this.gbLoadRemoval, 0, 1);
             this.tlpMain.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tlpMain.Location = new System.Drawing.Point(0, 0);
             this.tlpMain.Name = "tlpMain";
@@ -158,42 +152,6 @@
             this.chkAutoSplitOutsidersDream.Text = "Outsider\'s Dream";
             this.chkAutoSplitOutsidersDream.UseVisualStyleBackColor = true;
             // 
-            // gbLoadRemoval
-            // 
-            this.gbLoadRemoval.Controls.Add(this.tlpLoadRemoval);
-            this.gbLoadRemoval.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.gbLoadRemoval.Location = new System.Drawing.Point(3, 172);
-            this.gbLoadRemoval.Name = "gbLoadRemoval";
-            this.gbLoadRemoval.Size = new System.Drawing.Size(470, 51);
-            this.gbLoadRemoval.TabIndex = 6;
-            this.gbLoadRemoval.TabStop = false;
-            this.gbLoadRemoval.Text = "Show Alternate Timing Time";
-            // 
-            // tlpLoadRemoval
-            // 
-            this.tlpLoadRemoval.ColumnCount = 1;
-            this.tlpLoadRemoval.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tlpLoadRemoval.Controls.Add(this.chkDisplayWithoutLoads, 0, 0);
-            this.tlpLoadRemoval.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tlpLoadRemoval.Location = new System.Drawing.Point(3, 16);
-            this.tlpLoadRemoval.Name = "tlpLoadRemoval";
-            this.tlpLoadRemoval.RowCount = 1;
-            this.tlpLoadRemoval.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlpLoadRemoval.Size = new System.Drawing.Size(464, 32);
-            this.tlpLoadRemoval.TabIndex = 0;
-            // 
-            // chkDisplayWithoutLoads
-            // 
-            this.chkDisplayWithoutLoads.AutoSize = true;
-            this.chkDisplayWithoutLoads.Checked = true;
-            this.chkDisplayWithoutLoads.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.chkDisplayWithoutLoads.Location = new System.Drawing.Point(3, 3);
-            this.chkDisplayWithoutLoads.Name = "chkDisplayWithoutLoads";
-            this.chkDisplayWithoutLoads.Size = new System.Drawing.Size(59, 17);
-            this.chkDisplayWithoutLoads.TabIndex = 0;
-            this.chkDisplayWithoutLoads.Text = "Enable";
-            this.chkDisplayWithoutLoads.UseVisualStyleBackColor = true;
-            // 
             // DishonoredSettings
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -205,9 +163,6 @@
             this.gbAutoSplit.ResumeLayout(false);
             this.tlpAutoSplit.ResumeLayout(false);
             this.tlpAutoSplit.PerformLayout();
-            this.gbLoadRemoval.ResumeLayout(false);
-            this.tlpLoadRemoval.ResumeLayout(false);
-            this.tlpLoadRemoval.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -215,15 +170,12 @@
         #endregion
 
         private System.Windows.Forms.TableLayoutPanel tlpMain;
-        private System.Windows.Forms.CheckBox chkDisplayWithoutLoads;
         private System.Windows.Forms.CheckBox chkAutoSplitMissionEnd;
         private System.Windows.Forms.CheckBox chkAutoSplitPrisonEscape;
         private System.Windows.Forms.CheckBox chkAutoSplitWeepers;
         private System.Windows.Forms.CheckBox chkAutoStartEnd;
         private System.Windows.Forms.GroupBox gbAutoSplit;
         private System.Windows.Forms.TableLayoutPanel tlpAutoSplit;
-        private System.Windows.Forms.GroupBox gbLoadRemoval;
-        private System.Windows.Forms.TableLayoutPanel tlpLoadRemoval;
         private System.Windows.Forms.CheckBox chkAutoSplitIntroEnd;
         private System.Windows.Forms.CheckBox chkAutoSplitOutsidersDream;
     }
