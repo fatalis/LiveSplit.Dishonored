@@ -40,6 +40,8 @@ namespace LiveSplit.Dishonored
                 this.StringTableBase = 0x1029664;
             }
 
+            this.CurrentLevel.FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull;
+
             this.IsLoading = new MemoryWatcher<bool>(new DeepPointer("binkw32.dll", 0x312F4));
 
             this.AddRange(this.GetType().GetProperties()
