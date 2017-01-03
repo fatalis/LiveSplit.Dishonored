@@ -9,6 +9,7 @@ namespace LiveSplit.Dishonored
 {
     class GameData : MemoryWatcherList
     {
+        public MemoryWatcher<float> PlayerPosX { get; }
         public MemoryWatcher<bool> IsLoading { get; }
         public MemoryWatcher<int> CurrentLevel { get; }
         public StringWatcher CurrentBikMovie { get; }
@@ -25,6 +26,7 @@ namespace LiveSplit.Dishonored
         {
             if (version == GameVersion.v12)
             {
+                this.PlayerPosX = new MemoryWatcher<float>(new DeepPointer(0xFCCBDC, 0xC4));
                 this.CurrentLevel = new MemoryWatcher<int>(new DeepPointer(0xFB7838, 0x2c0, 0x314, 0, 0x38));
                 this.CurrentBikMovie = new StringWatcher(new DeepPointer(0xFC6AD4, 0x48, 0), 64);
                 this.CutsceneActive = new MemoryWatcher<bool>(new DeepPointer(0xFB51CC, 0x744));
@@ -33,6 +35,7 @@ namespace LiveSplit.Dishonored
             }
             else if (version == GameVersion.v14)
             {
+                this.PlayerPosX = new MemoryWatcher<float>(new DeepPointer(0x1052DE8, 0xC4));
                 this.CurrentLevel = new MemoryWatcher<int>(new DeepPointer(0x103D878, 0x2c0, 0x314, 0, 0x38));
                 this.CurrentBikMovie = new StringWatcher(new DeepPointer(0x104CB18, 0x48, 0), 64);
                 this.CutsceneActive = new MemoryWatcher<bool>(new DeepPointer(0x103B20C, 0x744));
@@ -130,7 +133,7 @@ namespace LiveSplit.Dishonored
                 string currentLevelStr = this.GetEngineStringByID(_data.CurrentLevel.Current);
                 Debug.WriteLine($"Level Changed - {_data.CurrentLevel.Old} -> {_data.CurrentLevel.Current} '{currentLevelStr}'");
 
-                if (currentLevelStr == "l_tower_p" || currentLevelStr == "L_DLC07_BaseIntro_P" || currentLevelStr == "DLC06_Tower_P")
+                if (currentLevelStr == "L_DLC07_BaseIntro_P" || currentLevelStr == "DLC06_Tower_P")
                     this.OnFirstLevelLoading?.Invoke(this, EventArgs.Empty);
 
                 _oncePerLevelFlag = true;
@@ -145,8 +148,8 @@ namespace LiveSplit.Dishonored
                 {
                     Debug.WriteLine($"Load Start - {currentMovie + "|" + currentLevelStr}");
 
-                    // ignore the beginning load screen and the dishonored logo screen
-                    if (currentMovie != "LoadingEmpressTower" && currentMovie != "Dishonored" && currentMovie != "INTRO_LOC")
+                    // ignore the intro sequence and the dishonored logo screen
+                    if (currentMovie != "INTRO_LOC" && currentMovie != "Dishonored")
                     {
                         // ignore intro end if it happens, see special case above
                         if (!(currentMovie == "LoadingPrison" && currentLevelStr.ToLower().StartsWith("L_Tower_")))
@@ -178,12 +181,21 @@ namespace LiveSplit.Dishonored
                 }
             }
 
+            if (_data.PlayerPosX.Changed && _data.PlayerPosX.Old == 0.0f && _loadingStarted &&
+                _data.PlayerPosX.Current<9826.5f && _data.PlayerPosX.Current>9826.0f)
+            {
+                string currentLevelStr = this.GetEngineStringByID(_data.CurrentLevel.Current);
+
+                if(currentLevelStr == "l_tower_p")
+                    this.OnFirstLevelLoading?.Invoke(this, EventArgs.Empty);
+            }
+
             if (_data.CutsceneActive.Changed)
             {
                 string currentLevelStr = this.GetEngineStringByID(_data.CurrentLevel.Current);
                 Debug.WriteLine($"In-Game Cutscene {(_data.CutsceneActive.Current ? "Start" : "End")}");
 
-                if (_data.CutsceneActive.Current && currentLevelStr == "L_LightH_LowChaos_P")
+                if (_data.CutsceneActive.Current && (currentLevelStr == "L_LightH_LowChaos_P" || currentLevelStr == "L_LightH_HighChaos_P"))
                 {
                     this.OnPlayerLostControl?.Invoke(this, EventArgs.Empty);
                 }
