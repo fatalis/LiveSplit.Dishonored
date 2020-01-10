@@ -195,7 +195,7 @@ namespace LiveSplit.Dishonored
                 string currentLevelStr = this.GetEngineStringByID(_data.CurrentLevel.Current);
                 Debug.WriteLine($"In-Game Cutscene {(_data.CutsceneActive.Current ? "Start" : "End")}");
 
-                if (_data.CutsceneActive.Current && (currentLevelStr == "L_LightH_LowChaos_P" || currentLevelStr == "L_LightH_HighChaos_P"))
+                if (_data.CutsceneActive.Current && currentLevelStr.StartsWith("L_LightH_"))
                 {
                     this.OnPlayerLostControl?.Invoke(this, EventArgs.Empty);
                 }
