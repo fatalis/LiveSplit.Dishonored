@@ -56,6 +56,7 @@ namespace LiveSplit.Dishonored
         private long _elapsedTime = 0;
         private int _timeMultiplier = 1;
         private TimeSpan _lastTime;
+        private string _currentSpeedup = null;
 
         private List<CutsceneSpeedup> _cutsceneSpeedups = new List<CutsceneSpeedup>
         {
@@ -177,6 +178,14 @@ namespace LiveSplit.Dishonored
         void gameMemory_OnLoadStarted(object sender, EventArgs e)
         {
             _timer.CurrentState.IsGameTimePaused = true;
+
+            // must be a manual load, just let the player deal with it
+            if (_cutsceneTimer.Enabled)
+            {
+                EndSpeedup(true);
+                _cutsceneTimer.Stop();
+                _pendingSpeedup = null;
+            }
         }
 
         void gameMemory_OnLoadFinished(object sender, Level previousLevel, Level currentLevel, float playerPosX)
@@ -219,10 +228,10 @@ namespace LiveSplit.Dishonored
             }
         }
 
-        void DelaySpeedup(string setting)
+        void DelaySpeedup(string setting, int delay = 1500)
         {
             _pendingSpeedup = setting;
-            _cutsceneTimer.Interval = 1000;
+            _cutsceneTimer.Interval = delay;
             _cutsceneTimer.Start();
         }
 
@@ -237,12 +246,20 @@ namespace LiveSplit.Dishonored
             _timeMultiplier = 10;
             _cutsceneTimer.Interval = GetDuration(setting);
             _cutsceneTimer.Start();
+            _currentSpeedup = setting;
         }
 
-        void EndSpeedup()
+        void EndSpeedup(bool stopAll = false)
         {
             SendKeys.Send("{F6}");
             _timeMultiplier = 1;
+
+            if (!stopAll && _currentSpeedup == "SpeedupFlooded")
+            {
+                DelaySpeedup("SpeedupFlooded2", 8000);
+            }
+
+            _currentSpeedup = null;
         }
 
         int GetDuration(string setting)

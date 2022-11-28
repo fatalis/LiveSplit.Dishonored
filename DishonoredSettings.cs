@@ -28,6 +28,7 @@ namespace LiveSplit.Dishonored
         public int SpeedupPostTower { get; set; }
         public int SpeedupFlooded { get; set; }
         public int SpeedupKingsparrow { get; set; }
+        public int SpeedupFlooded2 { get; set; }
 
         public DishonoredSettings()
         {
@@ -54,6 +55,7 @@ namespace LiveSplit.Dishonored
             this.txtSpeedupPostTower.DataBindings.Add("Text", this, "SpeedupPostTower", false, DataSourceUpdateMode.OnPropertyChanged);
             this.txtSpeedupFlooded.DataBindings.Add("Text", this, "SpeedupFlooded", false, DataSourceUpdateMode.OnPropertyChanged);
             this.txtSpeedupKingsparrow.DataBindings.Add("Text", this, "SpeedupKingsparrow", false, DataSourceUpdateMode.OnPropertyChanged);
+            this.txtSpeedupFlooded2.DataBindings.Add("Text", this, "SpeedupFlooded2", false, DataSourceUpdateMode.OnPropertyChanged);
 
             // defaults
             this.AutoStartEnd = true;
@@ -69,8 +71,9 @@ namespace LiveSplit.Dishonored
             this.SpeedupPostBoyle = 3300;
             this.SpeedupTower = 5300;
             this.SpeedupPostTower = 3300;
-            this.SpeedupFlooded = 16400;
+            this.SpeedupFlooded = 5000;
             this.SpeedupKingsparrow = 4500;
+            this.SpeedupFlooded2 = 6500;
         }
 
         public XmlNode GetSettings(XmlDocument doc)
@@ -100,6 +103,7 @@ namespace LiveSplit.Dishonored
             settingsNode.AppendChild(ToElement(doc, "SpeedupPostTower", this.SpeedupPostTower));
             settingsNode.AppendChild(ToElement(doc, "SpeedupFlooded", this.SpeedupFlooded));
             settingsNode.AppendChild(ToElement(doc, "SpeedupKingsparrow", this.SpeedupKingsparrow));
+            settingsNode.AppendChild(ToElement(doc, "SpeedupFlooded2", this.SpeedupFlooded2));
 
             return settingsNode;
         }
@@ -125,8 +129,9 @@ namespace LiveSplit.Dishonored
             this.SpeedupPostBoyle = ParseInt(settings, "SpeedupPostBoyle", 3300);
             this.SpeedupTower = ParseInt(settings, "SpeedupTower", 5300);
             this.SpeedupPostTower = ParseInt(settings, "SpeedupPostTower", 3300);
-            this.SpeedupFlooded = ParseInt(settings, "SpeedupFlooded", 16400);
+            this.SpeedupFlooded = ParseInt(settings, "SpeedupFlooded", 5000);
             this.SpeedupKingsparrow = ParseInt(settings, "SpeedupKingsparrow", 4500);
+            this.SpeedupFlooded2 = ParseInt(settings, "SpeedupFlooded2", 6500);
         }
 
         static bool ParseBool(XmlNode settings, string setting, bool default_ = false)

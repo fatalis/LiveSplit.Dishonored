@@ -68,6 +68,8 @@
             this.txtSpeedupFlooded = new System.Windows.Forms.TextBox();
             this.lblSpeedupKingsparrow = new System.Windows.Forms.Label();
             this.txtSpeedupKingsparrow = new System.Windows.Forms.TextBox();
+            this.lblSpeedupFlooded2 = new System.Windows.Forms.Label();
+            this.txtSpeedupFlooded2 = new System.Windows.Forms.TextBox();
             this.tlpMain.SuspendLayout();
             this.gbAutoSplit.SuspendLayout();
             this.tlpAutoSplit.SuspendLayout();
@@ -87,7 +89,7 @@
             this.tlpMain.RowCount = 2;
             this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlpMain.Size = new System.Drawing.Size(476, 576);
+            this.tlpMain.Size = new System.Drawing.Size(476, 603);
             this.tlpMain.TabIndex = 0;
             // 
             // gbAutoSplit
@@ -196,7 +198,7 @@
             this.gbCutsceneSpeedup.Dock = System.Windows.Forms.DockStyle.Fill;
             this.gbCutsceneSpeedup.Location = new System.Drawing.Point(3, 166);
             this.gbCutsceneSpeedup.Name = "gbCutsceneSpeedup";
-            this.gbCutsceneSpeedup.Size = new System.Drawing.Size(470, 407);
+            this.gbCutsceneSpeedup.Size = new System.Drawing.Size(470, 434);
             this.gbCutsceneSpeedup.TabIndex = 5;
             this.gbCutsceneSpeedup.TabStop = false;
             this.gbCutsceneSpeedup.Text = "Cutscene Speedups";
@@ -236,10 +238,12 @@
             this.tlpCutsceneSpeedup.Controls.Add(this.txtSpeedupFlooded, 1, 13);
             this.tlpCutsceneSpeedup.Controls.Add(this.lblSpeedupKingsparrow, 0, 14);
             this.tlpCutsceneSpeedup.Controls.Add(this.txtSpeedupKingsparrow, 1, 14);
+            this.tlpCutsceneSpeedup.Controls.Add(this.lblSpeedupFlooded2, 0, 15);
+            this.tlpCutsceneSpeedup.Controls.Add(this.txtSpeedupFlooded2, 1, 15);
             this.tlpCutsceneSpeedup.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tlpCutsceneSpeedup.Location = new System.Drawing.Point(3, 16);
             this.tlpCutsceneSpeedup.Name = "tlpCutsceneSpeedup";
-            this.tlpCutsceneSpeedup.RowCount = 15;
+            this.tlpCutsceneSpeedup.RowCount = 16;
             this.tlpCutsceneSpeedup.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpCutsceneSpeedup.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpCutsceneSpeedup.RowStyles.Add(new System.Windows.Forms.RowStyle());
@@ -255,7 +259,8 @@
             this.tlpCutsceneSpeedup.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpCutsceneSpeedup.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpCutsceneSpeedup.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlpCutsceneSpeedup.Size = new System.Drawing.Size(464, 388);
+            this.tlpCutsceneSpeedup.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+            this.tlpCutsceneSpeedup.Size = new System.Drawing.Size(464, 415);
             this.tlpCutsceneSpeedup.TabIndex = 0;
             // 
             // chkCutsceneSpeedup
@@ -497,13 +502,30 @@
             this.txtSpeedupKingsparrow.Size = new System.Drawing.Size(50, 20);
             this.txtSpeedupKingsparrow.TabIndex = 28;
             // 
+            // lblSpeedupFlooded2
+            // 
+            this.lblSpeedupFlooded2.AutoSize = true;
+            this.lblSpeedupFlooded2.Location = new System.Drawing.Point(3, 387);
+            this.lblSpeedupFlooded2.Name = "lblSpeedupFlooded2";
+            this.lblSpeedupFlooded2.Padding = new System.Windows.Forms.Padding(0, 5, 0, 0);
+            this.lblSpeedupFlooded2.Size = new System.Drawing.Size(54, 18);
+            this.lblSpeedupFlooded2.TabIndex = 29;
+            this.lblSpeedupFlooded2.Text = "Flooded 2";
+            // 
+            // txtSpeedupFlooded2
+            // 
+            this.txtSpeedupFlooded2.Location = new System.Drawing.Point(109, 390);
+            this.txtSpeedupFlooded2.Name = "txtSpeedupFlooded2";
+            this.txtSpeedupFlooded2.Size = new System.Drawing.Size(50, 20);
+            this.txtSpeedupFlooded2.TabIndex = 30;
+            // 
             // DishonoredSettings
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.tlpMain);
             this.Name = "DishonoredSettings";
-            this.Size = new System.Drawing.Size(476, 576);
+            this.Size = new System.Drawing.Size(476, 603);
             this.tlpMain.ResumeLayout(false);
             this.tlpMain.PerformLayout();
             this.gbAutoSplit.ResumeLayout(false);
@@ -560,5 +582,7 @@
         private System.Windows.Forms.TextBox txtSpeedupFlooded;
         private System.Windows.Forms.Label lblSpeedupKingsparrow;
         private System.Windows.Forms.TextBox txtSpeedupKingsparrow;
+        private System.Windows.Forms.Label lblSpeedupFlooded2;
+        private System.Windows.Forms.TextBox txtSpeedupFlooded2;
     }
 }
