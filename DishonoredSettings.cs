@@ -13,6 +13,21 @@ namespace LiveSplit.Dishonored
         public bool AutoSplitPrisonEscape { get; set; }
         public bool AutoSplitOutsidersDream { get; set; }
         public bool AutoSplitWeepers { get; set; }
+        public bool CutsceneSpeedup { get; set; }
+        public int SpeedupIntroEnd { get; set; }
+        public int SpeedupPostSewers { get; set; }
+        public int SpeedupCampbell { get; set; }
+        public int SpeedupPostCampbell { get; set; }
+        public int SpeedupCat { get; set; }
+        public int SpeedupPostCat { get; set; }
+        public int SpeedupBridge { get; set; }
+        public int SpeedupPostBridge { get; set; }
+        public int SpeedupBoyle { get; set; }
+        public int SpeedupPostBoyle { get; set; }
+        public int SpeedupTower { get; set; }
+        public int SpeedupPostTower { get; set; }
+        public int SpeedupFlooded { get; set; }
+        public int SpeedupKingsparrow { get; set; }
 
         public DishonoredSettings()
         {
@@ -24,9 +39,38 @@ namespace LiveSplit.Dishonored
             this.chkAutoSplitPrisonEscape.DataBindings.Add("Checked", this, "AutoSplitPrisonEscape", false, DataSourceUpdateMode.OnPropertyChanged);
             this.chkAutoSplitOutsidersDream.DataBindings.Add("Checked", this, "AutoSplitOutsidersDream", false, DataSourceUpdateMode.OnPropertyChanged);
             this.chkAutoSplitWeepers.DataBindings.Add("Checked", this, "AutoSplitWeepers", false, DataSourceUpdateMode.OnPropertyChanged);
+            this.chkCutsceneSpeedup.DataBindings.Add("Checked", this, "CutsceneSpeedup", false, DataSourceUpdateMode.OnPropertyChanged);
+            this.txtSpeedupIntroEnd.DataBindings.Add("Text", this, "SpeedupIntroEnd", false, DataSourceUpdateMode.OnPropertyChanged);
+            this.txtSpeedupPostSewers.DataBindings.Add("Text", this, "SpeedupPostSewers", false, DataSourceUpdateMode.OnPropertyChanged);
+            this.txtSpeedupCampbell.DataBindings.Add("Text", this, "SpeedupCampbell", false, DataSourceUpdateMode.OnPropertyChanged);
+            this.txtSpeedupPostCampbell.DataBindings.Add("Text", this, "SpeedupPostCampbell", false, DataSourceUpdateMode.OnPropertyChanged);
+            this.txtSpeedupCat.DataBindings.Add("Text", this, "SpeedupCat", false, DataSourceUpdateMode.OnPropertyChanged);
+            this.txtSpeedupPostCat.DataBindings.Add("Text", this, "SpeedupPostCat", false, DataSourceUpdateMode.OnPropertyChanged);
+            this.txtSpeedupBridge.DataBindings.Add("Text", this, "SpeedupBridge", false, DataSourceUpdateMode.OnPropertyChanged);
+            this.txtSpeedupPostBridge.DataBindings.Add("Text", this, "SpeedupPostBridge", false, DataSourceUpdateMode.OnPropertyChanged);
+            this.txtSpeedupBoyle.DataBindings.Add("Text", this, "SpeedupBoyle", false, DataSourceUpdateMode.OnPropertyChanged);
+            this.txtSpeedupPostBoyle.DataBindings.Add("Text", this, "SpeedupPostBoyle", false, DataSourceUpdateMode.OnPropertyChanged);
+            this.txtSpeedupTower.DataBindings.Add("Text", this, "SpeedupTower", false, DataSourceUpdateMode.OnPropertyChanged);
+            this.txtSpeedupPostTower.DataBindings.Add("Text", this, "SpeedupPostTower", false, DataSourceUpdateMode.OnPropertyChanged);
+            this.txtSpeedupFlooded.DataBindings.Add("Text", this, "SpeedupFlooded", false, DataSourceUpdateMode.OnPropertyChanged);
+            this.txtSpeedupKingsparrow.DataBindings.Add("Text", this, "SpeedupKingsparrow", false, DataSourceUpdateMode.OnPropertyChanged);
 
             // defaults
             this.AutoStartEnd = true;
+            this.SpeedupIntroEnd = 6000;
+            this.SpeedupPostSewers = 5900;
+            this.SpeedupCampbell = 5000;
+            this.SpeedupPostCampbell = 2200;
+            this.SpeedupCat = 5100;
+            this.SpeedupPostCat = 9700;
+            this.SpeedupBridge = 4400;
+            this.SpeedupPostBridge = 4100;
+            this.SpeedupBoyle = 3700;
+            this.SpeedupPostBoyle = 3400;
+            this.SpeedupTower = 5400;
+            this.SpeedupPostTower = 3400;
+            this.SpeedupFlooded = 16500;
+            this.SpeedupKingsparrow = 4600;
         }
 
         public XmlNode GetSettings(XmlDocument doc)
@@ -41,6 +85,21 @@ namespace LiveSplit.Dishonored
             settingsNode.AppendChild(ToElement(doc, "AutoSplitPrisonEscape", this.AutoSplitPrisonEscape));
             settingsNode.AppendChild(ToElement(doc, "AutoSplitOutsidersDream", this.AutoSplitOutsidersDream));
             settingsNode.AppendChild(ToElement(doc, "AutoSplitWeepers", this.AutoSplitWeepers));
+            settingsNode.AppendChild(ToElement(doc, "CutsceneSpeedup", this.CutsceneSpeedup));
+            settingsNode.AppendChild(ToElement(doc, "SpeedupIntroEnd", this.SpeedupIntroEnd));
+            settingsNode.AppendChild(ToElement(doc, "SpeedupPostSewers", this.SpeedupPostSewers));
+            settingsNode.AppendChild(ToElement(doc, "SpeedupCampbell", this.SpeedupCampbell));
+            settingsNode.AppendChild(ToElement(doc, "SpeedupPostCampbell", this.SpeedupPostCampbell));
+            settingsNode.AppendChild(ToElement(doc, "SpeedupCat", this.SpeedupCat));
+            settingsNode.AppendChild(ToElement(doc, "SpeedupPostCat", this.SpeedupPostCat));
+            settingsNode.AppendChild(ToElement(doc, "SpeedupBridge", this.SpeedupBridge));
+            settingsNode.AppendChild(ToElement(doc, "SpeedupPostBridge", this.SpeedupPostBridge));
+            settingsNode.AppendChild(ToElement(doc, "SpeedupBoyle", this.SpeedupBoyle));
+            settingsNode.AppendChild(ToElement(doc, "SpeedupPostBoyle", this.SpeedupPostBoyle));
+            settingsNode.AppendChild(ToElement(doc, "SpeedupTower", this.SpeedupTower));
+            settingsNode.AppendChild(ToElement(doc, "SpeedupPostTower", this.SpeedupPostTower));
+            settingsNode.AppendChild(ToElement(doc, "SpeedupFlooded", this.SpeedupFlooded));
+            settingsNode.AppendChild(ToElement(doc, "SpeedupKingsparrow", this.SpeedupKingsparrow));
 
             return settingsNode;
         }
@@ -53,13 +112,36 @@ namespace LiveSplit.Dishonored
             this.AutoSplitPrisonEscape = ParseBool(settings, "AutoSplitPrisonEscape");
             this.AutoSplitOutsidersDream = ParseBool(settings, "AutoSplitOutsidersDream");
             this.AutoSplitWeepers = ParseBool(settings, "AutoSplitWeepers");
+            this.CutsceneSpeedup = ParseBool(settings, "CutsceneSpeedup");
+            this.SpeedupIntroEnd = ParseInt(settings, "SpeedupIntroEnd", 6000);
+            this.SpeedupPostSewers = ParseInt(settings, "SpeedupPostSewers", 5900);
+            this.SpeedupCampbell = ParseInt(settings, "SpeedupCampbell", 5000);
+            this.SpeedupPostCampbell = ParseInt(settings, "SpeedupPostCampbell", 2200);
+            this.SpeedupCat = ParseInt(settings, "SpeedupCat", 5100);
+            this.SpeedupPostCat = ParseInt(settings, "SpeedupPostCat", 9700);
+            this.SpeedupBridge = ParseInt(settings, "SpeedupBridge", 4400);
+            this.SpeedupPostBridge = ParseInt(settings, "SpeedupPostBridge", 4100);
+            this.SpeedupBoyle = ParseInt(settings, "SpeedupBoyle", 3700);
+            this.SpeedupPostBoyle = ParseInt(settings, "SpeedupPostBoyle", 3400);
+            this.SpeedupTower = ParseInt(settings, "SpeedupTower", 5400);
+            this.SpeedupPostTower = ParseInt(settings, "SpeedupPostTower", 3400);
+            this.SpeedupFlooded = ParseInt(settings, "SpeedupFlooded", 16500);
+            this.SpeedupKingsparrow = ParseInt(settings, "SpeedupKingsparrow", 4600);
         }
 
         static bool ParseBool(XmlNode settings, string setting, bool default_ = false)
         {
             bool val;
             return settings[setting] != null ?
-                (Boolean.TryParse(settings[setting].InnerText, out val) ? val : default_)
+                (bool.TryParse(settings[setting].InnerText, out val) ? val : default_)
+                : default_;
+        }
+
+        static int ParseInt(XmlNode settings, string setting, int default_ = 0)
+        {
+            int val;
+            return settings[setting] != null ?
+                (int.TryParse(settings[setting].InnerText, out val) ? val : default_)
                 : default_;
         }
 

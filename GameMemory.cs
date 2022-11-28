@@ -17,8 +17,8 @@ namespace LiveSplit.Dishonored
         public MemoryWatcher<int> MissionStatsScreenFlags { get; }
 
         public FakeMemoryWatcher<bool> MissionStatsScreenActive => new FakeMemoryWatcher<bool>(
-            (this.MissionStatsScreenFlags.Old & 1) != 0,
-            (this.MissionStatsScreenFlags.Current & 1) != 0);
+            (MissionStatsScreenFlags.Old & 1) != 0,
+            (MissionStatsScreenFlags.Current & 1) != 0);
 
         public int StringTableBase { get; }
 
@@ -26,28 +26,28 @@ namespace LiveSplit.Dishonored
         {
             if (version == GameVersion.v12)
             {
-                this.PlayerPosX = new MemoryWatcher<float>(new DeepPointer(0xFCCBDC, 0xC4));
-                this.CurrentLevel = new MemoryWatcher<int>(new DeepPointer(0xFB7838, 0x2c0, 0x314, 0, 0x38));
-                this.CurrentBikMovie = new StringWatcher(new DeepPointer(0xFC6AD4, 0x48, 0), 64);
-                this.CutsceneActive = new MemoryWatcher<bool>(new DeepPointer(0xFB51CC, 0x744));
-                this.MissionStatsScreenFlags = new MemoryWatcher<int>(new DeepPointer(0xFDEB08, 0x24, 0x41C, 0x2E0, 0xC4));
-                this.StringTableBase = 0xFA3624;
+                PlayerPosX = new MemoryWatcher<float>(new DeepPointer(0xFCCBDC, 0xC4));
+                CurrentLevel = new MemoryWatcher<int>(new DeepPointer(0xFB7838, 0x2c0, 0x314, 0, 0x38));
+                CurrentBikMovie = new StringWatcher(new DeepPointer(0xFC6AD4, 0x48, 0), 64);
+                CutsceneActive = new MemoryWatcher<bool>(new DeepPointer(0xFB51CC, 0x744));
+                MissionStatsScreenFlags = new MemoryWatcher<int>(new DeepPointer(0xFDEB08, 0x24, 0x41C, 0x2E0, 0xC4));
+                StringTableBase = 0xFA3624;
             }
             else if (version == GameVersion.v14)
             {
-                this.PlayerPosX = new MemoryWatcher<float>(new DeepPointer(0x1052DE8, 0xC4));
-                this.CurrentLevel = new MemoryWatcher<int>(new DeepPointer(0x103D878, 0x2c0, 0x314, 0, 0x38));
-                this.CurrentBikMovie = new StringWatcher(new DeepPointer(0x104CB18, 0x48, 0), 64);
-                this.CutsceneActive = new MemoryWatcher<bool>(new DeepPointer(0x103B20C, 0x744));
-                this.MissionStatsScreenFlags = new MemoryWatcher<int>(new DeepPointer(0x1065184, 0x24, 0x41C, 0x2F4, 0xC4));
-                this.StringTableBase = 0x1029664;
+                PlayerPosX = new MemoryWatcher<float>(new DeepPointer(0x1052DE8, 0xC4));
+                CurrentLevel = new MemoryWatcher<int>(new DeepPointer(0x103D878, 0x2c0, 0x314, 0, 0x38));
+                CurrentBikMovie = new StringWatcher(new DeepPointer(0x104CB18, 0x48, 0), 64);
+                CutsceneActive = new MemoryWatcher<bool>(new DeepPointer(0x103B20C, 0x744));
+                MissionStatsScreenFlags = new MemoryWatcher<int>(new DeepPointer(0x1065184, 0x24, 0x41C, 0x2F4, 0xC4));
+                StringTableBase = 0x1029664;
             }
 
-            this.CurrentLevel.FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull;
+            CurrentLevel.FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull;
 
-            this.IsLoading = new MemoryWatcher<bool>(new DeepPointer("binkw32.dll", 0x312F4));
+            IsLoading = new MemoryWatcher<bool>(new DeepPointer("binkw32.dll", 0x312F4));
 
-            this.AddRange(this.GetType().GetProperties()
+            AddRange(GetType().GetProperties()
                 .Where(p => !p.GetIndexParameters().Any())
                 .Select(p => p.GetValue(this, null) as MemoryWatcher)
                 .Where(p => p != null));
@@ -66,13 +66,50 @@ namespace LiveSplit.Dishonored
             Weepers
         }
 
+        public enum Level
+        {
+            None,
+            Intro,
+            Prison,
+            Sewers,
+            PubMorning,
+            PubDay,
+            PubDusk,
+            PubNight,
+            OutersiderDream,
+            CampbellStreets,
+            CampbellOverseer,
+            CampbellBack,
+            CatStreets,
+            CatBrothel,
+            Bridge1,
+            Bridge2,
+            Bridge3,
+            Bridge4,
+            BoyleExterior,
+            BoyleInterior,
+            TowerReturnYard,
+            TowerReturnInterior,
+            FloodedIntro,
+            FloodedStreets,
+            FloodedAssassins,
+            FloodedGate,
+            FloodedSewers,
+            Loyalists,
+            KingsparrowIsland,
+            KingsparrowLighthouse,
+        }
+
         public event EventHandler OnFirstLevelLoading;
         public event EventHandler OnPlayerGainedControl;
         public event EventHandler OnLoadStarted;
-        public event EventHandler OnLoadFinished;
+        public delegate void LoadFinishedHandler(object sender, Level previousLevel, Level currentLevel, float playerPosX);
+        public event LoadFinishedHandler OnLoadFinished;
         public event EventHandler OnPlayerLostControl;
         public delegate void AreaCompletedEventHandler(object sender, AreaCompletionType type);
         public event AreaCompletedEventHandler OnAreaCompleted;
+        public delegate void CutsceneStartedHandler(object sender, Level level, float playerPosX, bool isLoading);
+        public event CutsceneStartedHandler OnCutsceneStarted;
 
         private List<int> _ignorePIDs;
 
@@ -80,6 +117,7 @@ namespace LiveSplit.Dishonored
         private Process _process;
         private bool _loadingStarted;
         private bool _oncePerLevelFlag;
+        private Level _previousLevel = Level.None;
 
         private enum ExpectedDllSizes
         {
@@ -96,6 +134,39 @@ namespace LiveSplit.Dishonored
             ["LoadingStreets|L_Pub_Day_"]  = AreaCompletionType.Weepers
         };
 
+        private Dictionary<string, Level> _levels = new Dictionary<string, Level>
+        {
+            ["l_tower_"] = Level.Intro,
+            ["L_Prison_"] = Level.Prison,
+            ["L_PrsnSewer_"] = Level.Sewers,
+            ["L_Pub_Morning_"] = Level.PubMorning,
+            ["L_Pub_Day_"] = Level.PubDay,
+            ["L_Pub_Dusk_"] = Level.PubDusk,
+            ["L_Pub_Night_"] = Level.PubNight,
+            ["L_OutsiderDream_"] = Level.OutersiderDream,
+            ["L_Streets1_"] = Level.CampbellStreets,
+            ["L_Ovrsr_"] = Level.CampbellOverseer,
+            ["L_Ovrsr_Back_"] = Level.CampbellBack,
+            ["L_Streets2_"] = Level.CatStreets,
+            ["L_Brothel_"] = Level.CatBrothel,
+            ["L_Bridge_Part1a_"] = Level.Bridge1,
+            ["L_Bridge_Part1b_"] = Level.Bridge2,
+            ["L_Bridge_Part1c_"] = Level.Bridge3,
+            ["L_Bridge_Part2_"] = Level.Bridge4,
+            ["L_Boyle_Ext_"] = Level.BoyleExterior,
+            ["L_Boyle_Int_"] = Level.BoyleInterior,
+            ["L_TowerRtrn_Yard_"] = Level.TowerReturnYard,
+            ["L_TowerRtrn_Int_"] = Level.TowerReturnInterior,
+            ["L_Flooded_FIntro_"] = Level.FloodedIntro,
+            ["L_Flooded_FStreets_"] = Level.FloodedStreets,
+            ["L_Flooded_FAssassins_"] = Level.FloodedAssassins,
+            ["L_Flooded_FGate_"] = Level.FloodedGate,
+            ["L_Streetsewer_"] = Level.FloodedSewers,
+            ["L_Pub_Assault_"] = Level.Loyalists,
+            ["L_Isl_"] = Level.KingsparrowIsland,
+            ["L_LightH_"] = Level.KingsparrowLighthouse,
+        };
+
         public GameMemory()
         {
             _ignorePIDs = new List<int>();
@@ -105,7 +176,7 @@ namespace LiveSplit.Dishonored
         {
             if (_process == null || _process.HasExited)
             {
-                if (!this.TryGetGameProcess())
+                if (!TryGetGameProcess())
                     return;
             }
 
@@ -115,7 +186,7 @@ namespace LiveSplit.Dishonored
 
             if (_data.CurrentBikMovie.Changed && _data.CurrentBikMovie.Old != String.Empty)
             {
-                Debug.WriteLine($"Movie Changed - {_data.CurrentBikMovie.Old} -> {_data.CurrentBikMovie.Current}");
+                Debug.WriteLine($"Movie Changed - {_data.CurrentBikMovie.Old} -> {_data.CurrentBikMovie.Current} x={_data.PlayerPosX.Current}");
 
                 // special case for Intro End split because two movies play back-to-back
                 // which can cause isLoading to not detect changes
@@ -123,18 +194,18 @@ namespace LiveSplit.Dishonored
                 {
                     _loadingStarted = true;
 
-                    this.OnLoadStarted?.Invoke(this, EventArgs.Empty);
-                    this.OnAreaCompleted?.Invoke(this, AreaCompletionType.IntroEnd);
+                    OnLoadStarted?.Invoke(this, EventArgs.Empty);
+                    OnAreaCompleted?.Invoke(this, AreaCompletionType.IntroEnd);
                 }
             }
 
             if (_data.CurrentLevel.Changed)
             {
-                string currentLevelStr = this.GetEngineStringByID(_data.CurrentLevel.Current);
-                Debug.WriteLine($"Level Changed - {_data.CurrentLevel.Old} -> {_data.CurrentLevel.Current} '{currentLevelStr}'");
+                string currentLevelStr = GetEngineStringByID(_data.CurrentLevel.Current);
+                Debug.WriteLine($"Level Changed - {_data.CurrentLevel.Old} -> {_data.CurrentLevel.Current} '{currentLevelStr}' x={_data.PlayerPosX.Current}");
 
                 if (currentLevelStr == "L_DLC07_BaseIntro_P" || currentLevelStr == "DLC06_Tower_P")
-                    this.OnFirstLevelLoading?.Invoke(this, EventArgs.Empty);
+                    OnFirstLevelLoading?.Invoke(this, EventArgs.Empty);
 
                 _oncePerLevelFlag = true;
             }
@@ -142,41 +213,44 @@ namespace LiveSplit.Dishonored
             if (_data.IsLoading.Changed)
             {
                 string currentMovie = _data.CurrentBikMovie.Current;
-                string currentLevelStr = this.GetEngineStringByID(_data.CurrentLevel.Current);
+                string currentLevelStr = GetEngineStringByID(_data.CurrentLevel.Current);
+                string combinedStr = currentMovie + "|" + currentLevelStr;
+                Level level = _levels.Where(l => currentLevelStr.ToLower().StartsWith(l.Key.ToLower())).Select(l => l.Value).FirstOrDefault();
 
                 if (_data.IsLoading.Current)
                 {
-                    Debug.WriteLine($"Load Start - {currentMovie + "|" + currentLevelStr}");
+                    Debug.WriteLine($"Load Start - {combinedStr} x={_data.PlayerPosX.Current}");
+                    _previousLevel = level;
 
                     // ignore the intro sequence and the dishonored logo screen
                     if (currentMovie != "INTRO_LOC" && currentMovie != "Dishonored")
                     {
                         // ignore intro end if it happens, see special case above
-                        if (!(currentMovie == "LoadingPrison" && currentLevelStr.ToLower().StartsWith("L_Tower_")))
+                        if (!(currentMovie == "LoadingPrison" && currentLevelStr.ToLower().StartsWith("l_tower_")))
                         {
                             _loadingStarted = true;
-                            this.OnLoadStarted?.Invoke(this, EventArgs.Empty);
+                            OnLoadStarted?.Invoke(this, EventArgs.Empty);
                         }
                     }
 
-                    AreaCompletionType completionType = _areaCompletions.Where(c => (currentMovie.ToLower() + "|" + currentLevelStr.ToLower()).StartsWith(c.Key.ToLower())).Select(c => c.Value).FirstOrDefault();
+                    AreaCompletionType completionType = _areaCompletions.Where(c => combinedStr.ToLower().StartsWith(c.Key.ToLower())).Select(c => c.Value).FirstOrDefault();
                     if (completionType != AreaCompletionType.None)
-                        this.OnAreaCompleted?.Invoke(this, completionType);
+                        OnAreaCompleted?.Invoke(this, completionType);
                 }
                 else
                 {
-                    Debug.WriteLine($"Load End - {currentMovie + "|" + currentLevelStr}");
+                    Debug.WriteLine($"Load End - {combinedStr} x={_data.PlayerPosX.Current}");
 
                     if (_loadingStarted)
                     {
                         _loadingStarted = false;
-                        this.OnLoadFinished?.Invoke(this, EventArgs.Empty);
+                        OnLoadFinished?.Invoke(this, _previousLevel, level, _data.PlayerPosX.Current);
                     }
 
                     if (((currentMovie == "LoadingEmpressTower" || currentMovie == "INTRO_LOC") && currentLevelStr == "l_tower_p")
                         || (currentMovie == "Loading" || currentMovie == "LoadingDLC06Tower") && currentLevelStr == "DLC06_Tower_P") // KoD
                     {
-                        this.OnPlayerGainedControl?.Invoke(this, EventArgs.Empty);
+                        OnPlayerGainedControl?.Invoke(this, EventArgs.Empty);
                     }
                 }
             }
@@ -184,32 +258,40 @@ namespace LiveSplit.Dishonored
             if (_data.PlayerPosX.Changed && _data.PlayerPosX.Old == 0.0f && _loadingStarted &&
                 _data.PlayerPosX.Current<9826.5f && _data.PlayerPosX.Current>9826.0f)
             {
-                string currentLevelStr = this.GetEngineStringByID(_data.CurrentLevel.Current);
+                string currentLevelStr = GetEngineStringByID(_data.CurrentLevel.Current);
 
-                if(currentLevelStr == "l_tower_p")
-                    this.OnFirstLevelLoading?.Invoke(this, EventArgs.Empty);
+                if (currentLevelStr == "l_tower_p")
+                    OnFirstLevelLoading?.Invoke(this, EventArgs.Empty);
             }
 
             if (_data.CutsceneActive.Changed)
             {
-                string currentLevelStr = this.GetEngineStringByID(_data.CurrentLevel.Current);
-                Debug.WriteLine($"In-Game Cutscene {(_data.CutsceneActive.Current ? "Start" : "End")}");
+                string currentMovie = _data.CurrentBikMovie.Current;
+                string currentLevelStr = GetEngineStringByID(_data.CurrentLevel.Current);
+                string combinedStr = currentMovie + "|" + currentLevelStr;
+                Debug.WriteLine($"In-Game Cutscene {(_data.CutsceneActive.Current ? "Start" : "End")} - {combinedStr} x={_data.PlayerPosX.Current}");
 
                 if (_data.CutsceneActive.Current && currentLevelStr.StartsWith("L_LightH_"))
                 {
-                    this.OnPlayerLostControl?.Invoke(this, EventArgs.Empty);
+                    OnPlayerLostControl?.Invoke(this, EventArgs.Empty);
                 }
                 else if (!_data.CutsceneActive.Current && currentLevelStr == "L_DLC07_BaseIntro_P" && _oncePerLevelFlag)
                 {
                     _oncePerLevelFlag = false;
-                    this.OnPlayerGainedControl?.Invoke(this, EventArgs.Empty);
+                    OnPlayerGainedControl?.Invoke(this, EventArgs.Empty);
+                }
+
+                if (_data.CutsceneActive.Current)
+                {
+                    Level level = _levels.Where(l => currentLevelStr.ToLower().StartsWith(l.Key.ToLower())).Select(l => l.Value).FirstOrDefault();
+                    OnCutsceneStarted?.Invoke(this, level, _data.PlayerPosX.Current, _data.IsLoading.Current);
                 }
             }
 
             if (_data.MissionStatsScreenFlags.Changed && _data.MissionStatsScreenActive.Current)
             {
-                Debug.WriteLine("Mission End");
-                this.OnAreaCompleted?.Invoke(this, AreaCompletionType.MissionEnd);
+                Debug.WriteLine($"Mission End x={_data.PlayerPosX.Current}");
+                OnAreaCompleted?.Invoke(this, AreaCompletionType.MissionEnd);
             }
         }
 
@@ -276,8 +358,8 @@ namespace LiveSplit.Dishonored
 
         public FakeMemoryWatcher(T old, T current)
         {
-            this.Old = old;
-            this.Current = current;
+            Old = old;
+            Current = current;
         }
     }
 }
