@@ -53,26 +53,13 @@ namespace LiveSplit.Dishonored
         private Timer _updateTimer;
         private Timer _cutsceneTimer;
         private string _pendingSpeedup = null;
+        private long _elapsedTime = 0;
+        private int _timeMultiplier = 1;
+        private TimeSpan _lastTime;
 
         private List<CutsceneSpeedup> _cutsceneSpeedups = new List<CutsceneSpeedup>
         {
             new CutsceneSpeedup { Level = Level.Intro, PlayerPosX = 15476f, Setting = "SpeedupIntroEnd" },
-            //new CutsceneSpeedup { Level = Level.PubDay, PlayerPosX = -8746.955f, Setting = "SpeedupPostSewers" },
-            //new CutsceneSpeedup { Level = Level.CampbellStreets, PlayerPosX = 12755.4f, Setting = "SpeedupCampbell" },
-            //new CutsceneSpeedup { Level = Level.PubMorning, PlayerPosX = -2710f, Setting = "SpeedupPostCampbell" },
-            //new CutsceneSpeedup { Level = Level.CatStreets, PlayerPosX = 4182.706f, Setting = "SpeedupCat" },
-            //new CutsceneSpeedup { Level = Level.PubDusk, PlayerPosX = -11286.98f, Setting = "SpeedupPostCat" },
-            //new CutsceneSpeedup { Level = Level.Bridge1, PlayerPosX = -10696.94f, Setting = "SpeedupBridge" },
-            //new CutsceneSpeedup { Level = Level.PubNight, PlayerPosX = -9352.788f, Setting = "SpeedupPostBridge" },
-            //new CutsceneSpeedup { Level = Level.BoyleExterior, PlayerPosX = -2622.572f, Setting = "SpeedupBoyle" },
-            //new CutsceneSpeedup { Level = Level.BoyleExterior, PlayerPosX = -2731.568f, Setting = "SpeedupBoyle" },
-            //new CutsceneSpeedup { Level = Level.PubMorning, PlayerPosX = -2473f, Setting = "SpeedupPostBoyle" },
-            //new CutsceneSpeedup { Level = Level.TowerReturnYard, PlayerPosX = -9341.69f, Setting = "SpeedupTower" },
-            //new CutsceneSpeedup { Level = Level.PubDusk, PlayerPosX = -8807.757f, Setting = "SpeedupPostTower" },
-            //new CutsceneSpeedup { Level = Level.FloodedIntro, PlayerPosX = -21076.77f, Setting = "SpeedupFlooded" },
-            //new CutsceneSpeedup { Level = Level.KingsparrowIsland, PlayerPosX = -999.74f, Setting = "SpeedupKingsparrow" },
-            //new CutsceneSpeedup { Level = Level.KingsparrowIsland, PlayerPosX = -1027.088f, Setting = "SpeedupKingsparrow" },
-            //new CutsceneSpeedup { Level = Level.KingsparrowIsland, PlayerPosX = -1817.145f, Setting = "SpeedupKingsparrow" },
         };
 
         private List<LoadSpeedup> _loadSpeedups = new List<LoadSpeedup>
@@ -137,17 +124,37 @@ namespace LiveSplit.Dishonored
             {
                 Trace.WriteLine(ex.ToString());
             }
+
+            var now = _timer.CurrentState.CurrentTime.RealTime;
+            if (now != null)
+            {
+                if (!_timer.CurrentState.IsGameTimePaused && Settings.CutsceneSpeedup)
+                {
+                    _elapsedTime += ((TimeSpan)now - _lastTime).Ticks * _timeMultiplier;
+                    _timer.CurrentState.SetGameTime(new TimeSpan(_elapsedTime));
+                }
+                _lastTime = (TimeSpan)now;
+            }
         }
 
         void cutsceneTimer_Tick(object sender, EventArgs eventArgs)
         {
-            SendKeys.Send("{F6}");
             _cutsceneTimer.Stop();
+
+            if (_pendingSpeedup != null)
+            {
+                TriggerSpeedup(_pendingSpeedup);
+            }
+            else
+            {
+                EndSpeedup();
+            }
         }
 
         void timer_OnStart(object sender, EventArgs e)
         {
             _timer.InitializeGameTime();
+            _elapsedTime = 0;
         }
 
         public override void Update(IInvalidator invalidator, LiveSplitState state, float width, float height, LayoutMode mode)
@@ -176,17 +183,11 @@ namespace LiveSplit.Dishonored
         {
             _timer.CurrentState.IsGameTimePaused = false;
 
-            if (_pendingSpeedup != null)
-            {
-                TriggerSpeedup(_pendingSpeedup);
-                _pendingSpeedup = null;
-            }
-
-            LoadSpeedup speedup = _loadSpeedups.Find(cs => cs.Matches(previousLevel, currentLevel));
+            var speedup = _loadSpeedups.Find(cs => cs.Matches(previousLevel, currentLevel));
             if (speedup != null)
             {
                 Debug.WriteLine($"Found load speedup for level {speedup.PreviousLevel} -> {speedup.NextLevel}, setting {speedup.Setting}");
-                TriggerSpeedup(speedup.Setting);
+                DelaySpeedup(speedup.Setting);
             }
         }
 
@@ -198,17 +199,11 @@ namespace LiveSplit.Dishonored
 
         void gameMemory_OnCutsceneStarted(object sender, Level level, float playerPosX, bool isLoading)
         {
-            CutsceneSpeedup speedup = _cutsceneSpeedups.Find(cs => cs.Level == level && cs.ApproxEqual(playerPosX));
+            var speedup = _cutsceneSpeedups.Find(cs => cs.Matches(level, playerPosX));
             if (speedup != null)
             {
                 Debug.WriteLine($"Found cutscene speedup for level {speedup.Level}, pos {speedup.PlayerPosX}, setting {speedup.Setting}");
-                if (isLoading)
-                {
-                    _pendingSpeedup = speedup.Setting;
-                } else
-                {
-                    TriggerSpeedup(speedup.Setting);
-                }
+                DelaySpeedup(speedup.Setting);
             }
         }
 
@@ -224,14 +219,30 @@ namespace LiveSplit.Dishonored
             }
         }
 
+        void DelaySpeedup(string setting)
+        {
+            _pendingSpeedup = setting;
+            _cutsceneTimer.Interval = 1000;
+            _cutsceneTimer.Start();
+        }
+
         void TriggerSpeedup(string setting)
         {
+            _pendingSpeedup = null;
+
             if (!Settings.CutsceneSpeedup || _cutsceneTimer.Enabled)
                 return;
             
             SendKeys.Send("{F7}");
+            _timeMultiplier = 10;
             _cutsceneTimer.Interval = GetDuration(setting);
             _cutsceneTimer.Start();
+        }
+
+        void EndSpeedup()
+        {
+            SendKeys.Send("{F6}");
+            _timeMultiplier = 1;
         }
 
         int GetDuration(string setting)

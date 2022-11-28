@@ -57,20 +57,20 @@ namespace LiveSplit.Dishonored
 
             // defaults
             this.AutoStartEnd = true;
-            this.SpeedupIntroEnd = 6000;
-            this.SpeedupPostSewers = 5900;
-            this.SpeedupCampbell = 5000;
-            this.SpeedupPostCampbell = 2200;
-            this.SpeedupCat = 5100;
-            this.SpeedupPostCat = 9700;
-            this.SpeedupBridge = 4400;
-            this.SpeedupPostBridge = 4100;
-            this.SpeedupBoyle = 3700;
-            this.SpeedupPostBoyle = 3400;
-            this.SpeedupTower = 5400;
-            this.SpeedupPostTower = 3400;
-            this.SpeedupFlooded = 16500;
-            this.SpeedupKingsparrow = 4600;
+            this.SpeedupIntroEnd = 5900;
+            this.SpeedupPostSewers = 5800;
+            this.SpeedupCampbell = 4900;
+            this.SpeedupPostCampbell = 2100;
+            this.SpeedupCat = 5000;
+            this.SpeedupPostCat = 9600;
+            this.SpeedupBridge = 4300;
+            this.SpeedupPostBridge = 4000;
+            this.SpeedupBoyle = 3600;
+            this.SpeedupPostBoyle = 3300;
+            this.SpeedupTower = 5300;
+            this.SpeedupPostTower = 3300;
+            this.SpeedupFlooded = 16400;
+            this.SpeedupKingsparrow = 4500;
         }
 
         public XmlNode GetSettings(XmlDocument doc)
@@ -113,20 +113,20 @@ namespace LiveSplit.Dishonored
             this.AutoSplitOutsidersDream = ParseBool(settings, "AutoSplitOutsidersDream");
             this.AutoSplitWeepers = ParseBool(settings, "AutoSplitWeepers");
             this.CutsceneSpeedup = ParseBool(settings, "CutsceneSpeedup");
-            this.SpeedupIntroEnd = ParseInt(settings, "SpeedupIntroEnd", 6000);
-            this.SpeedupPostSewers = ParseInt(settings, "SpeedupPostSewers", 5900);
-            this.SpeedupCampbell = ParseInt(settings, "SpeedupCampbell", 5000);
-            this.SpeedupPostCampbell = ParseInt(settings, "SpeedupPostCampbell", 2200);
-            this.SpeedupCat = ParseInt(settings, "SpeedupCat", 5100);
-            this.SpeedupPostCat = ParseInt(settings, "SpeedupPostCat", 9700);
-            this.SpeedupBridge = ParseInt(settings, "SpeedupBridge", 4400);
-            this.SpeedupPostBridge = ParseInt(settings, "SpeedupPostBridge", 4100);
-            this.SpeedupBoyle = ParseInt(settings, "SpeedupBoyle", 3700);
-            this.SpeedupPostBoyle = ParseInt(settings, "SpeedupPostBoyle", 3400);
-            this.SpeedupTower = ParseInt(settings, "SpeedupTower", 5400);
-            this.SpeedupPostTower = ParseInt(settings, "SpeedupPostTower", 3400);
-            this.SpeedupFlooded = ParseInt(settings, "SpeedupFlooded", 16500);
-            this.SpeedupKingsparrow = ParseInt(settings, "SpeedupKingsparrow", 4600);
+            this.SpeedupIntroEnd = ParseInt(settings, "SpeedupIntroEnd", 5900);
+            this.SpeedupPostSewers = ParseInt(settings, "SpeedupPostSewers", 5800);
+            this.SpeedupCampbell = ParseInt(settings, "SpeedupCampbell", 4900);
+            this.SpeedupPostCampbell = ParseInt(settings, "SpeedupPostCampbell", 2100);
+            this.SpeedupCat = ParseInt(settings, "SpeedupCat", 5000);
+            this.SpeedupPostCat = ParseInt(settings, "SpeedupPostCat", 9600);
+            this.SpeedupBridge = ParseInt(settings, "SpeedupBridge", 4300);
+            this.SpeedupPostBridge = ParseInt(settings, "SpeedupPostBridge", 4000);
+            this.SpeedupBoyle = ParseInt(settings, "SpeedupBoyle", 3600);
+            this.SpeedupPostBoyle = ParseInt(settings, "SpeedupPostBoyle", 3300);
+            this.SpeedupTower = ParseInt(settings, "SpeedupTower", 5300);
+            this.SpeedupPostTower = ParseInt(settings, "SpeedupPostTower", 3300);
+            this.SpeedupFlooded = ParseInt(settings, "SpeedupFlooded", 16400);
+            this.SpeedupKingsparrow = ParseInt(settings, "SpeedupKingsparrow", 4500);
         }
 
         static bool ParseBool(XmlNode settings, string setting, bool default_ = false)
