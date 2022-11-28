@@ -29,6 +29,7 @@ namespace LiveSplit.Dishonored
         public int SpeedupFlooded { get; set; }
         public int SpeedupKingsparrow { get; set; }
         public int SpeedupFlooded2 { get; set; }
+        public int SpeedupPrison { get; set; }
 
         public DishonoredSettings()
         {
@@ -56,6 +57,7 @@ namespace LiveSplit.Dishonored
             this.txtSpeedupFlooded.DataBindings.Add("Text", this, "SpeedupFlooded", false, DataSourceUpdateMode.OnPropertyChanged);
             this.txtSpeedupKingsparrow.DataBindings.Add("Text", this, "SpeedupKingsparrow", false, DataSourceUpdateMode.OnPropertyChanged);
             this.txtSpeedupFlooded2.DataBindings.Add("Text", this, "SpeedupFlooded2", false, DataSourceUpdateMode.OnPropertyChanged);
+            this.txtSpeedupPrison.DataBindings.Add("Text", this, "SpeedupPrison", false, DataSourceUpdateMode.OnPropertyChanged);
 
             // defaults
             this.AutoStartEnd = true;
@@ -74,6 +76,7 @@ namespace LiveSplit.Dishonored
             this.SpeedupFlooded = 5000;
             this.SpeedupKingsparrow = 4500;
             this.SpeedupFlooded2 = 6500;
+            this.SpeedupPrison = 600;
         }
 
         public XmlNode GetSettings(XmlDocument doc)
@@ -104,6 +107,7 @@ namespace LiveSplit.Dishonored
             settingsNode.AppendChild(ToElement(doc, "SpeedupFlooded", this.SpeedupFlooded));
             settingsNode.AppendChild(ToElement(doc, "SpeedupKingsparrow", this.SpeedupKingsparrow));
             settingsNode.AppendChild(ToElement(doc, "SpeedupFlooded2", this.SpeedupFlooded2));
+            settingsNode.AppendChild(ToElement(doc, "SpeedupPrison", this.SpeedupPrison));
 
             return settingsNode;
         }
@@ -132,6 +136,7 @@ namespace LiveSplit.Dishonored
             this.SpeedupFlooded = ParseInt(settings, "SpeedupFlooded", 5000);
             this.SpeedupKingsparrow = ParseInt(settings, "SpeedupKingsparrow", 4500);
             this.SpeedupFlooded2 = ParseInt(settings, "SpeedupFlooded2", 6500);
+            this.SpeedupPrison = ParseInt(settings, "SpeedupPrison", 600);
         }
 
         static bool ParseBool(XmlNode settings, string setting, bool default_ = false)

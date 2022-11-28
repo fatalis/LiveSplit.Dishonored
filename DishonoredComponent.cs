@@ -35,6 +35,7 @@ namespace LiveSplit.Dishonored
         public Level PreviousLevel { get; set; }
         public Level NextLevel { get; set; }
         public string Setting { get; set; }
+        public int Delay { get; set; }
 
         public bool Matches(Level previousLevel, Level nextLevel)
         {
@@ -65,19 +66,20 @@ namespace LiveSplit.Dishonored
 
         private List<LoadSpeedup> _loadSpeedups = new List<LoadSpeedup>
         {
-            new LoadSpeedup { PreviousLevel = Level.Sewers, NextLevel = Level.PubDay, Setting = "SpeedupPostSewers"},
-            new LoadSpeedup { PreviousLevel = Level.PubDusk, NextLevel = Level.CampbellStreets, Setting = "SpeedupCampbell"},
-            new LoadSpeedup { PreviousLevel = Level.CampbellBack, NextLevel = Level.PubMorning, Setting = "SpeedupPostCampbell"},
-            new LoadSpeedup { PreviousLevel = Level.PubDay, NextLevel = Level.CatStreets, Setting = "SpeedupCat"},
-            new LoadSpeedup { PreviousLevel = Level.CatStreets, NextLevel = Level.PubDusk, Setting = "SpeedupPostCat"},
-            new LoadSpeedup { PreviousLevel = Level.PubDusk, NextLevel = Level.Bridge1, Setting = "SpeedupBridge"},
-            new LoadSpeedup { PreviousLevel = Level.Bridge4, NextLevel = Level.PubNight, Setting = "SpeedupPostBridge"},
-            new LoadSpeedup { PreviousLevel = Level.PubDay, NextLevel = Level.BoyleExterior, Setting = "SpeedupBoyle"},
-            new LoadSpeedup { PreviousLevel = Level.BoyleExterior, NextLevel = Level.PubMorning, Setting = "SpeedupPostBoyle"},
-            new LoadSpeedup { PreviousLevel = Level.PubMorning, NextLevel = Level.TowerReturnYard, Setting = "SpeedupTower"},
-            new LoadSpeedup { PreviousLevel = Level.TowerReturnYard, NextLevel = Level.PubDusk, Setting = "SpeedupPostTower"},
-            new LoadSpeedup { PreviousLevel = Level.PubDusk, NextLevel = Level.FloodedIntro, Setting = "SpeedupFlooded"},
-            new LoadSpeedup { PreviousLevel = Level.Loyalists, NextLevel = Level.KingsparrowIsland, Setting = "SpeedupKingsparrow"},
+            new LoadSpeedup { PreviousLevel = Level.Intro, NextLevel = Level.Prison, Setting = "SpeedupPrison", Delay = 1500 },
+            new LoadSpeedup { PreviousLevel = Level.Sewers, NextLevel = Level.PubDay, Setting = "SpeedupPostSewers", Delay = 1500 },
+            new LoadSpeedup { PreviousLevel = Level.PubDusk, NextLevel = Level.CampbellStreets, Setting = "SpeedupCampbell", Delay = 1500 },
+            new LoadSpeedup { PreviousLevel = Level.CampbellBack, NextLevel = Level.PubMorning, Setting = "SpeedupPostCampbell", Delay = 1500 },
+            new LoadSpeedup { PreviousLevel = Level.PubDay, NextLevel = Level.CatStreets, Setting = "SpeedupCat", Delay = 2000 },
+            new LoadSpeedup { PreviousLevel = Level.CatStreets, NextLevel = Level.PubDusk, Setting = "SpeedupPostCat", Delay = 1500 },
+            new LoadSpeedup { PreviousLevel = Level.PubDusk, NextLevel = Level.Bridge1, Setting = "SpeedupBridge", Delay = 2000 },
+            new LoadSpeedup { PreviousLevel = Level.Bridge4, NextLevel = Level.PubNight, Setting = "SpeedupPostBridge", Delay = 1500 },
+            new LoadSpeedup { PreviousLevel = Level.PubDay, NextLevel = Level.BoyleExterior, Setting = "SpeedupBoyle", Delay = 1500 },
+            new LoadSpeedup { PreviousLevel = Level.BoyleExterior, NextLevel = Level.PubMorning, Setting = "SpeedupPostBoyle", Delay = 1500 },
+            new LoadSpeedup { PreviousLevel = Level.PubMorning, NextLevel = Level.TowerReturnYard, Setting = "SpeedupTower", Delay = 1500 },
+            new LoadSpeedup { PreviousLevel = Level.TowerReturnYard, NextLevel = Level.PubDusk, Setting = "SpeedupPostTower", Delay = 1500 },
+            new LoadSpeedup { PreviousLevel = Level.PubDusk, NextLevel = Level.FloodedIntro, Setting = "SpeedupFlooded", Delay = 1500 },
+            new LoadSpeedup { PreviousLevel = Level.Loyalists, NextLevel = Level.KingsparrowIsland, Setting = "SpeedupKingsparrow", Delay = 1500 },
         };
 
         public DishonoredComponent(LiveSplitState state)
@@ -196,7 +198,7 @@ namespace LiveSplit.Dishonored
             if (speedup != null)
             {
                 Debug.WriteLine($"Found load speedup for level {speedup.PreviousLevel} -> {speedup.NextLevel}, setting {speedup.Setting}");
-                DelaySpeedup(speedup.Setting);
+                DelaySpeedup(speedup.Setting, speedup.Delay);
             }
         }
 
@@ -212,7 +214,7 @@ namespace LiveSplit.Dishonored
             if (speedup != null)
             {
                 Debug.WriteLine($"Found cutscene speedup for level {speedup.Level}, pos {speedup.PlayerPosX}, setting {speedup.Setting}");
-                DelaySpeedup(speedup.Setting);
+                TriggerSpeedup(speedup.Setting);
             }
         }
 
@@ -228,7 +230,7 @@ namespace LiveSplit.Dishonored
             }
         }
 
-        void DelaySpeedup(string setting, int delay = 1500)
+        void DelaySpeedup(string setting, int delay)
         {
             _pendingSpeedup = setting;
             _cutsceneTimer.Interval = delay;
