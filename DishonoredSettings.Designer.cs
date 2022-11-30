@@ -72,6 +72,8 @@
             this.txtSpeedupFlooded2 = new System.Windows.Forms.TextBox();
             this.lblSpeedupPrison = new System.Windows.Forms.Label();
             this.txtSpeedupPrison = new System.Windows.Forms.TextBox();
+            this.lblSpeedupPostCat2 = new System.Windows.Forms.Label();
+            this.txtSpeedupPostCat2 = new System.Windows.Forms.TextBox();
             this.tlpMain.SuspendLayout();
             this.gbAutoSplit.SuspendLayout();
             this.tlpAutoSplit.SuspendLayout();
@@ -91,7 +93,7 @@
             this.tlpMain.RowCount = 2;
             this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlpMain.Size = new System.Drawing.Size(476, 623);
+            this.tlpMain.Size = new System.Drawing.Size(476, 654);
             this.tlpMain.TabIndex = 0;
             // 
             // gbAutoSplit
@@ -200,7 +202,7 @@
             this.gbCutsceneSpeedup.Dock = System.Windows.Forms.DockStyle.Fill;
             this.gbCutsceneSpeedup.Location = new System.Drawing.Point(3, 166);
             this.gbCutsceneSpeedup.Name = "gbCutsceneSpeedup";
-            this.gbCutsceneSpeedup.Size = new System.Drawing.Size(470, 454);
+            this.gbCutsceneSpeedup.Size = new System.Drawing.Size(470, 485);
             this.gbCutsceneSpeedup.TabIndex = 5;
             this.gbCutsceneSpeedup.TabStop = false;
             this.gbCutsceneSpeedup.Text = "Cutscene Speedups";
@@ -244,10 +246,12 @@
             this.tlpCutsceneSpeedup.Controls.Add(this.txtSpeedupFlooded2, 1, 15);
             this.tlpCutsceneSpeedup.Controls.Add(this.lblSpeedupPrison, 0, 16);
             this.tlpCutsceneSpeedup.Controls.Add(this.txtSpeedupPrison, 1, 16);
+            this.tlpCutsceneSpeedup.Controls.Add(this.lblSpeedupPostCat2, 0, 17);
+            this.tlpCutsceneSpeedup.Controls.Add(this.txtSpeedupPostCat2, 1, 17);
             this.tlpCutsceneSpeedup.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tlpCutsceneSpeedup.Location = new System.Drawing.Point(3, 16);
             this.tlpCutsceneSpeedup.Name = "tlpCutsceneSpeedup";
-            this.tlpCutsceneSpeedup.RowCount = 17;
+            this.tlpCutsceneSpeedup.RowCount = 18;
             this.tlpCutsceneSpeedup.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpCutsceneSpeedup.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpCutsceneSpeedup.RowStyles.Add(new System.Windows.Forms.RowStyle());
@@ -263,9 +267,10 @@
             this.tlpCutsceneSpeedup.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpCutsceneSpeedup.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpCutsceneSpeedup.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlpCutsceneSpeedup.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.tlpCutsceneSpeedup.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.tlpCutsceneSpeedup.Size = new System.Drawing.Size(464, 435);
+            this.tlpCutsceneSpeedup.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpCutsceneSpeedup.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpCutsceneSpeedup.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpCutsceneSpeedup.Size = new System.Drawing.Size(464, 466);
             this.tlpCutsceneSpeedup.TabIndex = 0;
             // 
             // chkCutsceneSpeedup
@@ -527,7 +532,7 @@
             // lblSpeedupPrison
             // 
             this.lblSpeedupPrison.AutoSize = true;
-            this.lblSpeedupPrison.Location = new System.Drawing.Point(3, 407);
+            this.lblSpeedupPrison.Location = new System.Drawing.Point(3, 413);
             this.lblSpeedupPrison.Name = "lblSpeedupPrison";
             this.lblSpeedupPrison.Padding = new System.Windows.Forms.Padding(0, 5, 0, 0);
             this.lblSpeedupPrison.Size = new System.Drawing.Size(36, 18);
@@ -536,10 +541,27 @@
             // 
             // txtSpeedupPrison
             // 
-            this.txtSpeedupPrison.Location = new System.Drawing.Point(109, 410);
+            this.txtSpeedupPrison.Location = new System.Drawing.Point(109, 416);
             this.txtSpeedupPrison.Name = "txtSpeedupPrison";
             this.txtSpeedupPrison.Size = new System.Drawing.Size(50, 20);
             this.txtSpeedupPrison.TabIndex = 32;
+            // 
+            // lblSpeedupPostCat2
+            // 
+            this.lblSpeedupPostCat2.AutoSize = true;
+            this.lblSpeedupPostCat2.Location = new System.Drawing.Point(3, 439);
+            this.lblSpeedupPostCat2.Name = "lblSpeedupPostCat2";
+            this.lblSpeedupPostCat2.Padding = new System.Windows.Forms.Padding(0, 5, 0, 0);
+            this.lblSpeedupPostCat2.Size = new System.Drawing.Size(56, 18);
+            this.lblSpeedupPostCat2.TabIndex = 33;
+            this.lblSpeedupPostCat2.Text = "Post Cat 2";
+            // 
+            // txtSpeedupPostCat2
+            // 
+            this.txtSpeedupPostCat2.Location = new System.Drawing.Point(109, 442);
+            this.txtSpeedupPostCat2.Name = "txtSpeedupPostCat2";
+            this.txtSpeedupPostCat2.Size = new System.Drawing.Size(50, 20);
+            this.txtSpeedupPostCat2.TabIndex = 34;
             // 
             // DishonoredSettings
             // 
@@ -547,7 +569,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.tlpMain);
             this.Name = "DishonoredSettings";
-            this.Size = new System.Drawing.Size(476, 623);
+            this.Size = new System.Drawing.Size(476, 654);
             this.tlpMain.ResumeLayout(false);
             this.tlpMain.PerformLayout();
             this.gbAutoSplit.ResumeLayout(false);
@@ -608,5 +630,7 @@
         private System.Windows.Forms.TextBox txtSpeedupFlooded2;
         private System.Windows.Forms.Label lblSpeedupPrison;
         private System.Windows.Forms.TextBox txtSpeedupPrison;
+        private System.Windows.Forms.Label lblSpeedupPostCat2;
+        private System.Windows.Forms.TextBox txtSpeedupPostCat2;
     }
 }

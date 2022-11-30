@@ -30,6 +30,7 @@ namespace LiveSplit.Dishonored
         public int SpeedupKingsparrow { get; set; }
         public int SpeedupFlooded2 { get; set; }
         public int SpeedupPrison { get; set; }
+        public int SpeedupPostCat2 { get; set; }
 
         public DishonoredSettings()
         {
@@ -58,6 +59,7 @@ namespace LiveSplit.Dishonored
             this.txtSpeedupKingsparrow.DataBindings.Add("Text", this, "SpeedupKingsparrow", false, DataSourceUpdateMode.OnPropertyChanged);
             this.txtSpeedupFlooded2.DataBindings.Add("Text", this, "SpeedupFlooded2", false, DataSourceUpdateMode.OnPropertyChanged);
             this.txtSpeedupPrison.DataBindings.Add("Text", this, "SpeedupPrison", false, DataSourceUpdateMode.OnPropertyChanged);
+            this.txtSpeedupPostCat2.DataBindings.Add("Text", this, "SpeedupPostCat2", false, DataSourceUpdateMode.OnPropertyChanged);
 
             // defaults
             this.AutoStartEnd = true;
@@ -66,7 +68,7 @@ namespace LiveSplit.Dishonored
             this.SpeedupCampbell = 4900;
             this.SpeedupPostCampbell = 2100;
             this.SpeedupCat = 5000;
-            this.SpeedupPostCat = 9600;
+            this.SpeedupPostCat = 6000;
             this.SpeedupBridge = 4300;
             this.SpeedupPostBridge = 4000;
             this.SpeedupBoyle = 3600;
@@ -77,6 +79,7 @@ namespace LiveSplit.Dishonored
             this.SpeedupKingsparrow = 4500;
             this.SpeedupFlooded2 = 6500;
             this.SpeedupPrison = 600;
+            this.SpeedupPostCat2 = 2000;
         }
 
         public XmlNode GetSettings(XmlDocument doc)
@@ -108,6 +111,7 @@ namespace LiveSplit.Dishonored
             settingsNode.AppendChild(ToElement(doc, "SpeedupKingsparrow", this.SpeedupKingsparrow));
             settingsNode.AppendChild(ToElement(doc, "SpeedupFlooded2", this.SpeedupFlooded2));
             settingsNode.AppendChild(ToElement(doc, "SpeedupPrison", this.SpeedupPrison));
+            settingsNode.AppendChild(ToElement(doc, "SpeedupPostCat2", this.SpeedupPostCat2));
 
             return settingsNode;
         }
@@ -126,7 +130,7 @@ namespace LiveSplit.Dishonored
             this.SpeedupCampbell = ParseInt(settings, "SpeedupCampbell", 4900);
             this.SpeedupPostCampbell = ParseInt(settings, "SpeedupPostCampbell", 2100);
             this.SpeedupCat = ParseInt(settings, "SpeedupCat", 5000);
-            this.SpeedupPostCat = ParseInt(settings, "SpeedupPostCat", 9600);
+            this.SpeedupPostCat = ParseInt(settings, "SpeedupPostCat", 6000);
             this.SpeedupBridge = ParseInt(settings, "SpeedupBridge", 4300);
             this.SpeedupPostBridge = ParseInt(settings, "SpeedupPostBridge", 4000);
             this.SpeedupBoyle = ParseInt(settings, "SpeedupBoyle", 3600);
@@ -137,6 +141,7 @@ namespace LiveSplit.Dishonored
             this.SpeedupKingsparrow = ParseInt(settings, "SpeedupKingsparrow", 4500);
             this.SpeedupFlooded2 = ParseInt(settings, "SpeedupFlooded2", 6500);
             this.SpeedupPrison = ParseInt(settings, "SpeedupPrison", 600);
+            this.SpeedupPostCat2 = ParseInt(settings, "SpeedupPostCat2", 2000);
         }
 
         static bool ParseBool(XmlNode settings, string setting, bool default_ = false)

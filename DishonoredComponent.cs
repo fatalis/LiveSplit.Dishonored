@@ -70,9 +70,9 @@ namespace LiveSplit.Dishonored
             new LoadSpeedup { PreviousLevel = Level.Sewers, NextLevel = Level.PubDay, Setting = "SpeedupPostSewers", Delay = 1500 },
             new LoadSpeedup { PreviousLevel = Level.PubDusk, NextLevel = Level.CampbellStreets, Setting = "SpeedupCampbell", Delay = 1500 },
             new LoadSpeedup { PreviousLevel = Level.CampbellBack, NextLevel = Level.PubMorning, Setting = "SpeedupPostCampbell", Delay = 1500 },
-            new LoadSpeedup { PreviousLevel = Level.PubDay, NextLevel = Level.CatStreets, Setting = "SpeedupCat", Delay = 2000 },
+            new LoadSpeedup { PreviousLevel = Level.PubDay, NextLevel = Level.CatStreets, Setting = "SpeedupCat", Delay = 1500 },
             new LoadSpeedup { PreviousLevel = Level.CatStreets, NextLevel = Level.PubDusk, Setting = "SpeedupPostCat", Delay = 1500 },
-            new LoadSpeedup { PreviousLevel = Level.PubDusk, NextLevel = Level.Bridge1, Setting = "SpeedupBridge", Delay = 2000 },
+            new LoadSpeedup { PreviousLevel = Level.PubDusk, NextLevel = Level.Bridge1, Setting = "SpeedupBridge", Delay = 1500 },
             new LoadSpeedup { PreviousLevel = Level.Bridge4, NextLevel = Level.PubNight, Setting = "SpeedupPostBridge", Delay = 1500 },
             new LoadSpeedup { PreviousLevel = Level.PubDay, NextLevel = Level.BoyleExterior, Setting = "SpeedupBoyle", Delay = 1500 },
             new LoadSpeedup { PreviousLevel = Level.BoyleExterior, NextLevel = Level.PubMorning, Setting = "SpeedupPostBoyle", Delay = 1500 },
@@ -256,9 +256,12 @@ namespace LiveSplit.Dishonored
             SendKeys.Send("{F6}");
             _timeMultiplier = 1;
 
-            if (!stopAll && _currentSpeedup == "SpeedupFlooded")
+            if (!stopAll)
             {
-                DelaySpeedup("SpeedupFlooded2", 8000);
+                if (_currentSpeedup == "SpeedupFlooded")
+                    DelaySpeedup("SpeedupFlooded2", 8000);
+                if (_currentSpeedup == "SpeedupPostCat")
+                    DelaySpeedup("SpeedupPostCat2", 500);
             }
 
             _currentSpeedup = null;
