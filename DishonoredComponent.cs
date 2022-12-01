@@ -42,6 +42,17 @@ namespace LiveSplit.Dishonored
         }
     }
 
+    class MovieSpeedup
+    {
+        public Movie Movie { get; set; }
+        public string Setting { get; set; }
+
+        public bool Matches(Movie movie)
+        {
+            return movie == Movie;
+        }
+    }
+
     class DishonoredComponent : LogicComponent
     {
         public override string ComponentName => "Dishonored";
@@ -61,6 +72,7 @@ namespace LiveSplit.Dishonored
         private List<CutsceneSpeedup> _cutsceneSpeedups = new List<CutsceneSpeedup>
         {
             new CutsceneSpeedup { Level = Level.Intro, PlayerPosX = 15476f, Setting = "IntroEnd" },
+            new CutsceneSpeedup { Level = Level.Intro, PlayerPosX = 15482f, Setting = "IntroEnd" },
         };
 
         private List<LoadSpeedup> _loadSpeedups = new List<LoadSpeedup>
@@ -78,7 +90,15 @@ namespace LiveSplit.Dishonored
             new LoadSpeedup { PreviousLevel = Level.PubMorning, NextLevel = Level.TowerReturnYard, Setting = "Tower" },
             new LoadSpeedup { PreviousLevel = Level.TowerReturnYard, NextLevel = Level.PubDusk, Setting = "PostTower" },
             new LoadSpeedup { PreviousLevel = Level.PubDusk, NextLevel = Level.FloodedIntro, Setting = "Flooded" },
+            new LoadSpeedup { PreviousLevel = Level.FloodedIntro, NextLevel = Level.FloodedStreets, Setting = "FloodedCell" },
+            new LoadSpeedup { PreviousLevel = Level.FloodedRefinery, NextLevel = Level.FloodedStreets, Setting = "FloodedCell" },
             new LoadSpeedup { PreviousLevel = Level.Loyalists, NextLevel = Level.KingsparrowIsland, Setting = "Kingsparrow" },
+            new LoadSpeedup { PreviousLevel = Level.KingsparrowIsland, NextLevel = Level.KingsparrowLighthouse, Setting = "Lighthouse" },
+        };
+
+        private List<MovieSpeedup> _movieSpeedups = new List<MovieSpeedup>
+        {
+            new MovieSpeedup { Movie = Movie.Intro, Setting = "Intro" },
         };
 
         private Dictionary<string, string> _speedupFollowups = new Dictionary<string, string>
@@ -114,6 +134,7 @@ namespace LiveSplit.Dishonored
             _gameMemory.OnPlayerLostControl += gameMemory_OnPlayerLostControl;
             _gameMemory.OnAreaCompleted += gameMemory_OnAreaCompleted;
             _gameMemory.OnCutsceneStarted += gameMemory_OnCutsceneStarted;
+            _gameMemory.OnMovieEnded += gameMemory_OnMovieEnded;
         }
 
         public override void Dispose()
@@ -196,7 +217,7 @@ namespace LiveSplit.Dishonored
             }
         }
 
-        void gameMemory_OnLoadFinished(object sender, Level previousLevel, Level currentLevel, float playerPosX)
+        void gameMemory_OnLoadFinished(object sender, Level previousLevel, Level currentLevel, Movie movie, float playerPosX)
         {
             _timer.CurrentState.IsGameTimePaused = false;
 
@@ -220,7 +241,7 @@ namespace LiveSplit.Dishonored
             if (speedup != null)
             {
                 Debug.WriteLine($"Found cutscene speedup for level {speedup.Level}, pos {speedup.PlayerPosX}, setting {speedup.Setting}");
-                TriggerSpeedup(speedup.Setting);
+                DelaySpeedup(speedup.Setting);
             }
         }
 
@@ -233,6 +254,15 @@ namespace LiveSplit.Dishonored
                 || (type == AreaCompletionType.Weepers && Settings.AutoSplitWeepers))
             {
                 _timer.Split();
+            }
+        }
+
+        void gameMemory_OnMovieEnded(object sender, Movie movie)
+        {
+            var speedup = _movieSpeedups.Find(ms => ms.Matches(movie));
+            if (speedup != null)
+            {
+                DelaySpeedup(speedup.Setting);
             }
         }
 

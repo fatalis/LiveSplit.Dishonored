@@ -39,6 +39,9 @@
             this.chkAutoSplitOutsidersDream = new System.Windows.Forms.CheckBox();
             this.gbCutsceneSpeedup = new System.Windows.Forms.GroupBox();
             this.tlpCutsceneSpeedup = new System.Windows.Forms.TableLayoutPanel();
+            this.lblLighthouse = new System.Windows.Forms.Label();
+            this.lblFloodedCell = new System.Windows.Forms.Label();
+            this.txtDelayPostCat3 = new System.Windows.Forms.TextBox();
             this.chkCutsceneSpeedup = new System.Windows.Forms.CheckBox();
             this.lblSpeedupIntroEnd = new System.Windows.Forms.Label();
             this.txtSpeedupIntroEnd = new System.Windows.Forms.TextBox();
@@ -95,7 +98,13 @@
             this.lblDelayHeader = new System.Windows.Forms.Label();
             this.lblSpeedupPostCat3 = new System.Windows.Forms.Label();
             this.txtSpeedupPostCat3 = new System.Windows.Forms.TextBox();
-            this.txtDelayPostCat3 = new System.Windows.Forms.TextBox();
+            this.lblSpeedupIntro = new System.Windows.Forms.Label();
+            this.txtSpeedupIntro = new System.Windows.Forms.TextBox();
+            this.txtDelayIntro = new System.Windows.Forms.TextBox();
+            this.txtSpeedupFloodedCell = new System.Windows.Forms.TextBox();
+            this.txtDelayFloodedCell = new System.Windows.Forms.TextBox();
+            this.txtDelayLighthouse = new System.Windows.Forms.TextBox();
+            this.txtSpeedupLighthouse = new System.Windows.Forms.TextBox();
             this.tlpMain.SuspendLayout();
             this.gbAutoSplit.SuspendLayout();
             this.tlpAutoSplit.SuspendLayout();
@@ -115,7 +124,7 @@
             this.tlpMain.RowCount = 2;
             this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlpMain.Size = new System.Drawing.Size(476, 681);
+            this.tlpMain.Size = new System.Drawing.Size(476, 759);
             this.tlpMain.TabIndex = 0;
             // 
             // gbAutoSplit
@@ -224,7 +233,7 @@
             this.gbCutsceneSpeedup.Dock = System.Windows.Forms.DockStyle.Fill;
             this.gbCutsceneSpeedup.Location = new System.Drawing.Point(3, 166);
             this.gbCutsceneSpeedup.Name = "gbCutsceneSpeedup";
-            this.gbCutsceneSpeedup.Size = new System.Drawing.Size(470, 512);
+            this.gbCutsceneSpeedup.Size = new System.Drawing.Size(470, 590);
             this.gbCutsceneSpeedup.TabIndex = 5;
             this.gbCutsceneSpeedup.TabStop = false;
             this.gbCutsceneSpeedup.Text = "Cutscene Speedups";
@@ -236,67 +245,76 @@
             this.tlpCutsceneSpeedup.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
             this.tlpCutsceneSpeedup.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
             this.tlpCutsceneSpeedup.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.tlpCutsceneSpeedup.Controls.Add(this.txtDelayPostCat3, 2, 18);
+            this.tlpCutsceneSpeedup.Controls.Add(this.txtSpeedupLighthouse, 0, 21);
             this.tlpCutsceneSpeedup.Controls.Add(this.chkCutsceneSpeedup, 0, 0);
-            this.tlpCutsceneSpeedup.Controls.Add(this.lblSpeedupIntroEnd, 0, 1);
-            this.tlpCutsceneSpeedup.Controls.Add(this.txtSpeedupIntroEnd, 1, 1);
-            this.tlpCutsceneSpeedup.Controls.Add(this.lblSpeedupPostSewers, 0, 2);
-            this.tlpCutsceneSpeedup.Controls.Add(this.txtSpeedupPostSewers, 1, 2);
-            this.tlpCutsceneSpeedup.Controls.Add(this.lblSpeedupCampbell, 0, 3);
-            this.tlpCutsceneSpeedup.Controls.Add(this.txtSpeedupCampbell, 1, 3);
-            this.tlpCutsceneSpeedup.Controls.Add(this.lblSpeedupPostCampbell, 0, 4);
-            this.tlpCutsceneSpeedup.Controls.Add(this.txtSpeedupPostCampbell, 1, 4);
-            this.tlpCutsceneSpeedup.Controls.Add(this.lblSpeedupCat, 0, 5);
-            this.tlpCutsceneSpeedup.Controls.Add(this.txtSpeedupCat, 1, 5);
-            this.tlpCutsceneSpeedup.Controls.Add(this.lblSpeedupPostCat, 0, 6);
-            this.tlpCutsceneSpeedup.Controls.Add(this.txtSpeedupPostCat, 1, 6);
-            this.tlpCutsceneSpeedup.Controls.Add(this.lblSpeedupBridge, 0, 7);
-            this.tlpCutsceneSpeedup.Controls.Add(this.txtSpeedupBridge, 1, 7);
-            this.tlpCutsceneSpeedup.Controls.Add(this.lblSpeedupPostBridge, 0, 8);
-            this.tlpCutsceneSpeedup.Controls.Add(this.txtSpeedupPostBridge, 1, 8);
-            this.tlpCutsceneSpeedup.Controls.Add(this.lblSpeedupBoyle, 0, 9);
-            this.tlpCutsceneSpeedup.Controls.Add(this.txtSpeedupBoyle, 1, 9);
-            this.tlpCutsceneSpeedup.Controls.Add(this.lblSpeedupPostBoyle, 0, 10);
-            this.tlpCutsceneSpeedup.Controls.Add(this.txtSpeedupPostBoyle, 1, 10);
-            this.tlpCutsceneSpeedup.Controls.Add(this.lblSpeedupTower, 0, 11);
-            this.tlpCutsceneSpeedup.Controls.Add(this.txtSpeedupTower, 1, 11);
-            this.tlpCutsceneSpeedup.Controls.Add(this.lblSpeedupPostTower, 0, 12);
-            this.tlpCutsceneSpeedup.Controls.Add(this.txtSpeedupPostTower, 1, 12);
-            this.tlpCutsceneSpeedup.Controls.Add(this.lblSpeedupFlooded, 0, 13);
-            this.tlpCutsceneSpeedup.Controls.Add(this.txtSpeedupFlooded, 1, 13);
-            this.tlpCutsceneSpeedup.Controls.Add(this.lblSpeedupKingsparrow, 0, 14);
-            this.tlpCutsceneSpeedup.Controls.Add(this.txtSpeedupKingsparrow, 1, 14);
-            this.tlpCutsceneSpeedup.Controls.Add(this.lblSpeedupFlooded2, 0, 15);
-            this.tlpCutsceneSpeedup.Controls.Add(this.txtSpeedupFlooded2, 1, 15);
-            this.tlpCutsceneSpeedup.Controls.Add(this.lblSpeedupPrison, 0, 16);
-            this.tlpCutsceneSpeedup.Controls.Add(this.txtSpeedupPrison, 1, 16);
-            this.tlpCutsceneSpeedup.Controls.Add(this.lblSpeedupPostCat2, 0, 17);
-            this.tlpCutsceneSpeedup.Controls.Add(this.txtSpeedupPostCat2, 1, 17);
-            this.tlpCutsceneSpeedup.Controls.Add(this.txtDelayIntroEnd, 2, 1);
-            this.tlpCutsceneSpeedup.Controls.Add(this.txtDelayPostSewers, 2, 2);
-            this.tlpCutsceneSpeedup.Controls.Add(this.txtDelayCampbell, 2, 3);
-            this.tlpCutsceneSpeedup.Controls.Add(this.txtDelayPostCampbell, 2, 4);
-            this.tlpCutsceneSpeedup.Controls.Add(this.txtDelayCat, 2, 5);
-            this.tlpCutsceneSpeedup.Controls.Add(this.txtDelayPostCat, 2, 6);
-            this.tlpCutsceneSpeedup.Controls.Add(this.txtDelayBridge, 2, 7);
-            this.tlpCutsceneSpeedup.Controls.Add(this.txtDelayPostBridge, 2, 8);
-            this.tlpCutsceneSpeedup.Controls.Add(this.txtDelayBoyle, 2, 9);
-            this.tlpCutsceneSpeedup.Controls.Add(this.txtDelayPostBoyle, 2, 10);
-            this.tlpCutsceneSpeedup.Controls.Add(this.txtDelayTower, 2, 11);
-            this.tlpCutsceneSpeedup.Controls.Add(this.txtDelayPostTower, 2, 12);
-            this.tlpCutsceneSpeedup.Controls.Add(this.txtDelayFlooded, 2, 13);
-            this.tlpCutsceneSpeedup.Controls.Add(this.txtDelayKingsparrow, 2, 14);
-            this.tlpCutsceneSpeedup.Controls.Add(this.txtDelayFlooded2, 2, 15);
-            this.tlpCutsceneSpeedup.Controls.Add(this.txtDelayPrison, 2, 16);
-            this.tlpCutsceneSpeedup.Controls.Add(this.txtDelayPostCat2, 2, 17);
             this.tlpCutsceneSpeedup.Controls.Add(this.lblDurationHeader, 1, 0);
             this.tlpCutsceneSpeedup.Controls.Add(this.lblDelayHeader, 2, 0);
-            this.tlpCutsceneSpeedup.Controls.Add(this.lblSpeedupPostCat3, 0, 18);
-            this.tlpCutsceneSpeedup.Controls.Add(this.txtSpeedupPostCat3, 1, 18);
+            this.tlpCutsceneSpeedup.Controls.Add(this.lblSpeedupIntro, 0, 1);
+            this.tlpCutsceneSpeedup.Controls.Add(this.lblSpeedupIntroEnd, 0, 2);
+            this.tlpCutsceneSpeedup.Controls.Add(this.lblSpeedupPrison, 0, 3);
+            this.tlpCutsceneSpeedup.Controls.Add(this.lblSpeedupPostSewers, 0, 4);
+            this.tlpCutsceneSpeedup.Controls.Add(this.lblSpeedupCampbell, 0, 5);
+            this.tlpCutsceneSpeedup.Controls.Add(this.lblSpeedupPostCampbell, 0, 6);
+            this.tlpCutsceneSpeedup.Controls.Add(this.lblSpeedupBridge, 0, 11);
+            this.tlpCutsceneSpeedup.Controls.Add(this.lblSpeedupCat, 0, 7);
+            this.tlpCutsceneSpeedup.Controls.Add(this.lblSpeedupPostCat, 0, 8);
+            this.tlpCutsceneSpeedup.Controls.Add(this.lblSpeedupPostCat2, 0, 9);
+            this.tlpCutsceneSpeedup.Controls.Add(this.lblSpeedupPostBoyle, 0, 14);
+            this.tlpCutsceneSpeedup.Controls.Add(this.lblSpeedupPostCat3, 0, 10);
+            this.tlpCutsceneSpeedup.Controls.Add(this.lblSpeedupPostBridge, 0, 12);
+            this.tlpCutsceneSpeedup.Controls.Add(this.lblSpeedupBoyle, 0, 13);
+            this.tlpCutsceneSpeedup.Controls.Add(this.lblSpeedupTower, 0, 15);
+            this.tlpCutsceneSpeedup.Controls.Add(this.lblSpeedupPostTower, 0, 16);
+            this.tlpCutsceneSpeedup.Controls.Add(this.lblSpeedupFlooded, 0, 17);
+            this.tlpCutsceneSpeedup.Controls.Add(this.lblSpeedupFlooded2, 0, 18);
+            this.tlpCutsceneSpeedup.Controls.Add(this.lblFloodedCell, 0, 19);
+            this.tlpCutsceneSpeedup.Controls.Add(this.lblSpeedupKingsparrow, 0, 20);
+            this.tlpCutsceneSpeedup.Controls.Add(this.lblLighthouse, 0, 21);
+            this.tlpCutsceneSpeedup.Controls.Add(this.txtSpeedupKingsparrow, 1, 20);
+            this.tlpCutsceneSpeedup.Controls.Add(this.txtDelayKingsparrow, 2, 20);
+            this.tlpCutsceneSpeedup.Controls.Add(this.txtSpeedupPostCat3, 1, 10);
+            this.tlpCutsceneSpeedup.Controls.Add(this.txtDelayPostCat3, 2, 10);
+            this.tlpCutsceneSpeedup.Controls.Add(this.txtSpeedupFlooded2, 1, 18);
+            this.tlpCutsceneSpeedup.Controls.Add(this.txtDelayFlooded2, 2, 18);
+            this.tlpCutsceneSpeedup.Controls.Add(this.txtSpeedupFlooded, 1, 17);
+            this.tlpCutsceneSpeedup.Controls.Add(this.txtDelayFlooded, 2, 17);
+            this.tlpCutsceneSpeedup.Controls.Add(this.txtSpeedupPostBoyle, 1, 14);
+            this.tlpCutsceneSpeedup.Controls.Add(this.txtDelayPostBoyle, 2, 14);
+            this.tlpCutsceneSpeedup.Controls.Add(this.txtSpeedupBoyle, 1, 13);
+            this.tlpCutsceneSpeedup.Controls.Add(this.txtSpeedupPostCat2, 1, 9);
+            this.tlpCutsceneSpeedup.Controls.Add(this.txtDelayBoyle, 2, 13);
+            this.tlpCutsceneSpeedup.Controls.Add(this.txtDelayPostCat2, 2, 9);
+            this.tlpCutsceneSpeedup.Controls.Add(this.txtSpeedupPostTower, 1, 16);
+            this.tlpCutsceneSpeedup.Controls.Add(this.txtDelayPostTower, 2, 16);
+            this.tlpCutsceneSpeedup.Controls.Add(this.txtSpeedupTower, 1, 15);
+            this.tlpCutsceneSpeedup.Controls.Add(this.txtDelayTower, 2, 15);
+            this.tlpCutsceneSpeedup.Controls.Add(this.txtSpeedupPostBridge, 1, 12);
+            this.tlpCutsceneSpeedup.Controls.Add(this.txtDelayPostBridge, 2, 12);
+            this.tlpCutsceneSpeedup.Controls.Add(this.txtSpeedupBridge, 1, 11);
+            this.tlpCutsceneSpeedup.Controls.Add(this.txtDelayBridge, 2, 11);
+            this.tlpCutsceneSpeedup.Controls.Add(this.txtSpeedupPostCat, 1, 8);
+            this.tlpCutsceneSpeedup.Controls.Add(this.txtDelayPostCat, 2, 8);
+            this.tlpCutsceneSpeedup.Controls.Add(this.txtSpeedupCat, 1, 7);
+            this.tlpCutsceneSpeedup.Controls.Add(this.txtDelayCat, 2, 7);
+            this.tlpCutsceneSpeedup.Controls.Add(this.txtSpeedupPostCampbell, 1, 6);
+            this.tlpCutsceneSpeedup.Controls.Add(this.txtDelayPostCampbell, 2, 6);
+            this.tlpCutsceneSpeedup.Controls.Add(this.txtSpeedupCampbell, 1, 5);
+            this.tlpCutsceneSpeedup.Controls.Add(this.txtDelayCampbell, 2, 5);
+            this.tlpCutsceneSpeedup.Controls.Add(this.txtSpeedupPrison, 1, 3);
+            this.tlpCutsceneSpeedup.Controls.Add(this.txtDelayPrison, 2, 3);
+            this.tlpCutsceneSpeedup.Controls.Add(this.txtSpeedupPostSewers, 1, 4);
+            this.tlpCutsceneSpeedup.Controls.Add(this.txtDelayPostSewers, 2, 4);
+            this.tlpCutsceneSpeedup.Controls.Add(this.txtSpeedupIntroEnd, 1, 2);
+            this.tlpCutsceneSpeedup.Controls.Add(this.txtDelayIntroEnd, 2, 2);
+            this.tlpCutsceneSpeedup.Controls.Add(this.txtSpeedupIntro, 1, 1);
+            this.tlpCutsceneSpeedup.Controls.Add(this.txtDelayIntro, 2, 1);
+            this.tlpCutsceneSpeedup.Controls.Add(this.txtSpeedupFloodedCell, 1, 19);
+            this.tlpCutsceneSpeedup.Controls.Add(this.txtDelayFloodedCell, 2, 19);
+            this.tlpCutsceneSpeedup.Controls.Add(this.txtDelayLighthouse, 1, 21);
             this.tlpCutsceneSpeedup.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tlpCutsceneSpeedup.Location = new System.Drawing.Point(3, 16);
             this.tlpCutsceneSpeedup.Name = "tlpCutsceneSpeedup";
-            this.tlpCutsceneSpeedup.RowCount = 19;
+            this.tlpCutsceneSpeedup.RowCount = 22;
             this.tlpCutsceneSpeedup.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpCutsceneSpeedup.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpCutsceneSpeedup.RowStyles.Add(new System.Windows.Forms.RowStyle());
@@ -315,9 +333,39 @@
             this.tlpCutsceneSpeedup.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpCutsceneSpeedup.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpCutsceneSpeedup.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlpCutsceneSpeedup.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.tlpCutsceneSpeedup.Size = new System.Drawing.Size(464, 493);
+            this.tlpCutsceneSpeedup.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpCutsceneSpeedup.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpCutsceneSpeedup.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpCutsceneSpeedup.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpCutsceneSpeedup.Size = new System.Drawing.Size(464, 571);
             this.tlpCutsceneSpeedup.TabIndex = 0;
+            // 
+            // lblLighthouse
+            // 
+            this.lblLighthouse.AutoSize = true;
+            this.lblLighthouse.Location = new System.Drawing.Point(3, 543);
+            this.lblLighthouse.Name = "lblLighthouse";
+            this.lblLighthouse.Padding = new System.Windows.Forms.Padding(0, 5, 0, 0);
+            this.lblLighthouse.Size = new System.Drawing.Size(59, 18);
+            this.lblLighthouse.TabIndex = 59;
+            this.lblLighthouse.Text = "Lighthouse";
+            // 
+            // lblFloodedCell
+            // 
+            this.lblFloodedCell.AutoSize = true;
+            this.lblFloodedCell.Location = new System.Drawing.Point(3, 491);
+            this.lblFloodedCell.Name = "lblFloodedCell";
+            this.lblFloodedCell.Padding = new System.Windows.Forms.Padding(0, 5, 0, 0);
+            this.lblFloodedCell.Size = new System.Drawing.Size(65, 18);
+            this.lblFloodedCell.TabIndex = 57;
+            this.lblFloodedCell.Text = "Flooded Cell";
+            // 
+            // txtDelayPostCat3
+            // 
+            this.txtDelayPostCat3.Location = new System.Drawing.Point(165, 260);
+            this.txtDelayPostCat3.Name = "txtDelayPostCat3";
+            this.txtDelayPostCat3.Size = new System.Drawing.Size(50, 20);
+            this.txtDelayPostCat3.TabIndex = 56;
             // 
             // chkCutsceneSpeedup
             // 
@@ -334,7 +382,7 @@
             // lblSpeedupIntroEnd
             // 
             this.lblSpeedupIntroEnd.AutoSize = true;
-            this.lblSpeedupIntroEnd.Location = new System.Drawing.Point(3, 23);
+            this.lblSpeedupIntroEnd.Location = new System.Drawing.Point(3, 49);
             this.lblSpeedupIntroEnd.Name = "lblSpeedupIntroEnd";
             this.lblSpeedupIntroEnd.Padding = new System.Windows.Forms.Padding(0, 5, 0, 0);
             this.lblSpeedupIntroEnd.Size = new System.Drawing.Size(50, 18);
@@ -343,7 +391,7 @@
             // 
             // txtSpeedupIntroEnd
             // 
-            this.txtSpeedupIntroEnd.Location = new System.Drawing.Point(109, 26);
+            this.txtSpeedupIntroEnd.Location = new System.Drawing.Point(109, 52);
             this.txtSpeedupIntroEnd.Name = "txtSpeedupIntroEnd";
             this.txtSpeedupIntroEnd.Size = new System.Drawing.Size(50, 20);
             this.txtSpeedupIntroEnd.TabIndex = 6;
@@ -351,7 +399,7 @@
             // lblSpeedupPostSewers
             // 
             this.lblSpeedupPostSewers.AutoSize = true;
-            this.lblSpeedupPostSewers.Location = new System.Drawing.Point(3, 49);
+            this.lblSpeedupPostSewers.Location = new System.Drawing.Point(3, 101);
             this.lblSpeedupPostSewers.Name = "lblSpeedupPostSewers";
             this.lblSpeedupPostSewers.Padding = new System.Windows.Forms.Padding(0, 5, 0, 0);
             this.lblSpeedupPostSewers.Size = new System.Drawing.Size(66, 18);
@@ -360,7 +408,7 @@
             // 
             // txtSpeedupPostSewers
             // 
-            this.txtSpeedupPostSewers.Location = new System.Drawing.Point(109, 52);
+            this.txtSpeedupPostSewers.Location = new System.Drawing.Point(109, 104);
             this.txtSpeedupPostSewers.Name = "txtSpeedupPostSewers";
             this.txtSpeedupPostSewers.Size = new System.Drawing.Size(50, 20);
             this.txtSpeedupPostSewers.TabIndex = 6;
@@ -368,7 +416,7 @@
             // lblSpeedupCampbell
             // 
             this.lblSpeedupCampbell.AutoSize = true;
-            this.lblSpeedupCampbell.Location = new System.Drawing.Point(3, 75);
+            this.lblSpeedupCampbell.Location = new System.Drawing.Point(3, 127);
             this.lblSpeedupCampbell.Name = "lblSpeedupCampbell";
             this.lblSpeedupCampbell.Padding = new System.Windows.Forms.Padding(0, 5, 0, 0);
             this.lblSpeedupCampbell.Size = new System.Drawing.Size(50, 18);
@@ -377,14 +425,14 @@
             // 
             // txtSpeedupCampbell
             // 
-            this.txtSpeedupCampbell.Location = new System.Drawing.Point(109, 78);
+            this.txtSpeedupCampbell.Location = new System.Drawing.Point(109, 130);
             this.txtSpeedupCampbell.Name = "txtSpeedupCampbell";
             this.txtSpeedupCampbell.Size = new System.Drawing.Size(50, 20);
             this.txtSpeedupCampbell.TabIndex = 6;
             // 
             // lblSpeedupPostCampbell
             // 
-            this.lblSpeedupPostCampbell.Location = new System.Drawing.Point(3, 101);
+            this.lblSpeedupPostCampbell.Location = new System.Drawing.Point(3, 153);
             this.lblSpeedupPostCampbell.Name = "lblSpeedupPostCampbell";
             this.lblSpeedupPostCampbell.Padding = new System.Windows.Forms.Padding(0, 5, 0, 0);
             this.lblSpeedupPostCampbell.Size = new System.Drawing.Size(100, 23);
@@ -393,14 +441,14 @@
             // 
             // txtSpeedupPostCampbell
             // 
-            this.txtSpeedupPostCampbell.Location = new System.Drawing.Point(109, 104);
+            this.txtSpeedupPostCampbell.Location = new System.Drawing.Point(109, 156);
             this.txtSpeedupPostCampbell.Name = "txtSpeedupPostCampbell";
             this.txtSpeedupPostCampbell.Size = new System.Drawing.Size(50, 20);
             this.txtSpeedupPostCampbell.TabIndex = 8;
             // 
             // lblSpeedupCat
             // 
-            this.lblSpeedupCat.Location = new System.Drawing.Point(3, 127);
+            this.lblSpeedupCat.Location = new System.Drawing.Point(3, 179);
             this.lblSpeedupCat.Name = "lblSpeedupCat";
             this.lblSpeedupCat.Padding = new System.Windows.Forms.Padding(0, 5, 0, 0);
             this.lblSpeedupCat.Size = new System.Drawing.Size(100, 23);
@@ -409,14 +457,14 @@
             // 
             // txtSpeedupCat
             // 
-            this.txtSpeedupCat.Location = new System.Drawing.Point(109, 130);
+            this.txtSpeedupCat.Location = new System.Drawing.Point(109, 182);
             this.txtSpeedupCat.Name = "txtSpeedupCat";
             this.txtSpeedupCat.Size = new System.Drawing.Size(50, 20);
             this.txtSpeedupCat.TabIndex = 10;
             // 
             // lblSpeedupPostCat
             // 
-            this.lblSpeedupPostCat.Location = new System.Drawing.Point(3, 153);
+            this.lblSpeedupPostCat.Location = new System.Drawing.Point(3, 205);
             this.lblSpeedupPostCat.Name = "lblSpeedupPostCat";
             this.lblSpeedupPostCat.Padding = new System.Windows.Forms.Padding(0, 5, 0, 0);
             this.lblSpeedupPostCat.Size = new System.Drawing.Size(100, 23);
@@ -425,14 +473,14 @@
             // 
             // txtSpeedupPostCat
             // 
-            this.txtSpeedupPostCat.Location = new System.Drawing.Point(109, 156);
+            this.txtSpeedupPostCat.Location = new System.Drawing.Point(109, 208);
             this.txtSpeedupPostCat.Name = "txtSpeedupPostCat";
             this.txtSpeedupPostCat.Size = new System.Drawing.Size(50, 20);
             this.txtSpeedupPostCat.TabIndex = 12;
             // 
             // lblSpeedupBridge
             // 
-            this.lblSpeedupBridge.Location = new System.Drawing.Point(3, 179);
+            this.lblSpeedupBridge.Location = new System.Drawing.Point(3, 283);
             this.lblSpeedupBridge.Name = "lblSpeedupBridge";
             this.lblSpeedupBridge.Padding = new System.Windows.Forms.Padding(0, 5, 0, 0);
             this.lblSpeedupBridge.Size = new System.Drawing.Size(100, 23);
@@ -441,14 +489,14 @@
             // 
             // txtSpeedupBridge
             // 
-            this.txtSpeedupBridge.Location = new System.Drawing.Point(109, 182);
+            this.txtSpeedupBridge.Location = new System.Drawing.Point(109, 286);
             this.txtSpeedupBridge.Name = "txtSpeedupBridge";
             this.txtSpeedupBridge.Size = new System.Drawing.Size(50, 20);
             this.txtSpeedupBridge.TabIndex = 14;
             // 
             // lblSpeedupPostBridge
             // 
-            this.lblSpeedupPostBridge.Location = new System.Drawing.Point(3, 205);
+            this.lblSpeedupPostBridge.Location = new System.Drawing.Point(3, 309);
             this.lblSpeedupPostBridge.Name = "lblSpeedupPostBridge";
             this.lblSpeedupPostBridge.Padding = new System.Windows.Forms.Padding(0, 5, 0, 0);
             this.lblSpeedupPostBridge.Size = new System.Drawing.Size(100, 23);
@@ -457,14 +505,14 @@
             // 
             // txtSpeedupPostBridge
             // 
-            this.txtSpeedupPostBridge.Location = new System.Drawing.Point(109, 208);
+            this.txtSpeedupPostBridge.Location = new System.Drawing.Point(109, 312);
             this.txtSpeedupPostBridge.Name = "txtSpeedupPostBridge";
             this.txtSpeedupPostBridge.Size = new System.Drawing.Size(50, 20);
             this.txtSpeedupPostBridge.TabIndex = 16;
             // 
             // lblSpeedupBoyle
             // 
-            this.lblSpeedupBoyle.Location = new System.Drawing.Point(3, 231);
+            this.lblSpeedupBoyle.Location = new System.Drawing.Point(3, 335);
             this.lblSpeedupBoyle.Name = "lblSpeedupBoyle";
             this.lblSpeedupBoyle.Padding = new System.Windows.Forms.Padding(0, 5, 0, 0);
             this.lblSpeedupBoyle.Size = new System.Drawing.Size(100, 23);
@@ -473,14 +521,14 @@
             // 
             // txtSpeedupBoyle
             // 
-            this.txtSpeedupBoyle.Location = new System.Drawing.Point(109, 234);
+            this.txtSpeedupBoyle.Location = new System.Drawing.Point(109, 338);
             this.txtSpeedupBoyle.Name = "txtSpeedupBoyle";
             this.txtSpeedupBoyle.Size = new System.Drawing.Size(50, 20);
             this.txtSpeedupBoyle.TabIndex = 18;
             // 
             // lblSpeedupPostBoyle
             // 
-            this.lblSpeedupPostBoyle.Location = new System.Drawing.Point(3, 257);
+            this.lblSpeedupPostBoyle.Location = new System.Drawing.Point(3, 361);
             this.lblSpeedupPostBoyle.Name = "lblSpeedupPostBoyle";
             this.lblSpeedupPostBoyle.Padding = new System.Windows.Forms.Padding(0, 5, 0, 0);
             this.lblSpeedupPostBoyle.Size = new System.Drawing.Size(100, 23);
@@ -489,14 +537,14 @@
             // 
             // txtSpeedupPostBoyle
             // 
-            this.txtSpeedupPostBoyle.Location = new System.Drawing.Point(109, 260);
+            this.txtSpeedupPostBoyle.Location = new System.Drawing.Point(109, 364);
             this.txtSpeedupPostBoyle.Name = "txtSpeedupPostBoyle";
             this.txtSpeedupPostBoyle.Size = new System.Drawing.Size(50, 20);
             this.txtSpeedupPostBoyle.TabIndex = 20;
             // 
             // lblSpeedupTower
             // 
-            this.lblSpeedupTower.Location = new System.Drawing.Point(3, 283);
+            this.lblSpeedupTower.Location = new System.Drawing.Point(3, 387);
             this.lblSpeedupTower.Name = "lblSpeedupTower";
             this.lblSpeedupTower.Padding = new System.Windows.Forms.Padding(0, 5, 0, 0);
             this.lblSpeedupTower.Size = new System.Drawing.Size(100, 23);
@@ -505,14 +553,14 @@
             // 
             // txtSpeedupTower
             // 
-            this.txtSpeedupTower.Location = new System.Drawing.Point(109, 286);
+            this.txtSpeedupTower.Location = new System.Drawing.Point(109, 390);
             this.txtSpeedupTower.Name = "txtSpeedupTower";
             this.txtSpeedupTower.Size = new System.Drawing.Size(50, 20);
             this.txtSpeedupTower.TabIndex = 22;
             // 
             // lblSpeedupPostTower
             // 
-            this.lblSpeedupPostTower.Location = new System.Drawing.Point(3, 309);
+            this.lblSpeedupPostTower.Location = new System.Drawing.Point(3, 413);
             this.lblSpeedupPostTower.Name = "lblSpeedupPostTower";
             this.lblSpeedupPostTower.Padding = new System.Windows.Forms.Padding(0, 5, 0, 0);
             this.lblSpeedupPostTower.Size = new System.Drawing.Size(100, 23);
@@ -521,14 +569,14 @@
             // 
             // txtSpeedupPostTower
             // 
-            this.txtSpeedupPostTower.Location = new System.Drawing.Point(109, 312);
+            this.txtSpeedupPostTower.Location = new System.Drawing.Point(109, 416);
             this.txtSpeedupPostTower.Name = "txtSpeedupPostTower";
             this.txtSpeedupPostTower.Size = new System.Drawing.Size(50, 20);
             this.txtSpeedupPostTower.TabIndex = 24;
             // 
             // lblSpeedupFlooded
             // 
-            this.lblSpeedupFlooded.Location = new System.Drawing.Point(3, 335);
+            this.lblSpeedupFlooded.Location = new System.Drawing.Point(3, 439);
             this.lblSpeedupFlooded.Name = "lblSpeedupFlooded";
             this.lblSpeedupFlooded.Padding = new System.Windows.Forms.Padding(0, 5, 0, 0);
             this.lblSpeedupFlooded.Size = new System.Drawing.Size(100, 23);
@@ -537,14 +585,14 @@
             // 
             // txtSpeedupFlooded
             // 
-            this.txtSpeedupFlooded.Location = new System.Drawing.Point(109, 338);
+            this.txtSpeedupFlooded.Location = new System.Drawing.Point(109, 442);
             this.txtSpeedupFlooded.Name = "txtSpeedupFlooded";
             this.txtSpeedupFlooded.Size = new System.Drawing.Size(50, 20);
             this.txtSpeedupFlooded.TabIndex = 26;
             // 
             // lblSpeedupKingsparrow
             // 
-            this.lblSpeedupKingsparrow.Location = new System.Drawing.Point(3, 361);
+            this.lblSpeedupKingsparrow.Location = new System.Drawing.Point(3, 517);
             this.lblSpeedupKingsparrow.Name = "lblSpeedupKingsparrow";
             this.lblSpeedupKingsparrow.Padding = new System.Windows.Forms.Padding(0, 5, 0, 0);
             this.lblSpeedupKingsparrow.Size = new System.Drawing.Size(100, 23);
@@ -553,7 +601,7 @@
             // 
             // txtSpeedupKingsparrow
             // 
-            this.txtSpeedupKingsparrow.Location = new System.Drawing.Point(109, 364);
+            this.txtSpeedupKingsparrow.Location = new System.Drawing.Point(109, 520);
             this.txtSpeedupKingsparrow.Name = "txtSpeedupKingsparrow";
             this.txtSpeedupKingsparrow.Size = new System.Drawing.Size(50, 20);
             this.txtSpeedupKingsparrow.TabIndex = 28;
@@ -561,7 +609,7 @@
             // lblSpeedupFlooded2
             // 
             this.lblSpeedupFlooded2.AutoSize = true;
-            this.lblSpeedupFlooded2.Location = new System.Drawing.Point(3, 387);
+            this.lblSpeedupFlooded2.Location = new System.Drawing.Point(3, 465);
             this.lblSpeedupFlooded2.Name = "lblSpeedupFlooded2";
             this.lblSpeedupFlooded2.Padding = new System.Windows.Forms.Padding(0, 5, 0, 0);
             this.lblSpeedupFlooded2.Size = new System.Drawing.Size(54, 18);
@@ -570,7 +618,7 @@
             // 
             // txtSpeedupFlooded2
             // 
-            this.txtSpeedupFlooded2.Location = new System.Drawing.Point(109, 390);
+            this.txtSpeedupFlooded2.Location = new System.Drawing.Point(109, 468);
             this.txtSpeedupFlooded2.Name = "txtSpeedupFlooded2";
             this.txtSpeedupFlooded2.Size = new System.Drawing.Size(50, 20);
             this.txtSpeedupFlooded2.TabIndex = 30;
@@ -578,7 +626,7 @@
             // lblSpeedupPrison
             // 
             this.lblSpeedupPrison.AutoSize = true;
-            this.lblSpeedupPrison.Location = new System.Drawing.Point(3, 413);
+            this.lblSpeedupPrison.Location = new System.Drawing.Point(3, 75);
             this.lblSpeedupPrison.Name = "lblSpeedupPrison";
             this.lblSpeedupPrison.Padding = new System.Windows.Forms.Padding(0, 5, 0, 0);
             this.lblSpeedupPrison.Size = new System.Drawing.Size(36, 18);
@@ -587,7 +635,7 @@
             // 
             // txtSpeedupPrison
             // 
-            this.txtSpeedupPrison.Location = new System.Drawing.Point(109, 416);
+            this.txtSpeedupPrison.Location = new System.Drawing.Point(109, 78);
             this.txtSpeedupPrison.Name = "txtSpeedupPrison";
             this.txtSpeedupPrison.Size = new System.Drawing.Size(50, 20);
             this.txtSpeedupPrison.TabIndex = 32;
@@ -595,7 +643,7 @@
             // lblSpeedupPostCat2
             // 
             this.lblSpeedupPostCat2.AutoSize = true;
-            this.lblSpeedupPostCat2.Location = new System.Drawing.Point(3, 439);
+            this.lblSpeedupPostCat2.Location = new System.Drawing.Point(3, 231);
             this.lblSpeedupPostCat2.Name = "lblSpeedupPostCat2";
             this.lblSpeedupPostCat2.Padding = new System.Windows.Forms.Padding(0, 5, 0, 0);
             this.lblSpeedupPostCat2.Size = new System.Drawing.Size(56, 18);
@@ -604,126 +652,126 @@
             // 
             // txtSpeedupPostCat2
             // 
-            this.txtSpeedupPostCat2.Location = new System.Drawing.Point(109, 442);
+            this.txtSpeedupPostCat2.Location = new System.Drawing.Point(109, 234);
             this.txtSpeedupPostCat2.Name = "txtSpeedupPostCat2";
             this.txtSpeedupPostCat2.Size = new System.Drawing.Size(50, 20);
             this.txtSpeedupPostCat2.TabIndex = 34;
             // 
             // txtDelayIntroEnd
             // 
-            this.txtDelayIntroEnd.Location = new System.Drawing.Point(165, 26);
+            this.txtDelayIntroEnd.Location = new System.Drawing.Point(165, 52);
             this.txtDelayIntroEnd.Name = "txtDelayIntroEnd";
             this.txtDelayIntroEnd.Size = new System.Drawing.Size(50, 20);
             this.txtDelayIntroEnd.TabIndex = 35;
             // 
             // txtDelayPostSewers
             // 
-            this.txtDelayPostSewers.Location = new System.Drawing.Point(165, 52);
+            this.txtDelayPostSewers.Location = new System.Drawing.Point(165, 104);
             this.txtDelayPostSewers.Name = "txtDelayPostSewers";
             this.txtDelayPostSewers.Size = new System.Drawing.Size(50, 20);
             this.txtDelayPostSewers.TabIndex = 36;
             // 
             // txtDelayCampbell
             // 
-            this.txtDelayCampbell.Location = new System.Drawing.Point(165, 78);
+            this.txtDelayCampbell.Location = new System.Drawing.Point(165, 130);
             this.txtDelayCampbell.Name = "txtDelayCampbell";
             this.txtDelayCampbell.Size = new System.Drawing.Size(50, 20);
             this.txtDelayCampbell.TabIndex = 37;
             // 
             // txtDelayPostCampbell
             // 
-            this.txtDelayPostCampbell.Location = new System.Drawing.Point(165, 104);
+            this.txtDelayPostCampbell.Location = new System.Drawing.Point(165, 156);
             this.txtDelayPostCampbell.Name = "txtDelayPostCampbell";
             this.txtDelayPostCampbell.Size = new System.Drawing.Size(50, 20);
             this.txtDelayPostCampbell.TabIndex = 38;
             // 
             // txtDelayCat
             // 
-            this.txtDelayCat.Location = new System.Drawing.Point(165, 130);
+            this.txtDelayCat.Location = new System.Drawing.Point(165, 182);
             this.txtDelayCat.Name = "txtDelayCat";
             this.txtDelayCat.Size = new System.Drawing.Size(50, 20);
             this.txtDelayCat.TabIndex = 39;
             // 
             // txtDelayPostCat
             // 
-            this.txtDelayPostCat.Location = new System.Drawing.Point(165, 156);
+            this.txtDelayPostCat.Location = new System.Drawing.Point(165, 208);
             this.txtDelayPostCat.Name = "txtDelayPostCat";
             this.txtDelayPostCat.Size = new System.Drawing.Size(50, 20);
             this.txtDelayPostCat.TabIndex = 40;
             // 
             // txtDelayBridge
             // 
-            this.txtDelayBridge.Location = new System.Drawing.Point(165, 182);
+            this.txtDelayBridge.Location = new System.Drawing.Point(165, 286);
             this.txtDelayBridge.Name = "txtDelayBridge";
             this.txtDelayBridge.Size = new System.Drawing.Size(50, 20);
             this.txtDelayBridge.TabIndex = 41;
             // 
             // txtDelayPostBridge
             // 
-            this.txtDelayPostBridge.Location = new System.Drawing.Point(165, 208);
+            this.txtDelayPostBridge.Location = new System.Drawing.Point(165, 312);
             this.txtDelayPostBridge.Name = "txtDelayPostBridge";
             this.txtDelayPostBridge.Size = new System.Drawing.Size(50, 20);
             this.txtDelayPostBridge.TabIndex = 42;
             // 
             // txtDelayBoyle
             // 
-            this.txtDelayBoyle.Location = new System.Drawing.Point(165, 234);
+            this.txtDelayBoyle.Location = new System.Drawing.Point(165, 338);
             this.txtDelayBoyle.Name = "txtDelayBoyle";
             this.txtDelayBoyle.Size = new System.Drawing.Size(50, 20);
             this.txtDelayBoyle.TabIndex = 43;
             // 
             // txtDelayPostBoyle
             // 
-            this.txtDelayPostBoyle.Location = new System.Drawing.Point(165, 260);
+            this.txtDelayPostBoyle.Location = new System.Drawing.Point(165, 364);
             this.txtDelayPostBoyle.Name = "txtDelayPostBoyle";
             this.txtDelayPostBoyle.Size = new System.Drawing.Size(50, 20);
             this.txtDelayPostBoyle.TabIndex = 44;
             // 
             // txtDelayTower
             // 
-            this.txtDelayTower.Location = new System.Drawing.Point(165, 286);
+            this.txtDelayTower.Location = new System.Drawing.Point(165, 390);
             this.txtDelayTower.Name = "txtDelayTower";
             this.txtDelayTower.Size = new System.Drawing.Size(50, 20);
             this.txtDelayTower.TabIndex = 45;
             // 
             // txtDelayPostTower
             // 
-            this.txtDelayPostTower.Location = new System.Drawing.Point(165, 312);
+            this.txtDelayPostTower.Location = new System.Drawing.Point(165, 416);
             this.txtDelayPostTower.Name = "txtDelayPostTower";
             this.txtDelayPostTower.Size = new System.Drawing.Size(50, 20);
             this.txtDelayPostTower.TabIndex = 46;
             // 
             // txtDelayFlooded
             // 
-            this.txtDelayFlooded.Location = new System.Drawing.Point(165, 338);
+            this.txtDelayFlooded.Location = new System.Drawing.Point(165, 442);
             this.txtDelayFlooded.Name = "txtDelayFlooded";
             this.txtDelayFlooded.Size = new System.Drawing.Size(50, 20);
             this.txtDelayFlooded.TabIndex = 47;
             // 
             // txtDelayKingsparrow
             // 
-            this.txtDelayKingsparrow.Location = new System.Drawing.Point(165, 364);
+            this.txtDelayKingsparrow.Location = new System.Drawing.Point(165, 520);
             this.txtDelayKingsparrow.Name = "txtDelayKingsparrow";
             this.txtDelayKingsparrow.Size = new System.Drawing.Size(50, 20);
             this.txtDelayKingsparrow.TabIndex = 48;
             // 
             // txtDelayFlooded2
             // 
-            this.txtDelayFlooded2.Location = new System.Drawing.Point(165, 390);
+            this.txtDelayFlooded2.Location = new System.Drawing.Point(165, 468);
             this.txtDelayFlooded2.Name = "txtDelayFlooded2";
             this.txtDelayFlooded2.Size = new System.Drawing.Size(50, 20);
             this.txtDelayFlooded2.TabIndex = 49;
             // 
             // txtDelayPrison
             // 
-            this.txtDelayPrison.Location = new System.Drawing.Point(165, 416);
+            this.txtDelayPrison.Location = new System.Drawing.Point(165, 78);
             this.txtDelayPrison.Name = "txtDelayPrison";
             this.txtDelayPrison.Size = new System.Drawing.Size(50, 20);
             this.txtDelayPrison.TabIndex = 50;
             // 
             // txtDelayPostCat2
             // 
-            this.txtDelayPostCat2.Location = new System.Drawing.Point(165, 442);
+            this.txtDelayPostCat2.Location = new System.Drawing.Point(165, 234);
             this.txtDelayPostCat2.Name = "txtDelayPostCat2";
             this.txtDelayPostCat2.Size = new System.Drawing.Size(50, 20);
             this.txtDelayPostCat2.TabIndex = 51;
@@ -749,7 +797,7 @@
             // lblSpeedupPostCat3
             // 
             this.lblSpeedupPostCat3.AutoSize = true;
-            this.lblSpeedupPostCat3.Location = new System.Drawing.Point(3, 465);
+            this.lblSpeedupPostCat3.Location = new System.Drawing.Point(3, 257);
             this.lblSpeedupPostCat3.Name = "lblSpeedupPostCat3";
             this.lblSpeedupPostCat3.Padding = new System.Windows.Forms.Padding(0, 5, 0, 0);
             this.lblSpeedupPostCat3.Size = new System.Drawing.Size(56, 18);
@@ -758,17 +806,62 @@
             // 
             // txtSpeedupPostCat3
             // 
-            this.txtSpeedupPostCat3.Location = new System.Drawing.Point(109, 468);
+            this.txtSpeedupPostCat3.Location = new System.Drawing.Point(109, 260);
             this.txtSpeedupPostCat3.Name = "txtSpeedupPostCat3";
             this.txtSpeedupPostCat3.Size = new System.Drawing.Size(50, 20);
             this.txtSpeedupPostCat3.TabIndex = 55;
             // 
-            // txtDelayPostCat3
+            // lblSpeedupIntro
             // 
-            this.txtDelayPostCat3.Location = new System.Drawing.Point(165, 468);
-            this.txtDelayPostCat3.Name = "txtDelayPostCat3";
-            this.txtDelayPostCat3.Size = new System.Drawing.Size(50, 20);
-            this.txtDelayPostCat3.TabIndex = 56;
+            this.lblSpeedupIntro.AutoSize = true;
+            this.lblSpeedupIntro.Location = new System.Drawing.Point(3, 23);
+            this.lblSpeedupIntro.Name = "lblSpeedupIntro";
+            this.lblSpeedupIntro.Padding = new System.Windows.Forms.Padding(0, 5, 0, 0);
+            this.lblSpeedupIntro.Size = new System.Drawing.Size(28, 18);
+            this.lblSpeedupIntro.TabIndex = 58;
+            this.lblSpeedupIntro.Text = "Intro";
+            // 
+            // txtSpeedupIntro
+            // 
+            this.txtSpeedupIntro.Location = new System.Drawing.Point(109, 26);
+            this.txtSpeedupIntro.Name = "txtSpeedupIntro";
+            this.txtSpeedupIntro.Size = new System.Drawing.Size(50, 20);
+            this.txtSpeedupIntro.TabIndex = 60;
+            // 
+            // txtDelayIntro
+            // 
+            this.txtDelayIntro.Location = new System.Drawing.Point(165, 26);
+            this.txtDelayIntro.Name = "txtDelayIntro";
+            this.txtDelayIntro.Size = new System.Drawing.Size(50, 20);
+            this.txtDelayIntro.TabIndex = 61;
+            // 
+            // txtSpeedupFloodedCell
+            // 
+            this.txtSpeedupFloodedCell.Location = new System.Drawing.Point(109, 494);
+            this.txtSpeedupFloodedCell.Name = "txtSpeedupFloodedCell";
+            this.txtSpeedupFloodedCell.Size = new System.Drawing.Size(50, 20);
+            this.txtSpeedupFloodedCell.TabIndex = 62;
+            // 
+            // txtDelayFloodedCell
+            // 
+            this.txtDelayFloodedCell.Location = new System.Drawing.Point(165, 494);
+            this.txtDelayFloodedCell.Name = "txtDelayFloodedCell";
+            this.txtDelayFloodedCell.Size = new System.Drawing.Size(50, 20);
+            this.txtDelayFloodedCell.TabIndex = 63;
+            // 
+            // txtDelayLighthouse
+            // 
+            this.txtDelayLighthouse.Location = new System.Drawing.Point(165, 546);
+            this.txtDelayLighthouse.Name = "txtDelayLighthouse";
+            this.txtDelayLighthouse.Size = new System.Drawing.Size(50, 20);
+            this.txtDelayLighthouse.TabIndex = 64;
+            // 
+            // txtSpeedupLighthouse
+            // 
+            this.txtSpeedupLighthouse.Location = new System.Drawing.Point(109, 546);
+            this.txtSpeedupLighthouse.Name = "txtSpeedupLighthouse";
+            this.txtSpeedupLighthouse.Size = new System.Drawing.Size(50, 20);
+            this.txtSpeedupLighthouse.TabIndex = 65;
             // 
             // DishonoredSettings
             // 
@@ -776,7 +869,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.tlpMain);
             this.Name = "DishonoredSettings";
-            this.Size = new System.Drawing.Size(476, 681);
+            this.Size = new System.Drawing.Size(476, 759);
             this.tlpMain.ResumeLayout(false);
             this.tlpMain.PerformLayout();
             this.gbAutoSplit.ResumeLayout(false);
@@ -861,5 +954,14 @@
         private System.Windows.Forms.TextBox txtDelayPostCat3;
         private System.Windows.Forms.Label lblSpeedupPostCat3;
         private System.Windows.Forms.TextBox txtSpeedupPostCat3;
+        private System.Windows.Forms.Label lblLighthouse;
+        private System.Windows.Forms.Label lblFloodedCell;
+        private System.Windows.Forms.Label lblSpeedupIntro;
+        private System.Windows.Forms.TextBox txtSpeedupLighthouse;
+        private System.Windows.Forms.TextBox txtSpeedupIntro;
+        private System.Windows.Forms.TextBox txtDelayIntro;
+        private System.Windows.Forms.TextBox txtSpeedupFloodedCell;
+        private System.Windows.Forms.TextBox txtDelayFloodedCell;
+        private System.Windows.Forms.TextBox txtDelayLighthouse;
     }
 }

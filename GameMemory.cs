@@ -69,6 +69,7 @@ namespace LiveSplit.Dishonored
         public enum Level
         {
             None,
+            MainMenu,
             Intro,
             Prison,
             Sewers,
@@ -92,24 +93,54 @@ namespace LiveSplit.Dishonored
             TowerReturnInterior,
             FloodedIntro,
             FloodedStreets,
+            FloodedRefinery,
             FloodedAssassins,
             FloodedGate,
             FloodedSewers,
             Loyalists,
             KingsparrowIsland,
             KingsparrowLighthouse,
+            Outro,
+        }
+
+        public enum Movie
+        {
+            None,
+            Intro,
+            DishonoredLogo,
+            Loading,
+            LoadingSaving,
+            LoadingIntro,
+            LoadingPrison,
+            LoadingSewers,
+            LoadingPub,
+            LoadingVoid,
+            LoadingStreets,
+            LoadingBridge,
+            LoadingBridge2,
+            LoadingBoyle,
+            LoadingTowerReturn,
+            LoadingTowerReturn2,
+            LoadingFlooded,
+            LoadingAssassinsHQ,
+            LoadingStreetsSewers,
+            LoadingKingsparrow,
+            LoadingOutro,
+            Credits,
         }
 
         public event EventHandler OnFirstLevelLoading;
         public event EventHandler OnPlayerGainedControl;
         public event EventHandler OnLoadStarted;
-        public delegate void LoadFinishedHandler(object sender, Level previousLevel, Level currentLevel, float playerPosX);
+        public delegate void LoadFinishedHandler(object sender, Level previousLevel, Level currentLevel, Movie movie, float playerPosX);
         public event LoadFinishedHandler OnLoadFinished;
         public event EventHandler OnPlayerLostControl;
         public delegate void AreaCompletedEventHandler(object sender, AreaCompletionType type);
         public event AreaCompletedEventHandler OnAreaCompleted;
         public delegate void CutsceneStartedHandler(object sender, Level level, float playerPosX, bool isLoading);
         public event CutsceneStartedHandler OnCutsceneStarted;
+        public delegate void MovieEndedHandler(object sender, Movie movie);
+        public event MovieEndedHandler OnMovieEnded;
 
         private List<int> _ignorePIDs;
 
@@ -131,11 +162,12 @@ namespace LiveSplit.Dishonored
         {
             ["LoadingSewers|L_Prison_"]    = AreaCompletionType.PrisonEscape,
             ["LoadingStreets|L_Pub_Dusk_"] = AreaCompletionType.OutsidersDream,
-            ["LoadingStreets|L_Pub_Day_"]  = AreaCompletionType.Weepers
+            ["LoadingStreets|L_Pub_Day_"]  = AreaCompletionType.Weepers,
         };
 
         private Dictionary<string, Level> _levels = new Dictionary<string, Level>
         {
+            ["Dishonored_MainMenu"] = Level.MainMenu,
             ["l_tower_"] = Level.Intro,
             ["L_Prison_"] = Level.Prison,
             ["L_PrsnSewer_"] = Level.Sewers,
@@ -159,12 +191,39 @@ namespace LiveSplit.Dishonored
             ["L_TowerRtrn_Int_"] = Level.TowerReturnInterior,
             ["L_Flooded_FIntro_"] = Level.FloodedIntro,
             ["L_Flooded_FStreets_"] = Level.FloodedStreets,
+            ["L_Flooded_FRefinery_"] = Level.FloodedRefinery,
             ["L_Flooded_FAssassins_"] = Level.FloodedAssassins,
             ["L_Flooded_FGate_"] = Level.FloodedGate,
             ["L_Streetsewer_"] = Level.FloodedSewers,
             ["L_Pub_Assault_"] = Level.Loyalists,
             ["L_Isl_"] = Level.KingsparrowIsland,
             ["L_LightH_"] = Level.KingsparrowLighthouse,
+            ["L_Out_"] = Level.Outro,
+        };
+
+        private Dictionary<string, Movie> _movies = new Dictionary<string, Movie>
+        {
+            ["INTRO_LOC"] = Movie.Intro,
+            ["Dishonored"] = Movie.DishonoredLogo,
+            ["Loading"] = Movie.Loading,
+            ["LoadingSavingNotification"] = Movie.LoadingSaving,
+            ["LoadingEmpressTower"] = Movie.LoadingIntro,
+            ["LoadingPrison"] = Movie.LoadingPrison,
+            ["LoadingSewers"] = Movie.LoadingSewers,
+            ["LoadingHUB"] = Movie.LoadingPub,
+            ["LoadingVoid"] = Movie.LoadingVoid,
+            ["LoadingStreets"] = Movie.LoadingStreets,
+            ["LoadingBridge"] = Movie.LoadingBridge,
+            ["LoadingBridge2"] = Movie.LoadingBridge2,
+            ["LoadingBoyle"] = Movie.LoadingBoyle,
+            ["LoadingTowerReturn"] = Movie.LoadingTowerReturn,
+            ["LoadingTowerReturn2"] = Movie.LoadingTowerReturn2,
+            ["LoadingFlooded"] = Movie.LoadingFlooded,
+            ["LoadingAssassinsHQ"] = Movie.LoadingAssassinsHQ,
+            ["LoadingStreetsSewers"] = Movie.LoadingStreetsSewers,
+            ["LoadingLighthouse"] = Movie.LoadingKingsparrow,
+            ["LoadingOutro"] = Movie.LoadingOutro,
+            ["Credits"] = Movie.Credits,
         };
 
         public GameMemory()
@@ -240,13 +299,23 @@ namespace LiveSplit.Dishonored
                     if (_loadingStarted)
                     {
                         _loadingStarted = false;
-                        OnLoadFinished?.Invoke(this, _previousLevel, level, _data.PlayerPosX.Current);
+                        var movie = _movies.Where(m => currentMovie == m.Key).Select(m => m.Value).FirstOrDefault();
+                        OnLoadFinished?.Invoke(this, _previousLevel, level, movie, _data.PlayerPosX.Current);
                     }
 
                     if (((currentMovie == "LoadingEmpressTower" || currentMovie == "INTRO_LOC") && currentLevelStr == "l_tower_p")
                         || (currentMovie == "Loading" || currentMovie == "LoadingDLC06Tower") && currentLevelStr == "DLC06_Tower_P") // KoD
                     {
                         OnPlayerGainedControl?.Invoke(this, EventArgs.Empty);
+                    }
+
+                    if (!currentMovie.StartsWith("Loading"))
+                    {
+                        var movie = _movies.Where(m => currentMovie == m.Key).Select(m => m.Value).FirstOrDefault();
+                        if (movie != Movie.None)
+                        {
+                            OnMovieEnded?.Invoke(this, movie);
+                        }
                     }
                 }
             }
