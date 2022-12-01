@@ -35,7 +35,6 @@ namespace LiveSplit.Dishonored
         public Level PreviousLevel { get; set; }
         public Level NextLevel { get; set; }
         public string Setting { get; set; }
-        public int Delay { get; set; }
 
         public bool Matches(Level previousLevel, Level nextLevel)
         {
@@ -61,25 +60,32 @@ namespace LiveSplit.Dishonored
 
         private List<CutsceneSpeedup> _cutsceneSpeedups = new List<CutsceneSpeedup>
         {
-            new CutsceneSpeedup { Level = Level.Intro, PlayerPosX = 15476f, Setting = "SpeedupIntroEnd" },
+            new CutsceneSpeedup { Level = Level.Intro, PlayerPosX = 15476f, Setting = "IntroEnd" },
         };
 
         private List<LoadSpeedup> _loadSpeedups = new List<LoadSpeedup>
         {
-            new LoadSpeedup { PreviousLevel = Level.Intro, NextLevel = Level.Prison, Setting = "SpeedupPrison", Delay = 1500 },
-            new LoadSpeedup { PreviousLevel = Level.Sewers, NextLevel = Level.PubDay, Setting = "SpeedupPostSewers", Delay = 1500 },
-            new LoadSpeedup { PreviousLevel = Level.PubDusk, NextLevel = Level.CampbellStreets, Setting = "SpeedupCampbell", Delay = 1500 },
-            new LoadSpeedup { PreviousLevel = Level.CampbellBack, NextLevel = Level.PubMorning, Setting = "SpeedupPostCampbell", Delay = 1500 },
-            new LoadSpeedup { PreviousLevel = Level.PubDay, NextLevel = Level.CatStreets, Setting = "SpeedupCat", Delay = 1500 },
-            new LoadSpeedup { PreviousLevel = Level.CatStreets, NextLevel = Level.PubDusk, Setting = "SpeedupPostCat", Delay = 1500 },
-            new LoadSpeedup { PreviousLevel = Level.PubDusk, NextLevel = Level.Bridge1, Setting = "SpeedupBridge", Delay = 1500 },
-            new LoadSpeedup { PreviousLevel = Level.Bridge4, NextLevel = Level.PubNight, Setting = "SpeedupPostBridge", Delay = 1500 },
-            new LoadSpeedup { PreviousLevel = Level.PubDay, NextLevel = Level.BoyleExterior, Setting = "SpeedupBoyle", Delay = 1500 },
-            new LoadSpeedup { PreviousLevel = Level.BoyleExterior, NextLevel = Level.PubMorning, Setting = "SpeedupPostBoyle", Delay = 1500 },
-            new LoadSpeedup { PreviousLevel = Level.PubMorning, NextLevel = Level.TowerReturnYard, Setting = "SpeedupTower", Delay = 1500 },
-            new LoadSpeedup { PreviousLevel = Level.TowerReturnYard, NextLevel = Level.PubDusk, Setting = "SpeedupPostTower", Delay = 1500 },
-            new LoadSpeedup { PreviousLevel = Level.PubDusk, NextLevel = Level.FloodedIntro, Setting = "SpeedupFlooded", Delay = 1500 },
-            new LoadSpeedup { PreviousLevel = Level.Loyalists, NextLevel = Level.KingsparrowIsland, Setting = "SpeedupKingsparrow", Delay = 1500 },
+            new LoadSpeedup { PreviousLevel = Level.Intro, NextLevel = Level.Prison, Setting = "Prison" },
+            new LoadSpeedup { PreviousLevel = Level.Sewers, NextLevel = Level.PubDay, Setting = "PostSewers" },
+            new LoadSpeedup { PreviousLevel = Level.PubDusk, NextLevel = Level.CampbellStreets, Setting = "Campbell" },
+            new LoadSpeedup { PreviousLevel = Level.CampbellBack, NextLevel = Level.PubMorning, Setting = "PostCampbell" },
+            new LoadSpeedup { PreviousLevel = Level.PubDay, NextLevel = Level.CatStreets, Setting = "Cat" },
+            new LoadSpeedup { PreviousLevel = Level.CatStreets, NextLevel = Level.PubDusk, Setting = "PostCat" },
+            new LoadSpeedup { PreviousLevel = Level.PubDusk, NextLevel = Level.Bridge1, Setting = "Bridge" },
+            new LoadSpeedup { PreviousLevel = Level.Bridge4, NextLevel = Level.PubNight, Setting = "PostBridge" },
+            new LoadSpeedup { PreviousLevel = Level.PubDay, NextLevel = Level.BoyleExterior, Setting = "Boyle" },
+            new LoadSpeedup { PreviousLevel = Level.BoyleExterior, NextLevel = Level.PubMorning, Setting = "PostBoyle" },
+            new LoadSpeedup { PreviousLevel = Level.PubMorning, NextLevel = Level.TowerReturnYard, Setting = "Tower" },
+            new LoadSpeedup { PreviousLevel = Level.TowerReturnYard, NextLevel = Level.PubDusk, Setting = "PostTower" },
+            new LoadSpeedup { PreviousLevel = Level.PubDusk, NextLevel = Level.FloodedIntro, Setting = "Flooded" },
+            new LoadSpeedup { PreviousLevel = Level.Loyalists, NextLevel = Level.KingsparrowIsland, Setting = "Kingsparrow" },
+        };
+
+        private Dictionary<string, string> _speedupFollowups = new Dictionary<string, string>
+        {
+            ["PostCat"] = "PostCat2",
+            ["PostCat2"] = "PostCat3",
+            ["Flooded"] = "Flooded2",
         };
 
         public DishonoredComponent(LiveSplitState state)
@@ -198,7 +204,7 @@ namespace LiveSplit.Dishonored
             if (speedup != null)
             {
                 Debug.WriteLine($"Found load speedup for level {speedup.PreviousLevel} -> {speedup.NextLevel}, setting {speedup.Setting}");
-                DelaySpeedup(speedup.Setting, speedup.Delay);
+                DelaySpeedup(speedup.Setting);
             }
         }
 
@@ -230,8 +236,15 @@ namespace LiveSplit.Dishonored
             }
         }
 
-        void DelaySpeedup(string setting, int delay)
+        void DelaySpeedup(string setting)
         {
+            var delay = GetDuration($"Delay{setting}");
+            if (delay <= 0)
+            {
+                TriggerSpeedup(setting);
+                return;
+            }
+
             _pendingSpeedup = setting;
             _cutsceneTimer.Interval = delay;
             _cutsceneTimer.Start();
@@ -240,13 +253,14 @@ namespace LiveSplit.Dishonored
         void TriggerSpeedup(string setting)
         {
             _pendingSpeedup = null;
+            var duration = GetDuration($"Speedup{setting}");
 
-            if (!Settings.CutsceneSpeedup || _cutsceneTimer.Enabled)
+            if (!Settings.CutsceneSpeedup || _cutsceneTimer.Enabled || duration <= 0)
                 return;
             
             SendKeys.Send("{F7}");
             _timeMultiplier = 10;
-            _cutsceneTimer.Interval = GetDuration(setting);
+            _cutsceneTimer.Interval = duration;
             _cutsceneTimer.Start();
             _currentSpeedup = setting;
         }
@@ -256,12 +270,9 @@ namespace LiveSplit.Dishonored
             SendKeys.Send("{F6}");
             _timeMultiplier = 1;
 
-            if (!stopAll)
+            if (!stopAll && _currentSpeedup != null && _speedupFollowups.ContainsKey(_currentSpeedup))
             {
-                if (_currentSpeedup == "SpeedupFlooded")
-                    DelaySpeedup("SpeedupFlooded2", 8000);
-                if (_currentSpeedup == "SpeedupPostCat")
-                    DelaySpeedup("SpeedupPostCat2", 500);
+                DelaySpeedup(_speedupFollowups[_currentSpeedup]);
             }
 
             _currentSpeedup = null;
@@ -269,9 +280,7 @@ namespace LiveSplit.Dishonored
 
         int GetDuration(string setting)
         {
-            var thing = typeof(DishonoredSettings).GetProperty(setting).GetValue(Settings, null);
-            Debug.WriteLine($"setting {setting} gave value {thing}");
-            return (int)thing;
+            return (int)typeof(DishonoredSettings).GetProperty(setting).GetValue(Settings, null);
         }
 
         public override XmlNode GetSettings(XmlDocument document)

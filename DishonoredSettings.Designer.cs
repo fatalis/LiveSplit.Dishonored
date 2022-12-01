@@ -74,6 +74,28 @@
             this.txtSpeedupPrison = new System.Windows.Forms.TextBox();
             this.lblSpeedupPostCat2 = new System.Windows.Forms.Label();
             this.txtSpeedupPostCat2 = new System.Windows.Forms.TextBox();
+            this.txtDelayIntroEnd = new System.Windows.Forms.TextBox();
+            this.txtDelayPostSewers = new System.Windows.Forms.TextBox();
+            this.txtDelayCampbell = new System.Windows.Forms.TextBox();
+            this.txtDelayPostCampbell = new System.Windows.Forms.TextBox();
+            this.txtDelayCat = new System.Windows.Forms.TextBox();
+            this.txtDelayPostCat = new System.Windows.Forms.TextBox();
+            this.txtDelayBridge = new System.Windows.Forms.TextBox();
+            this.txtDelayPostBridge = new System.Windows.Forms.TextBox();
+            this.txtDelayBoyle = new System.Windows.Forms.TextBox();
+            this.txtDelayPostBoyle = new System.Windows.Forms.TextBox();
+            this.txtDelayTower = new System.Windows.Forms.TextBox();
+            this.txtDelayPostTower = new System.Windows.Forms.TextBox();
+            this.txtDelayFlooded = new System.Windows.Forms.TextBox();
+            this.txtDelayKingsparrow = new System.Windows.Forms.TextBox();
+            this.txtDelayFlooded2 = new System.Windows.Forms.TextBox();
+            this.txtDelayPrison = new System.Windows.Forms.TextBox();
+            this.txtDelayPostCat2 = new System.Windows.Forms.TextBox();
+            this.lblDurationHeader = new System.Windows.Forms.Label();
+            this.lblDelayHeader = new System.Windows.Forms.Label();
+            this.lblSpeedupPostCat3 = new System.Windows.Forms.Label();
+            this.txtSpeedupPostCat3 = new System.Windows.Forms.TextBox();
+            this.txtDelayPostCat3 = new System.Windows.Forms.TextBox();
             this.tlpMain.SuspendLayout();
             this.gbAutoSplit.SuspendLayout();
             this.tlpAutoSplit.SuspendLayout();
@@ -93,7 +115,7 @@
             this.tlpMain.RowCount = 2;
             this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlpMain.Size = new System.Drawing.Size(476, 654);
+            this.tlpMain.Size = new System.Drawing.Size(476, 681);
             this.tlpMain.TabIndex = 0;
             // 
             // gbAutoSplit
@@ -202,7 +224,7 @@
             this.gbCutsceneSpeedup.Dock = System.Windows.Forms.DockStyle.Fill;
             this.gbCutsceneSpeedup.Location = new System.Drawing.Point(3, 166);
             this.gbCutsceneSpeedup.Name = "gbCutsceneSpeedup";
-            this.gbCutsceneSpeedup.Size = new System.Drawing.Size(470, 485);
+            this.gbCutsceneSpeedup.Size = new System.Drawing.Size(470, 512);
             this.gbCutsceneSpeedup.TabIndex = 5;
             this.gbCutsceneSpeedup.TabStop = false;
             this.gbCutsceneSpeedup.Text = "Cutscene Speedups";
@@ -210,9 +232,11 @@
             // tlpCutsceneSpeedup
             // 
             this.tlpCutsceneSpeedup.AutoSize = true;
-            this.tlpCutsceneSpeedup.ColumnCount = 2;
+            this.tlpCutsceneSpeedup.ColumnCount = 3;
             this.tlpCutsceneSpeedup.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
             this.tlpCutsceneSpeedup.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.tlpCutsceneSpeedup.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.tlpCutsceneSpeedup.Controls.Add(this.txtDelayPostCat3, 2, 18);
             this.tlpCutsceneSpeedup.Controls.Add(this.chkCutsceneSpeedup, 0, 0);
             this.tlpCutsceneSpeedup.Controls.Add(this.lblSpeedupIntroEnd, 0, 1);
             this.tlpCutsceneSpeedup.Controls.Add(this.txtSpeedupIntroEnd, 1, 1);
@@ -248,10 +272,31 @@
             this.tlpCutsceneSpeedup.Controls.Add(this.txtSpeedupPrison, 1, 16);
             this.tlpCutsceneSpeedup.Controls.Add(this.lblSpeedupPostCat2, 0, 17);
             this.tlpCutsceneSpeedup.Controls.Add(this.txtSpeedupPostCat2, 1, 17);
+            this.tlpCutsceneSpeedup.Controls.Add(this.txtDelayIntroEnd, 2, 1);
+            this.tlpCutsceneSpeedup.Controls.Add(this.txtDelayPostSewers, 2, 2);
+            this.tlpCutsceneSpeedup.Controls.Add(this.txtDelayCampbell, 2, 3);
+            this.tlpCutsceneSpeedup.Controls.Add(this.txtDelayPostCampbell, 2, 4);
+            this.tlpCutsceneSpeedup.Controls.Add(this.txtDelayCat, 2, 5);
+            this.tlpCutsceneSpeedup.Controls.Add(this.txtDelayPostCat, 2, 6);
+            this.tlpCutsceneSpeedup.Controls.Add(this.txtDelayBridge, 2, 7);
+            this.tlpCutsceneSpeedup.Controls.Add(this.txtDelayPostBridge, 2, 8);
+            this.tlpCutsceneSpeedup.Controls.Add(this.txtDelayBoyle, 2, 9);
+            this.tlpCutsceneSpeedup.Controls.Add(this.txtDelayPostBoyle, 2, 10);
+            this.tlpCutsceneSpeedup.Controls.Add(this.txtDelayTower, 2, 11);
+            this.tlpCutsceneSpeedup.Controls.Add(this.txtDelayPostTower, 2, 12);
+            this.tlpCutsceneSpeedup.Controls.Add(this.txtDelayFlooded, 2, 13);
+            this.tlpCutsceneSpeedup.Controls.Add(this.txtDelayKingsparrow, 2, 14);
+            this.tlpCutsceneSpeedup.Controls.Add(this.txtDelayFlooded2, 2, 15);
+            this.tlpCutsceneSpeedup.Controls.Add(this.txtDelayPrison, 2, 16);
+            this.tlpCutsceneSpeedup.Controls.Add(this.txtDelayPostCat2, 2, 17);
+            this.tlpCutsceneSpeedup.Controls.Add(this.lblDurationHeader, 1, 0);
+            this.tlpCutsceneSpeedup.Controls.Add(this.lblDelayHeader, 2, 0);
+            this.tlpCutsceneSpeedup.Controls.Add(this.lblSpeedupPostCat3, 0, 18);
+            this.tlpCutsceneSpeedup.Controls.Add(this.txtSpeedupPostCat3, 1, 18);
             this.tlpCutsceneSpeedup.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tlpCutsceneSpeedup.Location = new System.Drawing.Point(3, 16);
             this.tlpCutsceneSpeedup.Name = "tlpCutsceneSpeedup";
-            this.tlpCutsceneSpeedup.RowCount = 18;
+            this.tlpCutsceneSpeedup.RowCount = 19;
             this.tlpCutsceneSpeedup.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpCutsceneSpeedup.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpCutsceneSpeedup.RowStyles.Add(new System.Windows.Forms.RowStyle());
@@ -270,7 +315,8 @@
             this.tlpCutsceneSpeedup.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpCutsceneSpeedup.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpCutsceneSpeedup.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlpCutsceneSpeedup.Size = new System.Drawing.Size(464, 466);
+            this.tlpCutsceneSpeedup.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+            this.tlpCutsceneSpeedup.Size = new System.Drawing.Size(464, 493);
             this.tlpCutsceneSpeedup.TabIndex = 0;
             // 
             // chkCutsceneSpeedup
@@ -563,13 +609,174 @@
             this.txtSpeedupPostCat2.Size = new System.Drawing.Size(50, 20);
             this.txtSpeedupPostCat2.TabIndex = 34;
             // 
+            // txtDelayIntroEnd
+            // 
+            this.txtDelayIntroEnd.Location = new System.Drawing.Point(165, 26);
+            this.txtDelayIntroEnd.Name = "txtDelayIntroEnd";
+            this.txtDelayIntroEnd.Size = new System.Drawing.Size(50, 20);
+            this.txtDelayIntroEnd.TabIndex = 35;
+            // 
+            // txtDelayPostSewers
+            // 
+            this.txtDelayPostSewers.Location = new System.Drawing.Point(165, 52);
+            this.txtDelayPostSewers.Name = "txtDelayPostSewers";
+            this.txtDelayPostSewers.Size = new System.Drawing.Size(50, 20);
+            this.txtDelayPostSewers.TabIndex = 36;
+            // 
+            // txtDelayCampbell
+            // 
+            this.txtDelayCampbell.Location = new System.Drawing.Point(165, 78);
+            this.txtDelayCampbell.Name = "txtDelayCampbell";
+            this.txtDelayCampbell.Size = new System.Drawing.Size(50, 20);
+            this.txtDelayCampbell.TabIndex = 37;
+            // 
+            // txtDelayPostCampbell
+            // 
+            this.txtDelayPostCampbell.Location = new System.Drawing.Point(165, 104);
+            this.txtDelayPostCampbell.Name = "txtDelayPostCampbell";
+            this.txtDelayPostCampbell.Size = new System.Drawing.Size(50, 20);
+            this.txtDelayPostCampbell.TabIndex = 38;
+            // 
+            // txtDelayCat
+            // 
+            this.txtDelayCat.Location = new System.Drawing.Point(165, 130);
+            this.txtDelayCat.Name = "txtDelayCat";
+            this.txtDelayCat.Size = new System.Drawing.Size(50, 20);
+            this.txtDelayCat.TabIndex = 39;
+            // 
+            // txtDelayPostCat
+            // 
+            this.txtDelayPostCat.Location = new System.Drawing.Point(165, 156);
+            this.txtDelayPostCat.Name = "txtDelayPostCat";
+            this.txtDelayPostCat.Size = new System.Drawing.Size(50, 20);
+            this.txtDelayPostCat.TabIndex = 40;
+            // 
+            // txtDelayBridge
+            // 
+            this.txtDelayBridge.Location = new System.Drawing.Point(165, 182);
+            this.txtDelayBridge.Name = "txtDelayBridge";
+            this.txtDelayBridge.Size = new System.Drawing.Size(50, 20);
+            this.txtDelayBridge.TabIndex = 41;
+            // 
+            // txtDelayPostBridge
+            // 
+            this.txtDelayPostBridge.Location = new System.Drawing.Point(165, 208);
+            this.txtDelayPostBridge.Name = "txtDelayPostBridge";
+            this.txtDelayPostBridge.Size = new System.Drawing.Size(50, 20);
+            this.txtDelayPostBridge.TabIndex = 42;
+            // 
+            // txtDelayBoyle
+            // 
+            this.txtDelayBoyle.Location = new System.Drawing.Point(165, 234);
+            this.txtDelayBoyle.Name = "txtDelayBoyle";
+            this.txtDelayBoyle.Size = new System.Drawing.Size(50, 20);
+            this.txtDelayBoyle.TabIndex = 43;
+            // 
+            // txtDelayPostBoyle
+            // 
+            this.txtDelayPostBoyle.Location = new System.Drawing.Point(165, 260);
+            this.txtDelayPostBoyle.Name = "txtDelayPostBoyle";
+            this.txtDelayPostBoyle.Size = new System.Drawing.Size(50, 20);
+            this.txtDelayPostBoyle.TabIndex = 44;
+            // 
+            // txtDelayTower
+            // 
+            this.txtDelayTower.Location = new System.Drawing.Point(165, 286);
+            this.txtDelayTower.Name = "txtDelayTower";
+            this.txtDelayTower.Size = new System.Drawing.Size(50, 20);
+            this.txtDelayTower.TabIndex = 45;
+            // 
+            // txtDelayPostTower
+            // 
+            this.txtDelayPostTower.Location = new System.Drawing.Point(165, 312);
+            this.txtDelayPostTower.Name = "txtDelayPostTower";
+            this.txtDelayPostTower.Size = new System.Drawing.Size(50, 20);
+            this.txtDelayPostTower.TabIndex = 46;
+            // 
+            // txtDelayFlooded
+            // 
+            this.txtDelayFlooded.Location = new System.Drawing.Point(165, 338);
+            this.txtDelayFlooded.Name = "txtDelayFlooded";
+            this.txtDelayFlooded.Size = new System.Drawing.Size(50, 20);
+            this.txtDelayFlooded.TabIndex = 47;
+            // 
+            // txtDelayKingsparrow
+            // 
+            this.txtDelayKingsparrow.Location = new System.Drawing.Point(165, 364);
+            this.txtDelayKingsparrow.Name = "txtDelayKingsparrow";
+            this.txtDelayKingsparrow.Size = new System.Drawing.Size(50, 20);
+            this.txtDelayKingsparrow.TabIndex = 48;
+            // 
+            // txtDelayFlooded2
+            // 
+            this.txtDelayFlooded2.Location = new System.Drawing.Point(165, 390);
+            this.txtDelayFlooded2.Name = "txtDelayFlooded2";
+            this.txtDelayFlooded2.Size = new System.Drawing.Size(50, 20);
+            this.txtDelayFlooded2.TabIndex = 49;
+            // 
+            // txtDelayPrison
+            // 
+            this.txtDelayPrison.Location = new System.Drawing.Point(165, 416);
+            this.txtDelayPrison.Name = "txtDelayPrison";
+            this.txtDelayPrison.Size = new System.Drawing.Size(50, 20);
+            this.txtDelayPrison.TabIndex = 50;
+            // 
+            // txtDelayPostCat2
+            // 
+            this.txtDelayPostCat2.Location = new System.Drawing.Point(165, 442);
+            this.txtDelayPostCat2.Name = "txtDelayPostCat2";
+            this.txtDelayPostCat2.Size = new System.Drawing.Size(50, 20);
+            this.txtDelayPostCat2.TabIndex = 51;
+            // 
+            // lblDurationHeader
+            // 
+            this.lblDurationHeader.AutoSize = true;
+            this.lblDurationHeader.Location = new System.Drawing.Point(109, 0);
+            this.lblDurationHeader.Name = "lblDurationHeader";
+            this.lblDurationHeader.Size = new System.Drawing.Size(47, 13);
+            this.lblDurationHeader.TabIndex = 52;
+            this.lblDurationHeader.Text = "Duration";
+            // 
+            // lblDelayHeader
+            // 
+            this.lblDelayHeader.AutoSize = true;
+            this.lblDelayHeader.Location = new System.Drawing.Point(165, 0);
+            this.lblDelayHeader.Name = "lblDelayHeader";
+            this.lblDelayHeader.Size = new System.Drawing.Size(34, 13);
+            this.lblDelayHeader.TabIndex = 53;
+            this.lblDelayHeader.Text = "Delay";
+            // 
+            // lblSpeedupPostCat3
+            // 
+            this.lblSpeedupPostCat3.AutoSize = true;
+            this.lblSpeedupPostCat3.Location = new System.Drawing.Point(3, 465);
+            this.lblSpeedupPostCat3.Name = "lblSpeedupPostCat3";
+            this.lblSpeedupPostCat3.Padding = new System.Windows.Forms.Padding(0, 5, 0, 0);
+            this.lblSpeedupPostCat3.Size = new System.Drawing.Size(56, 18);
+            this.lblSpeedupPostCat3.TabIndex = 54;
+            this.lblSpeedupPostCat3.Text = "Post Cat 3";
+            // 
+            // txtSpeedupPostCat3
+            // 
+            this.txtSpeedupPostCat3.Location = new System.Drawing.Point(109, 468);
+            this.txtSpeedupPostCat3.Name = "txtSpeedupPostCat3";
+            this.txtSpeedupPostCat3.Size = new System.Drawing.Size(50, 20);
+            this.txtSpeedupPostCat3.TabIndex = 55;
+            // 
+            // txtDelayPostCat3
+            // 
+            this.txtDelayPostCat3.Location = new System.Drawing.Point(165, 468);
+            this.txtDelayPostCat3.Name = "txtDelayPostCat3";
+            this.txtDelayPostCat3.Size = new System.Drawing.Size(50, 20);
+            this.txtDelayPostCat3.TabIndex = 56;
+            // 
             // DishonoredSettings
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.tlpMain);
             this.Name = "DishonoredSettings";
-            this.Size = new System.Drawing.Size(476, 654);
+            this.Size = new System.Drawing.Size(476, 681);
             this.tlpMain.ResumeLayout(false);
             this.tlpMain.PerformLayout();
             this.gbAutoSplit.ResumeLayout(false);
@@ -632,5 +839,27 @@
         private System.Windows.Forms.TextBox txtSpeedupPrison;
         private System.Windows.Forms.Label lblSpeedupPostCat2;
         private System.Windows.Forms.TextBox txtSpeedupPostCat2;
+        private System.Windows.Forms.TextBox txtDelayIntroEnd;
+        private System.Windows.Forms.TextBox txtDelayPostSewers;
+        private System.Windows.Forms.TextBox txtDelayCampbell;
+        private System.Windows.Forms.TextBox txtDelayPostCampbell;
+        private System.Windows.Forms.TextBox txtDelayCat;
+        private System.Windows.Forms.TextBox txtDelayPostCat;
+        private System.Windows.Forms.TextBox txtDelayBridge;
+        private System.Windows.Forms.TextBox txtDelayPostBridge;
+        private System.Windows.Forms.TextBox txtDelayBoyle;
+        private System.Windows.Forms.TextBox txtDelayPostBoyle;
+        private System.Windows.Forms.TextBox txtDelayTower;
+        private System.Windows.Forms.TextBox txtDelayPostTower;
+        private System.Windows.Forms.TextBox txtDelayFlooded;
+        private System.Windows.Forms.TextBox txtDelayKingsparrow;
+        private System.Windows.Forms.TextBox txtDelayFlooded2;
+        private System.Windows.Forms.TextBox txtDelayPrison;
+        private System.Windows.Forms.TextBox txtDelayPostCat2;
+        private System.Windows.Forms.Label lblDurationHeader;
+        private System.Windows.Forms.Label lblDelayHeader;
+        private System.Windows.Forms.TextBox txtDelayPostCat3;
+        private System.Windows.Forms.Label lblSpeedupPostCat3;
+        private System.Windows.Forms.TextBox txtSpeedupPostCat3;
     }
 }

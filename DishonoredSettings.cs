@@ -31,6 +31,25 @@ namespace LiveSplit.Dishonored
         public int SpeedupFlooded2 { get; set; }
         public int SpeedupPrison { get; set; }
         public int SpeedupPostCat2 { get; set; }
+        public int SpeedupPostCat3 { get; set; }
+        public int DelayIntroEnd { get; set; }
+        public int DelayPostSewers { get; set; }
+        public int DelayCampbell { get; set; }
+        public int DelayPostCampbell { get; set; }
+        public int DelayCat { get; set; }
+        public int DelayPostCat { get; set; }
+        public int DelayBridge { get; set; }
+        public int DelayPostBridge { get; set; }
+        public int DelayBoyle { get; set; }
+        public int DelayPostBoyle { get; set; }
+        public int DelayTower { get; set; }
+        public int DelayPostTower { get; set; }
+        public int DelayFlooded { get; set; }
+        public int DelayKingsparrow { get; set; }
+        public int DelayFlooded2 { get; set; }
+        public int DelayPrison { get; set; }
+        public int DelayPostCat2 { get; set; }
+        public int DelayPostCat3 { get; set; }
 
         public DishonoredSettings()
         {
@@ -43,6 +62,7 @@ namespace LiveSplit.Dishonored
             this.chkAutoSplitOutsidersDream.DataBindings.Add("Checked", this, "AutoSplitOutsidersDream", false, DataSourceUpdateMode.OnPropertyChanged);
             this.chkAutoSplitWeepers.DataBindings.Add("Checked", this, "AutoSplitWeepers", false, DataSourceUpdateMode.OnPropertyChanged);
             this.chkCutsceneSpeedup.DataBindings.Add("Checked", this, "CutsceneSpeedup", false, DataSourceUpdateMode.OnPropertyChanged);
+
             this.txtSpeedupIntroEnd.DataBindings.Add("Text", this, "SpeedupIntroEnd", false, DataSourceUpdateMode.OnPropertyChanged);
             this.txtSpeedupPostSewers.DataBindings.Add("Text", this, "SpeedupPostSewers", false, DataSourceUpdateMode.OnPropertyChanged);
             this.txtSpeedupCampbell.DataBindings.Add("Text", this, "SpeedupCampbell", false, DataSourceUpdateMode.OnPropertyChanged);
@@ -60,9 +80,30 @@ namespace LiveSplit.Dishonored
             this.txtSpeedupFlooded2.DataBindings.Add("Text", this, "SpeedupFlooded2", false, DataSourceUpdateMode.OnPropertyChanged);
             this.txtSpeedupPrison.DataBindings.Add("Text", this, "SpeedupPrison", false, DataSourceUpdateMode.OnPropertyChanged);
             this.txtSpeedupPostCat2.DataBindings.Add("Text", this, "SpeedupPostCat2", false, DataSourceUpdateMode.OnPropertyChanged);
+            this.txtSpeedupPostCat3.DataBindings.Add("Text", this, "SpeedupPostCat3", false, DataSourceUpdateMode.OnPropertyChanged);
+
+            this.txtDelayIntroEnd.DataBindings.Add("Text", this, "DelayIntroEnd", false, DataSourceUpdateMode.OnPropertyChanged);
+            this.txtDelayPostSewers.DataBindings.Add("Text", this, "DelayPostSewers", false, DataSourceUpdateMode.OnPropertyChanged);
+            this.txtDelayCampbell.DataBindings.Add("Text", this, "DelayCampbell", false, DataSourceUpdateMode.OnPropertyChanged);
+            this.txtDelayPostCampbell.DataBindings.Add("Text", this, "DelayPostCampbell", false, DataSourceUpdateMode.OnPropertyChanged);
+            this.txtDelayCat.DataBindings.Add("Text", this, "DelayCat", false, DataSourceUpdateMode.OnPropertyChanged);
+            this.txtDelayPostCat.DataBindings.Add("Text", this, "DelayPostCat", false, DataSourceUpdateMode.OnPropertyChanged);
+            this.txtDelayBridge.DataBindings.Add("Text", this, "DelayBridge", false, DataSourceUpdateMode.OnPropertyChanged);
+            this.txtDelayPostBridge.DataBindings.Add("Text", this, "DelayPostBridge", false, DataSourceUpdateMode.OnPropertyChanged);
+            this.txtDelayBoyle.DataBindings.Add("Text", this, "DelayBoyle", false, DataSourceUpdateMode.OnPropertyChanged);
+            this.txtDelayPostBoyle.DataBindings.Add("Text", this, "DelayPostBoyle", false, DataSourceUpdateMode.OnPropertyChanged);
+            this.txtDelayTower.DataBindings.Add("Text", this, "DelayTower", false, DataSourceUpdateMode.OnPropertyChanged);
+            this.txtDelayPostTower.DataBindings.Add("Text", this, "DelayPostTower", false, DataSourceUpdateMode.OnPropertyChanged);
+            this.txtDelayFlooded.DataBindings.Add("Text", this, "DelayFlooded", false, DataSourceUpdateMode.OnPropertyChanged);
+            this.txtDelayKingsparrow.DataBindings.Add("Text", this, "DelayKingsparrow", false, DataSourceUpdateMode.OnPropertyChanged);
+            this.txtDelayFlooded2.DataBindings.Add("Text", this, "DelayFlooded2", false, DataSourceUpdateMode.OnPropertyChanged);
+            this.txtDelayPrison.DataBindings.Add("Text", this, "DelayPrison", false, DataSourceUpdateMode.OnPropertyChanged);
+            this.txtDelayPostCat2.DataBindings.Add("Text", this, "DelayPostCat2", false, DataSourceUpdateMode.OnPropertyChanged);
+            this.txtDelayPostCat3.DataBindings.Add("Text", this, "DelayPostCat3", false, DataSourceUpdateMode.OnPropertyChanged);
 
             // defaults
             this.AutoStartEnd = true;
+
             this.SpeedupIntroEnd = 5900;
             this.SpeedupPostSewers = 5800;
             this.SpeedupCampbell = 4900;
@@ -80,6 +121,26 @@ namespace LiveSplit.Dishonored
             this.SpeedupFlooded2 = 6500;
             this.SpeedupPrison = 600;
             this.SpeedupPostCat2 = 2000;
+            this.SpeedupPostCat3 = 2000;
+
+            this.DelayIntroEnd = 1500;
+            this.DelayPostSewers = 1500;
+            this.DelayCampbell = 1500;
+            this.DelayPostCampbell = 1500;
+            this.DelayCat = 1500;
+            this.DelayPostCat = 1500;
+            this.DelayBridge = 1500;
+            this.DelayPostBridge = 1500;
+            this.DelayBoyle = 1500;
+            this.DelayPostBoyle = 1500;
+            this.DelayTower = 1500;
+            this.DelayPostTower = 1500;
+            this.DelayFlooded = 1500;
+            this.DelayKingsparrow = 1500;
+            this.DelayFlooded2 = 8000;
+            this.DelayPrison = 1500;
+            this.DelayPostCat2 = 500;
+            this.DelayPostCat3 = 500;
         }
 
         public XmlNode GetSettings(XmlDocument doc)
@@ -112,6 +173,25 @@ namespace LiveSplit.Dishonored
             settingsNode.AppendChild(ToElement(doc, "SpeedupFlooded2", this.SpeedupFlooded2));
             settingsNode.AppendChild(ToElement(doc, "SpeedupPrison", this.SpeedupPrison));
             settingsNode.AppendChild(ToElement(doc, "SpeedupPostCat2", this.SpeedupPostCat2));
+            settingsNode.AppendChild(ToElement(doc, "SpeedupPostCat3", this.SpeedupPostCat3));
+            settingsNode.AppendChild(ToElement(doc, "DelayIntroEnd", this.DelayIntroEnd));
+            settingsNode.AppendChild(ToElement(doc, "DelayPostSewers", this.DelayPostSewers));
+            settingsNode.AppendChild(ToElement(doc, "DelayCampbell", this.DelayCampbell));
+            settingsNode.AppendChild(ToElement(doc, "DelayPostCampbell", this.DelayPostCampbell));
+            settingsNode.AppendChild(ToElement(doc, "DelayCat", this.DelayCat));
+            settingsNode.AppendChild(ToElement(doc, "DelayPostCat", this.DelayPostCat));
+            settingsNode.AppendChild(ToElement(doc, "DelayBridge", this.DelayBridge));
+            settingsNode.AppendChild(ToElement(doc, "DelayPostBridge", this.DelayPostBridge));
+            settingsNode.AppendChild(ToElement(doc, "DelayBoyle", this.DelayBoyle));
+            settingsNode.AppendChild(ToElement(doc, "DelayPostBoyle", this.DelayPostBoyle));
+            settingsNode.AppendChild(ToElement(doc, "DelayTower", this.DelayTower));
+            settingsNode.AppendChild(ToElement(doc, "DelayPostTower", this.DelayPostTower));
+            settingsNode.AppendChild(ToElement(doc, "DelayFlooded", this.DelayFlooded));
+            settingsNode.AppendChild(ToElement(doc, "DelayKingsparrow", this.DelayKingsparrow));
+            settingsNode.AppendChild(ToElement(doc, "DelayFlooded2", this.DelayFlooded2));
+            settingsNode.AppendChild(ToElement(doc, "DelayPrison", this.DelayPrison));
+            settingsNode.AppendChild(ToElement(doc, "DelayPostCat2", this.DelayPostCat2));
+            settingsNode.AppendChild(ToElement(doc, "DelayPostCat3", this.DelayPostCat3));
 
             return settingsNode;
         }
@@ -142,6 +222,25 @@ namespace LiveSplit.Dishonored
             this.SpeedupFlooded2 = ParseInt(settings, "SpeedupFlooded2", 6500);
             this.SpeedupPrison = ParseInt(settings, "SpeedupPrison", 600);
             this.SpeedupPostCat2 = ParseInt(settings, "SpeedupPostCat2", 2000);
+            this.SpeedupPostCat3 = ParseInt(settings, "SpeedupPostCat3", 2000);
+            this.DelayIntroEnd = ParseInt(settings, "DelayIntroEnd", 1500);
+            this.DelayPostSewers = ParseInt(settings, "DelayPostSewers", 1500);
+            this.DelayCampbell = ParseInt(settings, "DelayCampbell", 1500);
+            this.DelayPostCampbell = ParseInt(settings, "DelayPostCampbell", 1500);
+            this.DelayCat = ParseInt(settings, "DelayCat", 1500);
+            this.DelayPostCat = ParseInt(settings, "DelayPostCat", 1500);
+            this.DelayBridge = ParseInt(settings, "DelayBridge", 1500);
+            this.DelayPostBridge = ParseInt(settings, "DelayPostBridge", 1500);
+            this.DelayBoyle = ParseInt(settings, "DelayBoyle", 1500);
+            this.DelayPostBoyle = ParseInt(settings, "DelayPostBoyle", 1500);
+            this.DelayTower = ParseInt(settings, "DelayTower", 1500);
+            this.DelayPostTower = ParseInt(settings, "DelayPostTower", 1500);
+            this.DelayFlooded = ParseInt(settings, "DelayFlooded", 1500);
+            this.DelayKingsparrow = ParseInt(settings, "DelayKingsparrow", 1500);
+            this.DelayFlooded2 = ParseInt(settings, "DelayFlooded2", 8000);
+            this.DelayPrison = ParseInt(settings, "DelayPrison", 1500);
+            this.DelayPostCat2 = ParseInt(settings, "DelayPostCat2", 500);
+            this.DelayPostCat3 = ParseInt(settings, "DelayPostCat3", 500);
         }
 
         static bool ParseBool(XmlNode settings, string setting, bool default_ = false)

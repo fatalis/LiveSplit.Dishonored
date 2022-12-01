@@ -220,17 +220,13 @@ namespace LiveSplit.Dishonored
                 if (_data.IsLoading.Current)
                 {
                     Debug.WriteLine($"Load Start - {combinedStr} x={_data.PlayerPosX.Current}");
-                    _previousLevel = level;
 
                     // ignore the intro sequence and the dishonored logo screen
                     if (currentMovie != "INTRO_LOC" && currentMovie != "Dishonored")
                     {
-                        // ignore intro end if it happens, see special case above
-                        if (!(currentMovie == "LoadingPrison" && currentLevelStr.ToLower().StartsWith("l_tower_")))
-                        {
-                            _loadingStarted = true;
-                            OnLoadStarted?.Invoke(this, EventArgs.Empty);
-                        }
+                        _loadingStarted = true;
+                        _previousLevel = level;
+                        OnLoadStarted?.Invoke(this, EventArgs.Empty);
                     }
 
                     AreaCompletionType completionType = _areaCompletions.Where(c => combinedStr.ToLower().StartsWith(c.Key.ToLower())).Select(c => c.Value).FirstOrDefault();
