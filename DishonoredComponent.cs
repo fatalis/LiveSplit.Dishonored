@@ -34,11 +34,19 @@ namespace LiveSplit.Dishonored
     {
         public Level PreviousLevel { get; set; }
         public Level NextLevel { get; set; }
+        public float? PlayerPosX { get; set; }
         public string Setting { get; set; }
 
-        public bool Matches(Level previousLevel, Level nextLevel)
+        private const float _tolerance = 3f;
+
+        public bool ApproxEqual(float val)
         {
-            return previousLevel == PreviousLevel && nextLevel == NextLevel;
+            return val > (PlayerPosX - _tolerance) && val < (PlayerPosX + _tolerance);
+        }
+
+        public bool Matches(Level previousLevel, Level nextLevel, float playerPosX)
+        {
+            return previousLevel == PreviousLevel && nextLevel == NextLevel && (PlayerPosX == null || ApproxEqual(playerPosX));
         }
     }
 
@@ -91,7 +99,7 @@ namespace LiveSplit.Dishonored
             new LoadSpeedup { PreviousLevel = Level.TowerReturnYard, NextLevel = Level.PubDusk, Setting = "PostTower" },
             new LoadSpeedup { PreviousLevel = Level.PubDusk, NextLevel = Level.FloodedIntro, Setting = "Flooded" },
             new LoadSpeedup { PreviousLevel = Level.FloodedIntro, NextLevel = Level.FloodedStreets, Setting = "FloodedCell" },
-            new LoadSpeedup { PreviousLevel = Level.FloodedRefinery, NextLevel = Level.FloodedStreets, Setting = "FloodedCell" },
+            new LoadSpeedup { PreviousLevel = Level.FloodedRefinery, NextLevel = Level.FloodedStreets, PlayerPosX = -5397.104f, Setting = "FloodedCell" },
             new LoadSpeedup { PreviousLevel = Level.Loyalists, NextLevel = Level.KingsparrowIsland, Setting = "Kingsparrow" },
             new LoadSpeedup { PreviousLevel = Level.KingsparrowIsland, NextLevel = Level.KingsparrowLighthouse, Setting = "Lighthouse" },
         };
@@ -221,7 +229,7 @@ namespace LiveSplit.Dishonored
         {
             _timer.CurrentState.IsGameTimePaused = false;
 
-            var speedup = _loadSpeedups.Find(cs => cs.Matches(previousLevel, currentLevel));
+            var speedup = _loadSpeedups.Find(cs => cs.Matches(previousLevel, currentLevel, playerPosX));
             if (speedup != null)
             {
                 Debug.WriteLine($"Found load speedup for level {speedup.PreviousLevel} -> {speedup.NextLevel}, setting {speedup.Setting}");

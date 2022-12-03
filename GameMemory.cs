@@ -299,7 +299,7 @@ namespace LiveSplit.Dishonored
                     if (_loadingStarted)
                     {
                         _loadingStarted = false;
-                        var movie = _movies.Where(m => currentMovie == m.Key).Select(m => m.Value).FirstOrDefault();
+                        _movies.TryGetValue(currentMovie, out var movie);
                         OnLoadFinished?.Invoke(this, _previousLevel, level, movie, _data.PlayerPosX.Current);
                     }
 
@@ -311,7 +311,7 @@ namespace LiveSplit.Dishonored
 
                     if (!currentMovie.StartsWith("Loading"))
                     {
-                        var movie = _movies.Where(m => currentMovie == m.Key).Select(m => m.Value).FirstOrDefault();
+                        _movies.TryGetValue(currentMovie, out var movie);
                         if (movie != Movie.None)
                         {
                             OnMovieEnded?.Invoke(this, movie);
