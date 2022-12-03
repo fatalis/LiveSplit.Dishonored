@@ -150,6 +150,7 @@ namespace LiveSplit.Dishonored
             _timer.CurrentState.OnStart -= timer_OnStart;
             _updateTimer?.Dispose();
             _cutsceneTimer?.Dispose();
+            _gameMemory?.Dispose();
         }
 
         void updateTimer_Tick(object sender, EventArgs eventArgs)
@@ -296,7 +297,8 @@ namespace LiveSplit.Dishonored
             if (!Settings.CutsceneSpeedup || _cutsceneTimer.Enabled || duration <= 0)
                 return;
             
-            SendKeys.Send("{F7}");
+            //SendKeys.Send("{F7}");
+            _gameMemory.SetWorldSpeed(10f);
             _timeMultiplier = 10;
             _cutsceneTimer.Interval = duration;
             _cutsceneTimer.Start();
@@ -305,7 +307,8 @@ namespace LiveSplit.Dishonored
 
         void EndSpeedup(bool stopAll = false)
         {
-            SendKeys.Send("{F6}");
+            //SendKeys.Send("{F6}");
+            _gameMemory.SetWorldSpeed(1f);
             _timeMultiplier = 1;
 
             if (!stopAll && _currentSpeedup != null && _speedupFollowups.ContainsKey(_currentSpeedup))

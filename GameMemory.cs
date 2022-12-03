@@ -54,7 +54,7 @@ namespace LiveSplit.Dishonored
         }
     }
 
-    class GameMemory
+    class GameMemory : IDisposable
     {
         public enum AreaCompletionType
         {
@@ -149,6 +149,12 @@ namespace LiveSplit.Dishonored
         private bool _loadingStarted;
         private bool _oncePerLevelFlag;
         private Level _previousLevel = Level.None;
+
+        private IntPtr _worldSpeedPtr;
+        private IntPtr _setWorldSpeedPtr;
+        private IntPtr _injectedFuncPtr;
+        private IntPtr _copyWorldSpeedPtr;
+        private int _overwriteBytes = 10;
 
         private enum ExpectedDllSizes
         {
@@ -400,12 +406,128 @@ namespace LiveSplit.Dishonored
             _data = new GameData(version);
             _process = game;
 
+            var ptr = IntPtr.Zero;
+            var target = new SigScanTarget("8B 10 8B C8 8B 82 D0 03 00 00 53 FF D0");
+            foreach (var page in game.MemoryPages(true))
+            {
+                var scanner = new SignatureScanner(game, page.BaseAddress, (int)page.RegionSize);
+                ptr = scanner.Scan(target);
+                if (ptr != IntPtr.Zero)
+                {
+                    break;
+                }
+            }
+            if (ptr == IntPtr.Zero)
+            {
+                Debug.WriteLine("Unable to find world speed pointer");
+                return true;
+            }
+
+            _worldSpeedPtr = ptr;
+            var returnHerePtr = _worldSpeedPtr + _overwriteBytes;
+            Debug.WriteLine($"_worldSpeedPtr={_worldSpeedPtr.ToString("X")}");
+            Debug.WriteLine($"returnHerePtr={returnHerePtr.ToString("X")}");
+
+            _setWorldSpeedPtr = game.AllocateMemory(sizeof(float));
+            game.WriteBytes(_setWorldSpeedPtr, BitConverter.GetBytes(1f));
+            var setWorldSpeedPtrBytes = BitConverter.GetBytes((uint)_setWorldSpeedPtr);
+
+            var worldSpeedDetourBytes = new List<byte>
+            {
+                0x8D, 0x88, 0xF0, 0x04, 0x00, 0x00, // lea ecx,[eax+000004F0]
+                0x8B, 0x15,                         // mov edx,[setWorldSpeed]
+            };
+            worldSpeedDetourBytes.AddRange(setWorldSpeedPtrBytes);
+            worldSpeedDetourBytes.AddRange(new byte[] {
+                0x89, 0x51, 0xF0,                   // mov[ecx - 10],edx
+                0x8B, 0x10,                         // mov edx,[eax]
+                0x8B, 0xC8,                         // mov ecx,eax
+                0x8B, 0x82, 0xD0, 0x03, 0x00, 0x00, // mov eax,[edx+000003D0]
+            });
+            var jumpOffset = worldSpeedDetourBytes.Count;
+            worldSpeedDetourBytes.AddRange(new byte[] {
+                255, 255, 255, 255, 255,            // jmp [returnHere] (placeholder)
+            });
+
+            _injectedFuncPtr = game.AllocateMemory(worldSpeedDetourBytes.Count);
+            Debug.WriteLine($"_injectedFuncPtr={_injectedFuncPtr.ToString("X")}");
+
+            game.Suspend();
+            try
+            {
+                _copyWorldSpeedPtr = game.WriteDetour(_worldSpeedPtr, _overwriteBytes, _injectedFuncPtr);
+                Debug.WriteLine($"_copyWorldSpeedPtr={_copyWorldSpeedPtr.ToString("X")}");
+                game.WriteBytes(_injectedFuncPtr, worldSpeedDetourBytes.ToArray());
+                Debug.WriteLine("bytes written");
+                game.WriteJumpInstruction(_injectedFuncPtr + jumpOffset, returnHerePtr);
+                Debug.WriteLine("jump written");
+            }
+            catch
+            {
+                FreeMemory();
+                throw;
+            }
+            finally
+            {
+                game.Resume();
+            }
+
             return true;
+        }
+
+        void FreeMemory()
+        {
+            if (_process == null || _process.HasExited)
+            {
+                return;
+            }
+
+            if (_setWorldSpeedPtr != IntPtr.Zero)
+                _process.FreeMemory(_setWorldSpeedPtr);
+            if (_injectedFuncPtr != IntPtr.Zero)
+                _process.FreeMemory(_injectedFuncPtr);
+            if (_copyWorldSpeedPtr != IntPtr.Zero)
+                _process.FreeMemory(_copyWorldSpeedPtr);
+        }
+
+        public void Dispose()
+        {
+            if (_process == null || _process.HasExited)
+            {
+                return;
+            }
+
+            _process.Suspend();
+            try
+            {
+                if (_copyWorldSpeedPtr != IntPtr.Zero)
+                {
+                    var bytes = _process.ReadBytes(_copyWorldSpeedPtr, _overwriteBytes);
+                    _process.WriteBytes(_worldSpeedPtr, bytes);
+                }
+            }
+            catch
+            {
+                throw;
+            }
+            finally
+            {
+                _process.Resume();
+                FreeMemory();
+            }
+        }
+
+        public void SetWorldSpeed(float value)
+        {
+            if (_process == null || _process.HasExited || _setWorldSpeedPtr == IntPtr.Zero)
+                return;
+
+            _process.WriteBytes(_setWorldSpeedPtr, BitConverter.GetBytes(value));
         }
 
         string GetEngineStringByID(int id)
         {
-            var ptr = new DeepPointer(_data.StringTableBase, (id*4), 0x10);
+            var ptr = new DeepPointer(_data.StringTableBase, (id * 4), 0x10);
             return ptr.DerefString(_process, 32);
         }
     }
