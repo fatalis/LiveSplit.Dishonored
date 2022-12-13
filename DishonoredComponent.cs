@@ -44,8 +44,17 @@ namespace LiveSplit.Dishonored
             return val > (PlayerPosX - _tolerance) && val < (PlayerPosX + _tolerance);
         }
 
-        public bool Matches(Level previousLevel, Level nextLevel, float playerPosX)
+        public bool Matches(Level previousLevel, Level nextLevel, float playerPosX, Func<string, float> settingsGetter)
         {
+            var setX = settingsGetter($"X{Setting}");
+            var setY = settingsGetter($"Y{Setting}");
+            var setZ = settingsGetter($"Z{Setting}");
+
+            if (setX != 0 || setY != 0 || setZ != 0)
+            {
+                return false;
+            }
+
             return previousLevel == PreviousLevel && nextLevel == NextLevel && (PlayerPosX == null || ApproxEqual(playerPosX));
         }
     }
@@ -79,7 +88,16 @@ namespace LiveSplit.Dishonored
                 return false;
             }
 
-            return ApproxEqual(x, settingsGetter($"X{Setting}")) && ApproxEqual(y, settingsGetter($"Y{Setting}")) && ApproxEqual(z, settingsGetter($"Z{Setting}"));
+            var setX = settingsGetter($"X{Setting}");
+            var setY = settingsGetter($"Y{Setting}");
+            var setZ = settingsGetter($"Z{Setting}");
+
+            if (setX == 0 && setY == 0 && setZ == 0)
+            {
+                return false;
+            }
+
+            return ApproxEqual(x, setX) && ApproxEqual(y, setY) && ApproxEqual(z, setZ);
         }
     }
 
@@ -109,17 +127,17 @@ namespace LiveSplit.Dishonored
         {
             new LoadSpeedup { PreviousLevel = Level.Intro, NextLevel = Level.Prison, Setting = "Prison" },
             new LoadSpeedup { PreviousLevel = Level.Sewers, NextLevel = Level.PubDay, Setting = "PostSewers" },
-            //new LoadSpeedup { PreviousLevel = Level.PubDusk, NextLevel = Level.CampbellStreets, Setting = "Campbell" },
+            new LoadSpeedup { PreviousLevel = Level.PubDusk, NextLevel = Level.CampbellStreets, Setting = "Campbell" },
             new LoadSpeedup { PreviousLevel = Level.CampbellBack, NextLevel = Level.PubMorning, Setting = "PostCampbell" },
             new LoadSpeedup { PreviousLevel = Level.PubDay, NextLevel = Level.CatStreets, Setting = "Cat" },
-            //new LoadSpeedup { PreviousLevel = Level.CatStreets, NextLevel = Level.PubDusk, Setting = "PostCat" },
+            new LoadSpeedup { PreviousLevel = Level.CatStreets, NextLevel = Level.PubDusk, Setting = "PostCat" },
             new LoadSpeedup { PreviousLevel = Level.PubDusk, NextLevel = Level.Bridge1, Setting = "Bridge" },
             new LoadSpeedup { PreviousLevel = Level.Bridge4, NextLevel = Level.PubNight, Setting = "PostBridge" },
             new LoadSpeedup { PreviousLevel = Level.PubDay, NextLevel = Level.BoyleExterior, Setting = "Boyle" },
             new LoadSpeedup { PreviousLevel = Level.BoyleExterior, NextLevel = Level.PubMorning, Setting = "PostBoyle" },
             new LoadSpeedup { PreviousLevel = Level.PubMorning, NextLevel = Level.TowerReturnYard, Setting = "Tower" },
             new LoadSpeedup { PreviousLevel = Level.TowerReturnYard, NextLevel = Level.PubDusk, Setting = "PostTower" },
-            //new LoadSpeedup { PreviousLevel = Level.PubDusk, NextLevel = Level.FloodedIntro, Setting = "Flooded" },
+            new LoadSpeedup { PreviousLevel = Level.PubDusk, NextLevel = Level.FloodedIntro, Setting = "Flooded" },
             new LoadSpeedup { PreviousLevel = Level.FloodedIntro, NextLevel = Level.FloodedStreets, Setting = "FloodedCell" },
             new LoadSpeedup { PreviousLevel = Level.FloodedRefinery, NextLevel = Level.FloodedStreets, PlayerPosX = -5397.104f, Setting = "FloodedCell" },
             new LoadSpeedup { PreviousLevel = Level.Loyalists, NextLevel = Level.KingsparrowIsland, Setting = "Kingsparrow" },
@@ -133,9 +151,22 @@ namespace LiveSplit.Dishonored
 
         private List<PositionSpeedup> _positionSpeedups = new List<PositionSpeedup>
         {
+            new PositionSpeedup { Level = Level.Prison, Setting = "Prison" },
+            new PositionSpeedup { Level = Level.PubDay, Setting = "PostSewers" },
             new PositionSpeedup { Level = Level.CampbellStreets, Setting = "Campbell" },
+            new PositionSpeedup { Level = Level.PubMorning, Setting = "PostCampbell" },
+            new PositionSpeedup { Level = Level.CatStreets, Setting = "Cat" },
             new PositionSpeedup { Level = Level.PubDusk, Setting = "PostCat" },
+            new PositionSpeedup { Level = Level.Bridge1, Setting = "Bridge" },
+            new PositionSpeedup { Level = Level.PubNight, Setting = "PostBridge" },
+            new PositionSpeedup { Level = Level.BoyleExterior, Setting = "Boyle" },
+            new PositionSpeedup { Level = Level.PubMorning, Setting = "PostBoyle" },
+            new PositionSpeedup { Level = Level.TowerReturnYard, Setting = "Tower" },
+            new PositionSpeedup { Level = Level.PubDusk, Setting = "PostTower" },
             new PositionSpeedup { Level = Level.FloodedIntro, Setting = "Flooded" },
+            new PositionSpeedup { Level = Level.FloodedStreets, Setting = "FloodedCell" },
+            new PositionSpeedup { Level = Level.KingsparrowIsland, Setting = "Kingsparrow" },
+            new PositionSpeedup { Level = Level.KingsparrowLighthouse, Setting = "Lighthouse" },
         };
 
         private Dictionary<string, string> _speedupFollowups = new Dictionary<string, string>
@@ -260,7 +291,7 @@ namespace LiveSplit.Dishonored
         {
             _timer.CurrentState.IsGameTimePaused = false;
 
-            var speedup = _loadSpeedups.Find(cs => cs.Matches(previousLevel, currentLevel, playerPosX));
+            var speedup = _loadSpeedups.Find(cs => cs.Matches(previousLevel, currentLevel, playerPosX, GetSettingsFloat));
             if (speedup != null)
             {
                 Debug.WriteLine($"Found load speedup for level {speedup.PreviousLevel} -> {speedup.NextLevel}, setting {speedup.Setting}");

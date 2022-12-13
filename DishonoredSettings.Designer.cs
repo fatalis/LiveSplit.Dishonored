@@ -117,6 +117,51 @@
             this.txtXPostCat = new System.Windows.Forms.TextBox();
             this.txtYPostCat = new System.Windows.Forms.TextBox();
             this.txtZPostCat = new System.Windows.Forms.TextBox();
+            this.txtXIntro = new System.Windows.Forms.TextBox();
+            this.txtYIntro = new System.Windows.Forms.TextBox();
+            this.txtZIntro = new System.Windows.Forms.TextBox();
+            this.txtYIntroEnd = new System.Windows.Forms.TextBox();
+            this.txtZIntroEnd = new System.Windows.Forms.TextBox();
+            this.txtXIntroEnd = new System.Windows.Forms.TextBox();
+            this.txtXPrison = new System.Windows.Forms.TextBox();
+            this.txtYPrison = new System.Windows.Forms.TextBox();
+            this.txtZPrison = new System.Windows.Forms.TextBox();
+            this.txtXPostCampbell = new System.Windows.Forms.TextBox();
+            this.txtXPostSewers = new System.Windows.Forms.TextBox();
+            this.txtYPostSewers = new System.Windows.Forms.TextBox();
+            this.txtZPostSewers = new System.Windows.Forms.TextBox();
+            this.txtYPostCampbell = new System.Windows.Forms.TextBox();
+            this.txtZPostCampbell = new System.Windows.Forms.TextBox();
+            this.txtXCat = new System.Windows.Forms.TextBox();
+            this.txtYCat = new System.Windows.Forms.TextBox();
+            this.txtZCat = new System.Windows.Forms.TextBox();
+            this.txtXBridge = new System.Windows.Forms.TextBox();
+            this.txtYBridge = new System.Windows.Forms.TextBox();
+            this.txtZBridge = new System.Windows.Forms.TextBox();
+            this.txtXBoyle = new System.Windows.Forms.TextBox();
+            this.txtYPostBridge = new System.Windows.Forms.TextBox();
+            this.txtZPostBridge = new System.Windows.Forms.TextBox();
+            this.txtXPostBridge = new System.Windows.Forms.TextBox();
+            this.txtYBoyle = new System.Windows.Forms.TextBox();
+            this.txtZBoyle = new System.Windows.Forms.TextBox();
+            this.txtXPostBoyle = new System.Windows.Forms.TextBox();
+            this.txtYTower = new System.Windows.Forms.TextBox();
+            this.txtYPostBoyle = new System.Windows.Forms.TextBox();
+            this.txtZPostBoyle = new System.Windows.Forms.TextBox();
+            this.txtXTower = new System.Windows.Forms.TextBox();
+            this.txtYPostTower = new System.Windows.Forms.TextBox();
+            this.txtXPostTower = new System.Windows.Forms.TextBox();
+            this.txtZTower = new System.Windows.Forms.TextBox();
+            this.txtZPostTower = new System.Windows.Forms.TextBox();
+            this.txtXFloodedCell = new System.Windows.Forms.TextBox();
+            this.txtYFloodedCell = new System.Windows.Forms.TextBox();
+            this.txtZFloodedCell = new System.Windows.Forms.TextBox();
+            this.txtXKingsparrow = new System.Windows.Forms.TextBox();
+            this.txtYKingsparrow = new System.Windows.Forms.TextBox();
+            this.txtZKingsparrow = new System.Windows.Forms.TextBox();
+            this.txtZLighthouse = new System.Windows.Forms.TextBox();
+            this.txtYLighthouse = new System.Windows.Forms.TextBox();
+            this.txtXLighthouse = new System.Windows.Forms.TextBox();
             this.tlpMain.SuspendLayout();
             this.gbAutoSplit.SuspendLayout();
             this.tlpAutoSplit.SuspendLayout();
@@ -307,7 +352,6 @@
             this.tlpCutsceneSpeedup.Controls.Add(this.txtDelayIntro, 2, 1);
             this.tlpCutsceneSpeedup.Controls.Add(this.txtSpeedupFloodedCell, 1, 19);
             this.tlpCutsceneSpeedup.Controls.Add(this.txtDelayFloodedCell, 2, 19);
-            this.tlpCutsceneSpeedup.Controls.Add(this.txtDelayLighthouse, 1, 21);
             this.tlpCutsceneSpeedup.Controls.Add(this.chkEnabledIntro, 0, 1);
             this.tlpCutsceneSpeedup.Controls.Add(this.chkEnabledIntroEnd, 0, 2);
             this.tlpCutsceneSpeedup.Controls.Add(this.chkEnabledPrison, 0, 3);
@@ -326,7 +370,6 @@
             this.tlpCutsceneSpeedup.Controls.Add(this.chkEnabledFlooded2, 0, 18);
             this.tlpCutsceneSpeedup.Controls.Add(this.chkEnabledFloodedCell, 0, 19);
             this.tlpCutsceneSpeedup.Controls.Add(this.chkEnabledKingsparrow, 0, 20);
-            this.tlpCutsceneSpeedup.Controls.Add(this.txtSpeedupLighthouse, 2, 21);
             this.tlpCutsceneSpeedup.Controls.Add(this.chkEnabledLighthouse, 0, 21);
             this.tlpCutsceneSpeedup.Controls.Add(this.lblXHeader, 3, 0);
             this.tlpCutsceneSpeedup.Controls.Add(this.txtXCampbell, 3, 5);
@@ -338,6 +381,53 @@
             this.tlpCutsceneSpeedup.Controls.Add(this.txtXPostCat, 3, 8);
             this.tlpCutsceneSpeedup.Controls.Add(this.txtYPostCat, 4, 8);
             this.tlpCutsceneSpeedup.Controls.Add(this.txtZPostCat, 5, 8);
+            this.tlpCutsceneSpeedup.Controls.Add(this.txtXIntro, 3, 1);
+            this.tlpCutsceneSpeedup.Controls.Add(this.txtYIntro, 4, 1);
+            this.tlpCutsceneSpeedup.Controls.Add(this.txtZIntro, 5, 1);
+            this.tlpCutsceneSpeedup.Controls.Add(this.txtXIntroEnd, 3, 2);
+            this.tlpCutsceneSpeedup.Controls.Add(this.txtYIntroEnd, 4, 2);
+            this.tlpCutsceneSpeedup.Controls.Add(this.txtZIntroEnd, 5, 2);
+            this.tlpCutsceneSpeedup.Controls.Add(this.txtXPrison, 3, 3);
+            this.tlpCutsceneSpeedup.Controls.Add(this.txtYPrison, 4, 3);
+            this.tlpCutsceneSpeedup.Controls.Add(this.txtZPrison, 5, 3);
+            this.tlpCutsceneSpeedup.Controls.Add(this.txtXPostCampbell, 3, 6);
+            this.tlpCutsceneSpeedup.Controls.Add(this.txtXPostSewers, 3, 4);
+            this.tlpCutsceneSpeedup.Controls.Add(this.txtYPostSewers, 4, 4);
+            this.tlpCutsceneSpeedup.Controls.Add(this.txtZPostSewers, 5, 4);
+            this.tlpCutsceneSpeedup.Controls.Add(this.txtYPostCampbell, 4, 6);
+            this.tlpCutsceneSpeedup.Controls.Add(this.txtZPostCampbell, 5, 6);
+            this.tlpCutsceneSpeedup.Controls.Add(this.txtXCat, 3, 7);
+            this.tlpCutsceneSpeedup.Controls.Add(this.txtYCat, 4, 7);
+            this.tlpCutsceneSpeedup.Controls.Add(this.txtZCat, 5, 7);
+            this.tlpCutsceneSpeedup.Controls.Add(this.txtXBridge, 3, 11);
+            this.tlpCutsceneSpeedup.Controls.Add(this.txtYBridge, 4, 11);
+            this.tlpCutsceneSpeedup.Controls.Add(this.txtZBridge, 5, 11);
+            this.tlpCutsceneSpeedup.Controls.Add(this.txtYPostBridge, 4, 12);
+            this.tlpCutsceneSpeedup.Controls.Add(this.txtZPostBridge, 5, 12);
+            this.tlpCutsceneSpeedup.Controls.Add(this.txtXPostBridge, 3, 12);
+            this.tlpCutsceneSpeedup.Controls.Add(this.txtXBoyle, 3, 13);
+            this.tlpCutsceneSpeedup.Controls.Add(this.txtYBoyle, 4, 13);
+            this.tlpCutsceneSpeedup.Controls.Add(this.txtZBoyle, 5, 13);
+            this.tlpCutsceneSpeedup.Controls.Add(this.txtXPostBoyle, 3, 14);
+            this.tlpCutsceneSpeedup.Controls.Add(this.txtYTower, 4, 15);
+            this.tlpCutsceneSpeedup.Controls.Add(this.txtYPostBoyle, 4, 14);
+            this.tlpCutsceneSpeedup.Controls.Add(this.txtZPostBoyle, 5, 14);
+            this.tlpCutsceneSpeedup.Controls.Add(this.txtXTower, 3, 15);
+            this.tlpCutsceneSpeedup.Controls.Add(this.txtYPostTower, 4, 16);
+            this.tlpCutsceneSpeedup.Controls.Add(this.txtXPostTower, 3, 16);
+            this.tlpCutsceneSpeedup.Controls.Add(this.txtZTower, 5, 15);
+            this.tlpCutsceneSpeedup.Controls.Add(this.txtZPostTower, 5, 16);
+            this.tlpCutsceneSpeedup.Controls.Add(this.txtXFloodedCell, 3, 19);
+            this.tlpCutsceneSpeedup.Controls.Add(this.txtYFloodedCell, 4, 19);
+            this.tlpCutsceneSpeedup.Controls.Add(this.txtZFloodedCell, 5, 19);
+            this.tlpCutsceneSpeedup.Controls.Add(this.txtXKingsparrow, 3, 20);
+            this.tlpCutsceneSpeedup.Controls.Add(this.txtYKingsparrow, 4, 20);
+            this.tlpCutsceneSpeedup.Controls.Add(this.txtZKingsparrow, 5, 20);
+            this.tlpCutsceneSpeedup.Controls.Add(this.txtZLighthouse, 5, 21);
+            this.tlpCutsceneSpeedup.Controls.Add(this.txtYLighthouse, 4, 21);
+            this.tlpCutsceneSpeedup.Controls.Add(this.txtXLighthouse, 3, 21);
+            this.tlpCutsceneSpeedup.Controls.Add(this.txtDelayLighthouse, 2, 21);
+            this.tlpCutsceneSpeedup.Controls.Add(this.txtSpeedupLighthouse, 1, 21);
             this.tlpCutsceneSpeedup.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tlpCutsceneSpeedup.Location = new System.Drawing.Point(3, 16);
             this.tlpCutsceneSpeedup.Name = "tlpCutsceneSpeedup";
@@ -364,6 +454,7 @@
             this.tlpCutsceneSpeedup.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpCutsceneSpeedup.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpCutsceneSpeedup.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpCutsceneSpeedup.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
             this.tlpCutsceneSpeedup.Size = new System.Drawing.Size(464, 571);
             this.tlpCutsceneSpeedup.TabIndex = 0;
             // 
@@ -759,11 +850,11 @@
             // 
             // txtDelayLighthouse
             // 
-            this.txtDelayLighthouse.Location = new System.Drawing.Point(102, 546);
+            this.txtDelayLighthouse.Location = new System.Drawing.Point(158, 546);
             this.txtDelayLighthouse.Name = "txtDelayLighthouse";
             this.txtDelayLighthouse.Size = new System.Drawing.Size(50, 20);
             this.txtDelayLighthouse.TabIndex = 64;
-            this.txtDelayLighthouse.Text = "1100";
+            this.txtDelayLighthouse.Text = "1000";
             // 
             // chkEnabledIntro
             // 
@@ -983,11 +1074,11 @@
             // 
             // txtSpeedupLighthouse
             // 
-            this.txtSpeedupLighthouse.Location = new System.Drawing.Point(158, 546);
+            this.txtSpeedupLighthouse.Location = new System.Drawing.Point(102, 546);
             this.txtSpeedupLighthouse.Name = "txtSpeedupLighthouse";
             this.txtSpeedupLighthouse.Size = new System.Drawing.Size(50, 20);
             this.txtSpeedupLighthouse.TabIndex = 65;
-            this.txtSpeedupLighthouse.Text = "1000";
+            this.txtSpeedupLighthouse.Text = "1100";
             // 
             // chkEnabledLighthouse
             // 
@@ -1081,6 +1172,366 @@
             this.txtZPostCat.Size = new System.Drawing.Size(75, 20);
             this.txtZPostCat.TabIndex = 98;
             this.txtZPostCat.Text = "0";
+            // 
+            // txtXIntro
+            // 
+            this.txtXIntro.Location = new System.Drawing.Point(214, 26);
+            this.txtXIntro.Name = "txtXIntro";
+            this.txtXIntro.Size = new System.Drawing.Size(75, 20);
+            this.txtXIntro.TabIndex = 99;
+            this.txtXIntro.Text = "0";
+            // 
+            // txtYIntro
+            // 
+            this.txtYIntro.Location = new System.Drawing.Point(295, 26);
+            this.txtYIntro.Name = "txtYIntro";
+            this.txtYIntro.Size = new System.Drawing.Size(75, 20);
+            this.txtYIntro.TabIndex = 100;
+            this.txtYIntro.Text = "0";
+            // 
+            // txtZIntro
+            // 
+            this.txtZIntro.Location = new System.Drawing.Point(376, 26);
+            this.txtZIntro.Name = "txtZIntro";
+            this.txtZIntro.Size = new System.Drawing.Size(75, 20);
+            this.txtZIntro.TabIndex = 101;
+            this.txtZIntro.Text = "0";
+            // 
+            // txtYIntroEnd
+            // 
+            this.txtYIntroEnd.Location = new System.Drawing.Point(295, 52);
+            this.txtYIntroEnd.Name = "txtYIntroEnd";
+            this.txtYIntroEnd.Size = new System.Drawing.Size(75, 20);
+            this.txtYIntroEnd.TabIndex = 102;
+            this.txtYIntroEnd.Text = "0";
+            // 
+            // txtZIntroEnd
+            // 
+            this.txtZIntroEnd.Location = new System.Drawing.Point(376, 52);
+            this.txtZIntroEnd.Name = "txtZIntroEnd";
+            this.txtZIntroEnd.Size = new System.Drawing.Size(75, 20);
+            this.txtZIntroEnd.TabIndex = 103;
+            this.txtZIntroEnd.Text = "0";
+            // 
+            // txtXIntroEnd
+            // 
+            this.txtXIntroEnd.Location = new System.Drawing.Point(214, 52);
+            this.txtXIntroEnd.Name = "txtXIntroEnd";
+            this.txtXIntroEnd.Size = new System.Drawing.Size(75, 20);
+            this.txtXIntroEnd.TabIndex = 105;
+            this.txtXIntroEnd.Text = "0";
+            // 
+            // txtXPrison
+            // 
+            this.txtXPrison.Location = new System.Drawing.Point(214, 78);
+            this.txtXPrison.Name = "txtXPrison";
+            this.txtXPrison.Size = new System.Drawing.Size(75, 20);
+            this.txtXPrison.TabIndex = 106;
+            this.txtXPrison.Text = "0";
+            // 
+            // txtYPrison
+            // 
+            this.txtYPrison.Location = new System.Drawing.Point(295, 78);
+            this.txtYPrison.Name = "txtYPrison";
+            this.txtYPrison.Size = new System.Drawing.Size(75, 20);
+            this.txtYPrison.TabIndex = 107;
+            this.txtYPrison.Text = "0";
+            // 
+            // txtZPrison
+            // 
+            this.txtZPrison.Location = new System.Drawing.Point(376, 78);
+            this.txtZPrison.Name = "txtZPrison";
+            this.txtZPrison.Size = new System.Drawing.Size(75, 20);
+            this.txtZPrison.TabIndex = 108;
+            this.txtZPrison.Text = "0";
+            // 
+            // txtXPostCampbell
+            // 
+            this.txtXPostCampbell.Location = new System.Drawing.Point(214, 156);
+            this.txtXPostCampbell.Name = "txtXPostCampbell";
+            this.txtXPostCampbell.Size = new System.Drawing.Size(75, 20);
+            this.txtXPostCampbell.TabIndex = 114;
+            this.txtXPostCampbell.Text = "0";
+            // 
+            // txtXPostSewers
+            // 
+            this.txtXPostSewers.Location = new System.Drawing.Point(214, 104);
+            this.txtXPostSewers.Name = "txtXPostSewers";
+            this.txtXPostSewers.Size = new System.Drawing.Size(75, 20);
+            this.txtXPostSewers.TabIndex = 115;
+            this.txtXPostSewers.Text = "0";
+            // 
+            // txtYPostSewers
+            // 
+            this.txtYPostSewers.Location = new System.Drawing.Point(295, 104);
+            this.txtYPostSewers.Name = "txtYPostSewers";
+            this.txtYPostSewers.Size = new System.Drawing.Size(75, 20);
+            this.txtYPostSewers.TabIndex = 116;
+            this.txtYPostSewers.Text = "0";
+            // 
+            // txtZPostSewers
+            // 
+            this.txtZPostSewers.Location = new System.Drawing.Point(376, 104);
+            this.txtZPostSewers.Name = "txtZPostSewers";
+            this.txtZPostSewers.Size = new System.Drawing.Size(75, 20);
+            this.txtZPostSewers.TabIndex = 117;
+            this.txtZPostSewers.Text = "0";
+            // 
+            // txtYPostCampbell
+            // 
+            this.txtYPostCampbell.Location = new System.Drawing.Point(295, 156);
+            this.txtYPostCampbell.Name = "txtYPostCampbell";
+            this.txtYPostCampbell.Size = new System.Drawing.Size(75, 20);
+            this.txtYPostCampbell.TabIndex = 118;
+            this.txtYPostCampbell.Text = "0";
+            // 
+            // txtZPostCampbell
+            // 
+            this.txtZPostCampbell.Location = new System.Drawing.Point(376, 156);
+            this.txtZPostCampbell.Name = "txtZPostCampbell";
+            this.txtZPostCampbell.Size = new System.Drawing.Size(75, 20);
+            this.txtZPostCampbell.TabIndex = 119;
+            this.txtZPostCampbell.Text = "0";
+            // 
+            // txtXCat
+            // 
+            this.txtXCat.Location = new System.Drawing.Point(214, 182);
+            this.txtXCat.Name = "txtXCat";
+            this.txtXCat.Size = new System.Drawing.Size(75, 20);
+            this.txtXCat.TabIndex = 120;
+            this.txtXCat.Text = "0";
+            // 
+            // txtYCat
+            // 
+            this.txtYCat.Location = new System.Drawing.Point(295, 182);
+            this.txtYCat.Name = "txtYCat";
+            this.txtYCat.Size = new System.Drawing.Size(75, 20);
+            this.txtYCat.TabIndex = 121;
+            this.txtYCat.Text = "0";
+            // 
+            // txtZCat
+            // 
+            this.txtZCat.Location = new System.Drawing.Point(376, 182);
+            this.txtZCat.Name = "txtZCat";
+            this.txtZCat.Size = new System.Drawing.Size(75, 20);
+            this.txtZCat.TabIndex = 122;
+            this.txtZCat.Text = "0";
+            // 
+            // txtXBridge
+            // 
+            this.txtXBridge.Location = new System.Drawing.Point(214, 286);
+            this.txtXBridge.Name = "txtXBridge";
+            this.txtXBridge.Size = new System.Drawing.Size(75, 20);
+            this.txtXBridge.TabIndex = 126;
+            this.txtXBridge.Text = "0";
+            // 
+            // txtYBridge
+            // 
+            this.txtYBridge.Location = new System.Drawing.Point(295, 286);
+            this.txtYBridge.Name = "txtYBridge";
+            this.txtYBridge.Size = new System.Drawing.Size(75, 20);
+            this.txtYBridge.TabIndex = 127;
+            this.txtYBridge.Text = "0";
+            // 
+            // txtZBridge
+            // 
+            this.txtZBridge.Location = new System.Drawing.Point(376, 286);
+            this.txtZBridge.Name = "txtZBridge";
+            this.txtZBridge.Size = new System.Drawing.Size(75, 20);
+            this.txtZBridge.TabIndex = 128;
+            this.txtZBridge.Text = "0";
+            // 
+            // txtXBoyle
+            // 
+            this.txtXBoyle.Location = new System.Drawing.Point(214, 338);
+            this.txtXBoyle.Name = "txtXBoyle";
+            this.txtXBoyle.Size = new System.Drawing.Size(75, 20);
+            this.txtXBoyle.TabIndex = 129;
+            this.txtXBoyle.Text = "0";
+            // 
+            // txtYPostBridge
+            // 
+            this.txtYPostBridge.Location = new System.Drawing.Point(295, 312);
+            this.txtYPostBridge.Name = "txtYPostBridge";
+            this.txtYPostBridge.Size = new System.Drawing.Size(75, 20);
+            this.txtYPostBridge.TabIndex = 130;
+            this.txtYPostBridge.Text = "0";
+            // 
+            // txtZPostBridge
+            // 
+            this.txtZPostBridge.Location = new System.Drawing.Point(376, 312);
+            this.txtZPostBridge.Name = "txtZPostBridge";
+            this.txtZPostBridge.Size = new System.Drawing.Size(75, 20);
+            this.txtZPostBridge.TabIndex = 131;
+            this.txtZPostBridge.Text = "0";
+            // 
+            // txtXPostBridge
+            // 
+            this.txtXPostBridge.Location = new System.Drawing.Point(214, 312);
+            this.txtXPostBridge.Name = "txtXPostBridge";
+            this.txtXPostBridge.Size = new System.Drawing.Size(75, 20);
+            this.txtXPostBridge.TabIndex = 132;
+            this.txtXPostBridge.Text = "0";
+            // 
+            // txtYBoyle
+            // 
+            this.txtYBoyle.Location = new System.Drawing.Point(295, 338);
+            this.txtYBoyle.Name = "txtYBoyle";
+            this.txtYBoyle.Size = new System.Drawing.Size(75, 20);
+            this.txtYBoyle.TabIndex = 133;
+            this.txtYBoyle.Text = "0";
+            // 
+            // txtZBoyle
+            // 
+            this.txtZBoyle.Location = new System.Drawing.Point(376, 338);
+            this.txtZBoyle.Name = "txtZBoyle";
+            this.txtZBoyle.Size = new System.Drawing.Size(75, 20);
+            this.txtZBoyle.TabIndex = 134;
+            this.txtZBoyle.Text = "0";
+            // 
+            // txtXPostBoyle
+            // 
+            this.txtXPostBoyle.Location = new System.Drawing.Point(214, 364);
+            this.txtXPostBoyle.Name = "txtXPostBoyle";
+            this.txtXPostBoyle.Size = new System.Drawing.Size(75, 20);
+            this.txtXPostBoyle.TabIndex = 135;
+            this.txtXPostBoyle.Text = "0";
+            // 
+            // txtYTower
+            // 
+            this.txtYTower.Location = new System.Drawing.Point(295, 390);
+            this.txtYTower.Name = "txtYTower";
+            this.txtYTower.Size = new System.Drawing.Size(75, 20);
+            this.txtYTower.TabIndex = 136;
+            this.txtYTower.Text = "0";
+            // 
+            // txtYPostBoyle
+            // 
+            this.txtYPostBoyle.Location = new System.Drawing.Point(295, 364);
+            this.txtYPostBoyle.Name = "txtYPostBoyle";
+            this.txtYPostBoyle.Size = new System.Drawing.Size(75, 20);
+            this.txtYPostBoyle.TabIndex = 137;
+            this.txtYPostBoyle.Text = "0";
+            // 
+            // txtZPostBoyle
+            // 
+            this.txtZPostBoyle.Location = new System.Drawing.Point(376, 364);
+            this.txtZPostBoyle.Name = "txtZPostBoyle";
+            this.txtZPostBoyle.Size = new System.Drawing.Size(75, 20);
+            this.txtZPostBoyle.TabIndex = 138;
+            this.txtZPostBoyle.Text = "0";
+            // 
+            // txtXTower
+            // 
+            this.txtXTower.Location = new System.Drawing.Point(214, 390);
+            this.txtXTower.Name = "txtXTower";
+            this.txtXTower.Size = new System.Drawing.Size(75, 20);
+            this.txtXTower.TabIndex = 139;
+            this.txtXTower.Text = "0";
+            // 
+            // txtYPostTower
+            // 
+            this.txtYPostTower.Location = new System.Drawing.Point(295, 416);
+            this.txtYPostTower.Name = "txtYPostTower";
+            this.txtYPostTower.Size = new System.Drawing.Size(75, 20);
+            this.txtYPostTower.TabIndex = 140;
+            this.txtYPostTower.Text = "0";
+            // 
+            // txtXPostTower
+            // 
+            this.txtXPostTower.Location = new System.Drawing.Point(214, 416);
+            this.txtXPostTower.Name = "txtXPostTower";
+            this.txtXPostTower.Size = new System.Drawing.Size(75, 20);
+            this.txtXPostTower.TabIndex = 141;
+            this.txtXPostTower.Text = "0";
+            // 
+            // txtZTower
+            // 
+            this.txtZTower.Location = new System.Drawing.Point(376, 390);
+            this.txtZTower.Name = "txtZTower";
+            this.txtZTower.Size = new System.Drawing.Size(75, 20);
+            this.txtZTower.TabIndex = 142;
+            this.txtZTower.Text = "0";
+            // 
+            // txtZPostTower
+            // 
+            this.txtZPostTower.Location = new System.Drawing.Point(376, 416);
+            this.txtZPostTower.Name = "txtZPostTower";
+            this.txtZPostTower.Size = new System.Drawing.Size(75, 20);
+            this.txtZPostTower.TabIndex = 143;
+            this.txtZPostTower.Text = "0";
+            // 
+            // txtXFloodedCell
+            // 
+            this.txtXFloodedCell.Location = new System.Drawing.Point(214, 494);
+            this.txtXFloodedCell.Name = "txtXFloodedCell";
+            this.txtXFloodedCell.Size = new System.Drawing.Size(75, 20);
+            this.txtXFloodedCell.TabIndex = 144;
+            this.txtXFloodedCell.Text = "0";
+            // 
+            // txtYFloodedCell
+            // 
+            this.txtYFloodedCell.Location = new System.Drawing.Point(295, 494);
+            this.txtYFloodedCell.Name = "txtYFloodedCell";
+            this.txtYFloodedCell.Size = new System.Drawing.Size(75, 20);
+            this.txtYFloodedCell.TabIndex = 145;
+            this.txtYFloodedCell.Text = "0";
+            // 
+            // txtZFloodedCell
+            // 
+            this.txtZFloodedCell.Location = new System.Drawing.Point(376, 494);
+            this.txtZFloodedCell.Name = "txtZFloodedCell";
+            this.txtZFloodedCell.Size = new System.Drawing.Size(75, 20);
+            this.txtZFloodedCell.TabIndex = 146;
+            this.txtZFloodedCell.Text = "0";
+            // 
+            // txtXKingsparrow
+            // 
+            this.txtXKingsparrow.Location = new System.Drawing.Point(214, 520);
+            this.txtXKingsparrow.Name = "txtXKingsparrow";
+            this.txtXKingsparrow.Size = new System.Drawing.Size(75, 20);
+            this.txtXKingsparrow.TabIndex = 147;
+            this.txtXKingsparrow.Text = "0";
+            // 
+            // txtYKingsparrow
+            // 
+            this.txtYKingsparrow.Location = new System.Drawing.Point(295, 520);
+            this.txtYKingsparrow.Name = "txtYKingsparrow";
+            this.txtYKingsparrow.Size = new System.Drawing.Size(75, 20);
+            this.txtYKingsparrow.TabIndex = 148;
+            this.txtYKingsparrow.Text = "0";
+            // 
+            // txtZKingsparrow
+            // 
+            this.txtZKingsparrow.Location = new System.Drawing.Point(376, 520);
+            this.txtZKingsparrow.Name = "txtZKingsparrow";
+            this.txtZKingsparrow.Size = new System.Drawing.Size(75, 20);
+            this.txtZKingsparrow.TabIndex = 149;
+            this.txtZKingsparrow.Text = "0";
+            // 
+            // txtZLighthouse
+            // 
+            this.txtZLighthouse.Location = new System.Drawing.Point(376, 546);
+            this.txtZLighthouse.Name = "txtZLighthouse";
+            this.txtZLighthouse.Size = new System.Drawing.Size(75, 20);
+            this.txtZLighthouse.TabIndex = 150;
+            this.txtZLighthouse.Text = "0";
+            // 
+            // txtYLighthouse
+            // 
+            this.txtYLighthouse.Location = new System.Drawing.Point(295, 546);
+            this.txtYLighthouse.Name = "txtYLighthouse";
+            this.txtYLighthouse.Size = new System.Drawing.Size(75, 20);
+            this.txtYLighthouse.TabIndex = 151;
+            this.txtYLighthouse.Text = "0";
+            // 
+            // txtXLighthouse
+            // 
+            this.txtXLighthouse.Location = new System.Drawing.Point(214, 546);
+            this.txtXLighthouse.Name = "txtXLighthouse";
+            this.txtXLighthouse.Size = new System.Drawing.Size(75, 20);
+            this.txtXLighthouse.TabIndex = 152;
+            this.txtXLighthouse.Text = "0";
             // 
             // DishonoredSettings
             // 
@@ -1194,5 +1645,50 @@
         private System.Windows.Forms.TextBox txtXPostCat;
         private System.Windows.Forms.TextBox txtYPostCat;
         private System.Windows.Forms.TextBox txtZPostCat;
+        private System.Windows.Forms.TextBox txtXIntro;
+        private System.Windows.Forms.TextBox txtYIntro;
+        private System.Windows.Forms.TextBox txtZIntro;
+        private System.Windows.Forms.TextBox txtXIntroEnd;
+        private System.Windows.Forms.TextBox txtYIntroEnd;
+        private System.Windows.Forms.TextBox txtZIntroEnd;
+        private System.Windows.Forms.TextBox txtXPrison;
+        private System.Windows.Forms.TextBox txtYPrison;
+        private System.Windows.Forms.TextBox txtZPrison;
+        private System.Windows.Forms.TextBox txtXPostCampbell;
+        private System.Windows.Forms.TextBox txtXPostSewers;
+        private System.Windows.Forms.TextBox txtYPostSewers;
+        private System.Windows.Forms.TextBox txtZPostSewers;
+        private System.Windows.Forms.TextBox txtYPostCampbell;
+        private System.Windows.Forms.TextBox txtZPostCampbell;
+        private System.Windows.Forms.TextBox txtXCat;
+        private System.Windows.Forms.TextBox txtYCat;
+        private System.Windows.Forms.TextBox txtZCat;
+        private System.Windows.Forms.TextBox txtXBridge;
+        private System.Windows.Forms.TextBox txtYBridge;
+        private System.Windows.Forms.TextBox txtZBridge;
+        private System.Windows.Forms.TextBox txtYPostBridge;
+        private System.Windows.Forms.TextBox txtZPostBridge;
+        private System.Windows.Forms.TextBox txtXPostBridge;
+        private System.Windows.Forms.TextBox txtXBoyle;
+        private System.Windows.Forms.TextBox txtYBoyle;
+        private System.Windows.Forms.TextBox txtZBoyle;
+        private System.Windows.Forms.TextBox txtXPostBoyle;
+        private System.Windows.Forms.TextBox txtYTower;
+        private System.Windows.Forms.TextBox txtYPostBoyle;
+        private System.Windows.Forms.TextBox txtZPostBoyle;
+        private System.Windows.Forms.TextBox txtXTower;
+        private System.Windows.Forms.TextBox txtYPostTower;
+        private System.Windows.Forms.TextBox txtXPostTower;
+        private System.Windows.Forms.TextBox txtZTower;
+        private System.Windows.Forms.TextBox txtZPostTower;
+        private System.Windows.Forms.TextBox txtXFloodedCell;
+        private System.Windows.Forms.TextBox txtYFloodedCell;
+        private System.Windows.Forms.TextBox txtZFloodedCell;
+        private System.Windows.Forms.TextBox txtXKingsparrow;
+        private System.Windows.Forms.TextBox txtYKingsparrow;
+        private System.Windows.Forms.TextBox txtZKingsparrow;
+        private System.Windows.Forms.TextBox txtZLighthouse;
+        private System.Windows.Forms.TextBox txtYLighthouse;
+        private System.Windows.Forms.TextBox txtXLighthouse;
     }
 }

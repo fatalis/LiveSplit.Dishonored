@@ -314,6 +314,8 @@ namespace LiveSplit.Dishonored
                     AreaCompletionType completionType = _areaCompletions.Where(c => combinedStr.ToLower().StartsWith(c.Key.ToLower())).Select(c => c.Value).FirstOrDefault();
                     if (completionType != AreaCompletionType.None)
                         OnAreaCompleted?.Invoke(this, completionType);
+
+                    _timer.Stop();
                 }
                 else
                 {
@@ -379,7 +381,7 @@ namespace LiveSplit.Dishonored
                 OnAreaCompleted?.Invoke(this, AreaCompletionType.MissionEnd);
             }
 
-            if (!_data.IsLoading.Current && (_data.PlayerPosX.Changed || _data.PlayerPosY.Changed || _data.PlayerPosZ.Changed))
+            if (_timer.Enabled && (_data.PlayerPosX.Changed || _data.PlayerPosY.Changed || _data.PlayerPosZ.Changed))
             {
                 OnPlayerPositionChanged?.Invoke(this, level, _data.PlayerPosX.Current, _data.PlayerPosY.Current, _data.PlayerPosZ.Current);
             }
