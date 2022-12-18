@@ -138,17 +138,17 @@ namespace LiveSplit.Dishonored
         public event EventHandler OnFirstLevelLoading;
         public event EventHandler OnPlayerGainedControl;
         public event EventHandler OnLoadStarted;
-        public delegate void LoadFinishedHandler(object sender, Level previousLevel, Level currentLevel, Movie movie, float playerPosX);
+        public delegate void LoadFinishedHandler(object sender, Level level, Level previousLevel, Movie movie, float x, float y, float z);
         public event LoadFinishedHandler OnLoadFinished;
         public event EventHandler OnPlayerLostControl;
         public delegate void AreaCompletedEventHandler(object sender, AreaCompletionType type);
         public event AreaCompletedEventHandler OnAreaCompleted;
-        public delegate void CutsceneStartedHandler(object sender, Level level, float playerPosX, bool isLoading);
-        public event CutsceneStartedHandler OnCutsceneStarted;
-        public delegate void MovieEndedHandler(object sender, Movie movie);
-        public event MovieEndedHandler OnMovieEnded;
-        public delegate void PlayerPositionChangedHandler(object sender, Level level, float x, float y, float z);
-        public event PlayerPositionChangedHandler OnPlayerPositionChanged;
+        public delegate void PostMoviePlayerPositionChangedHandler(object sender, Movie movie, float x, float y, float z);
+        public event PostMoviePlayerPositionChangedHandler OnPostMoviePlayerPositionChanged;
+        public delegate void PostCutscenePlayerPositionChangedHandler(object sender, Level level, int count, float x, float y, float z);
+        public event PostCutscenePlayerPositionChangedHandler OnPostCutscenePlayerPositionChanged;
+        public delegate void PostLoadPlayerPositionChangedHandler(object sender, Level level, Level previousLevel, float x, float y, float z);
+        public event PostLoadPlayerPositionChangedHandler OnPostLoadPlayerPositionChanged;
 
         private List<int> _ignorePIDs;
 
@@ -156,7 +156,8 @@ namespace LiveSplit.Dishonored
         private Process _process;
         private bool _loadingStarted;
         private bool _oncePerLevelFlag;
-        private Level _previousLevel = Level.None;
+        private Level _previousLevel;
+        private int _cutsceneCount;
 
         private IntPtr _worldSpeedPtr;
         private IntPtr _setWorldSpeedPtr;
@@ -164,7 +165,9 @@ namespace LiveSplit.Dishonored
         private IntPtr _copyWorldSpeedPtr;
         private int _overwriteBytes = 10;
 
-        private Timer _timer;
+        private Timer _movieTimer;
+        private Timer _cutsceneTimer;
+        private Timer _loadTimer;
 
         private enum ExpectedDllSizes
         {
@@ -245,11 +248,15 @@ namespace LiveSplit.Dishonored
         public GameMemory()
         {
             _ignorePIDs = new List<int>();
-            _timer = new Timer { Enabled = false };
-            _timer.Tick += timer_OnTick;
+            _movieTimer = new Timer { Enabled = false };
+            _movieTimer.Tick += movieTimer_OnTick;
+            _cutsceneTimer = new Timer { Enabled = false };
+            _cutsceneTimer.Tick += cutsceneTimer_OnTick;
+            _loadTimer = new Timer { Enabled = false };
+            _loadTimer.Tick += loadTimer_OnTick;
         }
 
-        public void Update()
+        public void Update(bool logCoords)
         {
             if (_process == null || _process.HasExited)
             {
@@ -266,15 +273,18 @@ namespace LiveSplit.Dishonored
             var combinedStr = currentMovie + "|" + currentLevelStr;
             var level = _levels.Where(l => currentLevelStr.ToLower().StartsWith(l.Key.ToLower())).Select(l => l.Value).FirstOrDefault();
             _movies.TryGetValue(currentMovie, out var movie);
+            var x = _data.PlayerPosX.Current;
+            var y = _data.PlayerPosY.Current;
+            var z = _data.PlayerPosZ.Current;
 
-            if (_timer.Enabled)
+            if (logCoords && _movieTimer.Enabled || _cutsceneTimer.Enabled || _loadTimer.Enabled)
             {
-                Debug.WriteLine($"x={_data.PlayerPosX.Current} y={_data.PlayerPosY.Current} z={_data.PlayerPosZ.Current}");
+                Debug.WriteLine($"x={x} y={y} z={z}");
             }
 
             if (_data.CurrentBikMovie.Changed && _data.CurrentBikMovie.Old != String.Empty)
             {
-                Debug.WriteLine($"Movie Changed - {_data.CurrentBikMovie.Old} -> {_data.CurrentBikMovie.Current} x={_data.PlayerPosX.Current}");
+                Debug.WriteLine($"Movie Changed - {_data.CurrentBikMovie.Old} -> {_data.CurrentBikMovie.Current} x={x}");
 
                 // special case for Intro End split because two movies play back-to-back
                 // which can cause isLoading to not detect changes
@@ -289,7 +299,7 @@ namespace LiveSplit.Dishonored
 
             if (_data.CurrentLevel.Changed)
             {
-                Debug.WriteLine($"Level Changed - {_data.CurrentLevel.Old} -> {_data.CurrentLevel.Current} '{currentLevelStr}' x={_data.PlayerPosX.Current}");
+                Debug.WriteLine($"Level Changed - {_data.CurrentLevel.Old} -> {_data.CurrentLevel.Current} '{currentLevelStr}' x={x}");
 
                 if (currentLevelStr == "L_DLC07_BaseIntro_P" || currentLevelStr == "DLC06_Tower_P")
                     OnFirstLevelLoading?.Invoke(this, EventArgs.Empty);
@@ -301,7 +311,7 @@ namespace LiveSplit.Dishonored
             {
                 if (_data.IsLoading.Current)
                 {
-                    Debug.WriteLine($"Load Start - {combinedStr} x={_data.PlayerPosX.Current}");
+                    Debug.WriteLine($"Load Start - {combinedStr} x={x}");
 
                     // ignore the intro sequence and the dishonored logo screen
                     if (currentMovie != "INTRO_LOC" && currentMovie != "Dishonored")
@@ -315,16 +325,23 @@ namespace LiveSplit.Dishonored
                     if (completionType != AreaCompletionType.None)
                         OnAreaCompleted?.Invoke(this, completionType);
 
-                    _timer.Stop();
+                    _movieTimer.Stop();
+                    _cutsceneTimer.Stop();
+                    _loadTimer.Stop();
                 }
                 else
                 {
-                    Debug.WriteLine($"Load End - {combinedStr} x={_data.PlayerPosX.Current}");
+                    Debug.WriteLine($"Load End - {combinedStr} x={x}");
 
                     if (_loadingStarted)
                     {
                         _loadingStarted = false;
-                        OnLoadFinished?.Invoke(this, _previousLevel, level, movie, _data.PlayerPosX.Current);
+                        OnLoadFinished?.Invoke(this, level, _previousLevel, movie, x, y, z);
+
+                        if (level != _previousLevel)
+                        {
+                            _cutsceneCount = 0;
+                        }
                     }
 
                     if (((currentMovie == "LoadingEmpressTower" || currentMovie == "INTRO_LOC") && currentLevelStr == "l_tower_p")
@@ -333,31 +350,31 @@ namespace LiveSplit.Dishonored
                         OnPlayerGainedControl?.Invoke(this, EventArgs.Empty);
                     }
 
-                    if (!currentMovie.StartsWith("Loading"))
+                    if (currentMovie.StartsWith("Loading"))
                     {
-                        if (movie != Movie.None)
-                        {
-                            OnMovieEnded?.Invoke(this, movie);
-                        }
+                        _loadTimer.Interval = 5000;
+                        _loadTimer.Start();
                     }
-
-                    _timer.Interval = 5000;
-                    _timer.Start();
+                    else if (movie != Movie.None)
+                    {
+                        _movieTimer.Interval = 8000;
+                        _movieTimer.Start();
+                    }
                 }
             }
 
-            if (_data.PlayerPosX.Changed && _data.PlayerPosX.Old == 0.0f && _loadingStarted &&
-                _data.PlayerPosX.Current<9826.5f && _data.PlayerPosX.Current>9826.0f)
+            if (_data.PlayerPosX.Changed && _data.PlayerPosX.Old == 0.0f && _loadingStarted && x < 9826.5f && x > 9826.0f)
             {
                 if (currentLevelStr == "l_tower_p")
                 {
+                    _cutsceneCount = 0;
                     OnFirstLevelLoading?.Invoke(this, EventArgs.Empty);
                 }
             }
 
             if (_data.CutsceneActive.Changed)
             {
-                Debug.WriteLine($"In-Game Cutscene {(_data.CutsceneActive.Current ? "Start" : "End")} - {combinedStr} x={_data.PlayerPosX.Current}");
+                Debug.WriteLine($"In-Game Cutscene {(_data.CutsceneActive.Current ? "Start" : "End")} - {combinedStr} x={x}");
 
                 if (_data.CutsceneActive.Current && currentLevelStr.StartsWith("L_LightH_"))
                 {
@@ -371,19 +388,32 @@ namespace LiveSplit.Dishonored
 
                 if (_data.CutsceneActive.Current)
                 {
-                    OnCutsceneStarted?.Invoke(this, level, _data.PlayerPosX.Current, _data.IsLoading.Current);
+                    _cutsceneCount++;
+                    _cutsceneTimer.Interval = 5000;
+                    _cutsceneTimer.Start();
                 }
             }
 
             if (_data.MissionStatsScreenFlags.Changed && _data.MissionStatsScreenActive.Current)
             {
-                Debug.WriteLine($"Mission End x={_data.PlayerPosX.Current}");
+                Debug.WriteLine($"Mission End x={x}");
                 OnAreaCompleted?.Invoke(this, AreaCompletionType.MissionEnd);
             }
 
-            if (_timer.Enabled && (_data.PlayerPosX.Changed || _data.PlayerPosY.Changed || _data.PlayerPosZ.Changed))
+            if ((_movieTimer.Enabled || _cutsceneTimer.Enabled || _loadTimer.Enabled) && (_data.PlayerPosX.Changed || _data.PlayerPosY.Changed || _data.PlayerPosZ.Changed))
             {
-                OnPlayerPositionChanged?.Invoke(this, level, _data.PlayerPosX.Current, _data.PlayerPosY.Current, _data.PlayerPosZ.Current);
+                if (_movieTimer.Enabled)
+                {
+                    OnPostMoviePlayerPositionChanged?.Invoke(this, movie, x, y, z);
+                }
+                if (_cutsceneTimer.Enabled)
+                {
+                    OnPostCutscenePlayerPositionChanged?.Invoke(this, level, _cutsceneCount, x, y, z);
+                }
+                if (_loadTimer.Enabled)
+                {
+                    OnPostLoadPlayerPositionChanged?.Invoke(this, level, _previousLevel, x, y, z);
+                }
             }
         }
 
@@ -512,7 +542,9 @@ namespace LiveSplit.Dishonored
 
         public void Dispose()
         {
-            _timer?.Dispose();
+            _movieTimer?.Dispose();
+            _cutsceneTimer?.Dispose();
+            _loadTimer?.Dispose();
 
             if (_process == null || _process.HasExited)
             {
@@ -553,9 +585,19 @@ namespace LiveSplit.Dishonored
             return ptr.DerefString(_process, 32);
         }
 
-        void timer_OnTick(object sender, EventArgs e)
+        void movieTimer_OnTick(object sender, EventArgs e)
         {
-            _timer.Stop();
+            _movieTimer.Stop();
+        }
+
+        void cutsceneTimer_OnTick(object sender, EventArgs e)
+        {
+            _cutsceneTimer.Stop();
+        }
+
+        void loadTimer_OnTick(object sender, EventArgs e)
+        {
+            _loadTimer.Stop();
         }
     }
 

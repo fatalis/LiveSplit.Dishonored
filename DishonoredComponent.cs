@@ -11,93 +11,84 @@ using static LiveSplit.Dishonored.GameMemory;
 
 namespace LiveSplit.Dishonored
 {
-    class CutsceneSpeedup
+    abstract class PositionSpeedup
     {
+        public Func<string, float> SettingsGetter { get; set; }
+        public string Setting { get; set; }
         public Level Level { get; set; }
-        public float PlayerPosX { get; set; }
-        public string Setting { get; set; }
-
-        private const float _tolerance = 3f;
-
-        public bool ApproxEqual(float val)
-        {
-            return val > (PlayerPosX - _tolerance) && val < (PlayerPosX + _tolerance);
-        }
-
-        public bool Matches(Level level, float playerPosX)
-        {
-            return level == Level && ApproxEqual(playerPosX);
-        }
-    }
-
-    class LoadSpeedup
-    {
-        public Level PreviousLevel { get; set; }
-        public Level NextLevel { get; set; }
-        public float? PlayerPosX { get; set; }
-        public string Setting { get; set; }
-
-        private const float _tolerance = 3f;
-
-        public bool ApproxEqual(float val)
-        {
-            return val > (PlayerPosX - _tolerance) && val < (PlayerPosX + _tolerance);
-        }
-
-        public bool Matches(Level previousLevel, Level nextLevel, float playerPosX, Func<string, float> settingsGetter)
-        {
-            var setX = settingsGetter($"X{Setting}");
-            var setY = settingsGetter($"Y{Setting}");
-            var setZ = settingsGetter($"Z{Setting}");
-
-            if (setX != 0 || setY != 0 || setZ != 0)
-            {
-                return false;
-            }
-
-            return previousLevel == PreviousLevel && nextLevel == NextLevel && (PlayerPosX == null || ApproxEqual(playerPosX));
-        }
-    }
-
-    class MovieSpeedup
-    {
-        public Movie Movie { get; set; }
-        public string Setting { get; set; }
-
-        public bool Matches(Movie movie)
-        {
-            return movie == Movie;
-        }
-    }
-
-    class PositionSpeedup
-    {
-        public Level Level { get; set; }
-        public string Setting { get; set; }
         public float Tolerance = 0.5f;
 
-        private bool ApproxEqual(float value, float expected)
+        protected float _setX { get => SettingsGetter($"X{Setting}"); }
+        protected float _setY { get => SettingsGetter($"Y{Setting}"); }
+        protected float _setZ { get => SettingsGetter($"Z{Setting}"); }
+        protected bool _coordsSet { get => _setX != 0 || _setY != 0 || _setZ != 0; }
+
+        protected bool ApproxEqual(float value, float expected)
         {
-            return expected == 0 || (value > (expected - Tolerance) && value < (expected + Tolerance));
+            return expected == 0 || (value >= (expected - Tolerance) && value <= (expected + Tolerance));
         }
+    }
 
-        public bool Matches(Level level, float x, float y, float z, Func<string, float> settingsGetter)
+    class MovieSpeedup : PositionSpeedup
+    {
+        public Movie Movie { get; set; }
+
+        public bool Matches(Movie movie, float x, float y, float z)
         {
-            if (level != Level)
+            if (!_coordsSet)
             {
                 return false;
             }
 
-            var setX = settingsGetter($"X{Setting}");
-            var setY = settingsGetter($"Y{Setting}");
-            var setZ = settingsGetter($"Z{Setting}");
+            return movie == Movie && ApproxEqual(x, _setX) && ApproxEqual(y, _setY) && ApproxEqual(z, _setZ);
+        }
+    }
 
-            if (setX == 0 && setY == 0 && setZ == 0)
+    class CutsceneSpeedup : PositionSpeedup
+    {
+        public int Count { get; set; }
+
+        public bool Matches(Level level, int count, float x, float y, float z)
+        {
+            if (!_coordsSet)
             {
                 return false;
             }
 
-            return ApproxEqual(x, setX) && ApproxEqual(y, setY) && ApproxEqual(z, setZ);
+            return level == Level && count == Count && ApproxEqual(x, _setX) && ApproxEqual(y, _setY) && ApproxEqual(z, _setZ);
+        }
+    }
+
+    class LoadDelaySpeedup : PositionSpeedup
+    {
+        public Level PreviousLevel { get; set; }
+        public float PlayerPosX { get; set; }
+        public float PlayerPosY { get; set; }
+        public float PlayerPosZ { get; set; }
+
+        public bool Matches(Level level, Level previousLevel, float x, float y, float z)
+        {
+            if (_coordsSet)
+            {
+                return false;
+            }
+
+            return level == Level && previousLevel == PreviousLevel && ApproxEqual(x, PlayerPosX) && ApproxEqual(y, PlayerPosY) && ApproxEqual(z, PlayerPosZ);
+        }
+    }
+
+    class LoadPositionSpeedup : PositionSpeedup
+    {
+        public Level PreviousLevel { get; set; }
+
+        public bool Matches(Level level, Level previousLevel, float x, float y, float z)
+        {
+            if (!_coordsSet)
+            {
+                return false;
+            }
+
+            return level == Level && previousLevel == PreviousLevel && ApproxEqual(x, _setX) && ApproxEqual(y, _setY) && ApproxEqual(z, _setZ);
         }
     }
 
@@ -111,63 +102,17 @@ namespace LiveSplit.Dishonored
         private GameMemory _gameMemory;
         private Timer _updateTimer;
         private Timer _cutsceneTimer;
+
         private string _pendingSpeedup = null;
         private long _elapsedTime = 0;
         private int _timeMultiplier = 1;
         private TimeSpan _lastTime;
         private string _currentSpeedup = null;
 
-        private List<CutsceneSpeedup> _cutsceneSpeedups = new List<CutsceneSpeedup>
-        {
-            new CutsceneSpeedup { Level = Level.Intro, PlayerPosX = 15476f, Setting = "IntroEnd" },
-            new CutsceneSpeedup { Level = Level.Intro, PlayerPosX = 15482f, Setting = "IntroEnd" },
-        };
-
-        private List<LoadSpeedup> _loadSpeedups = new List<LoadSpeedup>
-        {
-            new LoadSpeedup { PreviousLevel = Level.Intro, NextLevel = Level.Prison, Setting = "Prison" },
-            new LoadSpeedup { PreviousLevel = Level.Sewers, NextLevel = Level.PubDay, Setting = "PostSewers" },
-            new LoadSpeedup { PreviousLevel = Level.PubDusk, NextLevel = Level.CampbellStreets, Setting = "Campbell" },
-            new LoadSpeedup { PreviousLevel = Level.CampbellBack, NextLevel = Level.PubMorning, Setting = "PostCampbell" },
-            new LoadSpeedup { PreviousLevel = Level.PubDay, NextLevel = Level.CatStreets, Setting = "Cat" },
-            new LoadSpeedup { PreviousLevel = Level.CatStreets, NextLevel = Level.PubDusk, Setting = "PostCat" },
-            new LoadSpeedup { PreviousLevel = Level.PubDusk, NextLevel = Level.Bridge1, Setting = "Bridge" },
-            new LoadSpeedup { PreviousLevel = Level.Bridge4, NextLevel = Level.PubNight, Setting = "PostBridge" },
-            new LoadSpeedup { PreviousLevel = Level.PubDay, NextLevel = Level.BoyleExterior, Setting = "Boyle" },
-            new LoadSpeedup { PreviousLevel = Level.BoyleExterior, NextLevel = Level.PubMorning, Setting = "PostBoyle" },
-            new LoadSpeedup { PreviousLevel = Level.PubMorning, NextLevel = Level.TowerReturnYard, Setting = "Tower" },
-            new LoadSpeedup { PreviousLevel = Level.TowerReturnYard, NextLevel = Level.PubDusk, Setting = "PostTower" },
-            new LoadSpeedup { PreviousLevel = Level.PubDusk, NextLevel = Level.FloodedIntro, Setting = "Flooded" },
-            new LoadSpeedup { PreviousLevel = Level.FloodedIntro, NextLevel = Level.FloodedStreets, Setting = "FloodedCell" },
-            new LoadSpeedup { PreviousLevel = Level.FloodedRefinery, NextLevel = Level.FloodedStreets, PlayerPosX = -5397.104f, Setting = "FloodedCell" },
-            new LoadSpeedup { PreviousLevel = Level.Loyalists, NextLevel = Level.KingsparrowIsland, Setting = "Kingsparrow" },
-            new LoadSpeedup { PreviousLevel = Level.KingsparrowIsland, NextLevel = Level.KingsparrowLighthouse, Setting = "Lighthouse" },
-        };
-
-        private List<MovieSpeedup> _movieSpeedups = new List<MovieSpeedup>
-        {
-            new MovieSpeedup { Movie = Movie.Intro, Setting = "Intro" },
-        };
-
-        private List<PositionSpeedup> _positionSpeedups = new List<PositionSpeedup>
-        {
-            new PositionSpeedup { Level = Level.Prison, Setting = "Prison" },
-            new PositionSpeedup { Level = Level.PubDay, Setting = "PostSewers" },
-            new PositionSpeedup { Level = Level.CampbellStreets, Setting = "Campbell" },
-            new PositionSpeedup { Level = Level.PubMorning, Setting = "PostCampbell" },
-            new PositionSpeedup { Level = Level.CatStreets, Setting = "Cat" },
-            new PositionSpeedup { Level = Level.PubDusk, Setting = "PostCat" },
-            new PositionSpeedup { Level = Level.Bridge1, Setting = "Bridge" },
-            new PositionSpeedup { Level = Level.PubNight, Setting = "PostBridge" },
-            new PositionSpeedup { Level = Level.BoyleExterior, Setting = "Boyle" },
-            new PositionSpeedup { Level = Level.PubMorning, Setting = "PostBoyle" },
-            new PositionSpeedup { Level = Level.TowerReturnYard, Setting = "Tower" },
-            new PositionSpeedup { Level = Level.PubDusk, Setting = "PostTower" },
-            new PositionSpeedup { Level = Level.FloodedIntro, Setting = "Flooded" },
-            new PositionSpeedup { Level = Level.FloodedStreets, Setting = "FloodedCell" },
-            new PositionSpeedup { Level = Level.KingsparrowIsland, Setting = "Kingsparrow" },
-            new PositionSpeedup { Level = Level.KingsparrowLighthouse, Setting = "Lighthouse" },
-        };
+        private List<MovieSpeedup> _movieSpeedups;
+        private List<CutsceneSpeedup> _cutsceneSpeedups;
+        private List<LoadDelaySpeedup> _loadDelaySpeedups;
+        private List<LoadPositionSpeedup> _loadPositionSpeedups;
 
         private Dictionary<string, string> _speedupFollowups = new Dictionary<string, string>
         {
@@ -191,7 +136,56 @@ namespace LiveSplit.Dishonored
             _updateTimer = new Timer() { Interval = 15, Enabled = true };
             _updateTimer.Tick += updateTimer_Tick;
 
-            _cutsceneTimer = new Timer() { Enabled = true };
+            _movieSpeedups = new List<MovieSpeedup>
+            {
+                new MovieSpeedup { SettingsGetter = GetSettingsFloat, Setting = "Intro", Movie = Movie.Intro },
+            };
+
+            _cutsceneSpeedups = new List<CutsceneSpeedup>
+            {
+                new CutsceneSpeedup { SettingsGetter = GetSettingsFloat, Setting = "BlindIntro", Level = Level.Intro, Count = 2, Tolerance = 0.1f },
+                new CutsceneSpeedup { SettingsGetter = GetSettingsFloat, Setting = "IntroEnd", Level = Level.Intro, Count = 4, Tolerance = 0.1f },
+            };
+
+            _loadDelaySpeedups = new List<LoadDelaySpeedup>
+            {
+                new LoadDelaySpeedup { SettingsGetter = GetSettingsFloat, Setting = "Prison", Level = Level.Prison, PreviousLevel = Level.Intro },
+                new LoadDelaySpeedup { SettingsGetter = GetSettingsFloat, Setting = "PostSewers", Level = Level.PubDay, PreviousLevel = Level.Sewers },
+                new LoadDelaySpeedup { SettingsGetter = GetSettingsFloat, Setting = "Campbell", Level = Level.CampbellStreets, PreviousLevel = Level.PubDusk },
+                new LoadDelaySpeedup { SettingsGetter = GetSettingsFloat, Setting = "PostCampbell", Level = Level.PubMorning, PreviousLevel = Level.CampbellBack },
+                new LoadDelaySpeedup { SettingsGetter = GetSettingsFloat, Setting = "Cat", Level = Level.CatStreets, PreviousLevel = Level.PubDay },
+                new LoadDelaySpeedup { SettingsGetter = GetSettingsFloat, Setting = "PostCat", Level = Level.PubDusk, PreviousLevel = Level.CatStreets },
+                new LoadDelaySpeedup { SettingsGetter = GetSettingsFloat, Setting = "Bridge", Level = Level.Bridge1, PreviousLevel = Level.PubDusk },
+                new LoadDelaySpeedup { SettingsGetter = GetSettingsFloat, Setting = "PostBridge", Level = Level.PubNight, PreviousLevel = Level.Bridge4 },
+                new LoadDelaySpeedup { SettingsGetter = GetSettingsFloat, Setting = "Boyle", Level = Level.BoyleExterior, PreviousLevel = Level.PubDay },
+                new LoadDelaySpeedup { SettingsGetter = GetSettingsFloat, Setting = "PostBoyle", Level = Level.PubMorning, PreviousLevel = Level.BoyleExterior },
+                new LoadDelaySpeedup { SettingsGetter = GetSettingsFloat, Setting = "Tower", Level = Level.TowerReturnYard, PreviousLevel = Level.PubMorning },
+                new LoadDelaySpeedup { SettingsGetter = GetSettingsFloat, Setting = "PostTower", Level = Level.PubDusk, PreviousLevel = Level.TowerReturnYard },
+                new LoadDelaySpeedup { SettingsGetter = GetSettingsFloat, Setting = "Flooded", Level = Level.FloodedIntro, PreviousLevel = Level.PubDusk },
+                new LoadDelaySpeedup { SettingsGetter = GetSettingsFloat, Setting = "FloodedCell", Level = Level.FloodedStreets, PreviousLevel = Level.FloodedIntro },
+                new LoadDelaySpeedup { SettingsGetter = GetSettingsFloat, Setting = "FloodedCell", Level = Level.FloodedStreets, PreviousLevel = Level.FloodedRefinery, PlayerPosX = -5397.104f },
+                new LoadDelaySpeedup { SettingsGetter = GetSettingsFloat, Setting = "Kingsparrow", Level = Level.KingsparrowIsland, PreviousLevel = Level.Loyalists },
+                new LoadDelaySpeedup { SettingsGetter = GetSettingsFloat, Setting = "Lighthouse", Level = Level.KingsparrowLighthouse, PreviousLevel = Level.KingsparrowIsland },
+            };
+
+            _loadPositionSpeedups = new List<LoadPositionSpeedup>
+            {
+                new LoadPositionSpeedup { SettingsGetter = GetSettingsFloat, Setting = "PostSewers", Level = Level.PubDay, PreviousLevel = Level.Sewers },
+                new LoadPositionSpeedup { SettingsGetter = GetSettingsFloat, Setting = "Campbell", Level = Level.CampbellStreets, PreviousLevel = Level.PubDusk },
+                new LoadPositionSpeedup { SettingsGetter = GetSettingsFloat, Setting = "PostCampbell", Level = Level.PubMorning, PreviousLevel = Level.CampbellBack },
+                new LoadPositionSpeedup { SettingsGetter = GetSettingsFloat, Setting = "Cat", Level = Level.CatStreets, PreviousLevel = Level.PubDay },
+                new LoadPositionSpeedup { SettingsGetter = GetSettingsFloat, Setting = "PostCat", Level = Level.PubDusk, PreviousLevel = Level.CatStreets },
+                new LoadPositionSpeedup { SettingsGetter = GetSettingsFloat, Setting = "Bridge", Level = Level.Bridge1, PreviousLevel = Level.PubDusk },
+                new LoadPositionSpeedup { SettingsGetter = GetSettingsFloat, Setting = "PostBridge", Level = Level.PubNight, PreviousLevel = Level.Bridge4 },
+                new LoadPositionSpeedup { SettingsGetter = GetSettingsFloat, Setting = "Boyle", Level = Level.BoyleExterior, PreviousLevel = Level.PubDay },
+                new LoadPositionSpeedup { SettingsGetter = GetSettingsFloat, Setting = "PostBoyle", Level = Level.PubMorning, PreviousLevel = Level.BoyleExterior, Tolerance = 4f },
+                new LoadPositionSpeedup { SettingsGetter = GetSettingsFloat, Setting = "Tower", Level = Level.TowerReturnYard, PreviousLevel = Level.PubMorning },
+                new LoadPositionSpeedup { SettingsGetter = GetSettingsFloat, Setting = "PostTower", Level = Level.PubDusk, PreviousLevel = Level.TowerReturnYard },
+                new LoadPositionSpeedup { SettingsGetter = GetSettingsFloat, Setting = "Flooded", Level = Level.FloodedIntro, PreviousLevel = Level.PubDusk },
+                new LoadPositionSpeedup { SettingsGetter = GetSettingsFloat, Setting = "Kingsparrow", Level = Level.KingsparrowIsland, PreviousLevel = Level.Loyalists },
+            };
+
+            _cutsceneTimer = new Timer() { Enabled = false };
             _cutsceneTimer.Tick += cutsceneTimer_Tick;
 
             _gameMemory = new GameMemory();
@@ -201,9 +195,9 @@ namespace LiveSplit.Dishonored
             _gameMemory.OnLoadFinished += gameMemory_OnLoadFinished;
             _gameMemory.OnPlayerLostControl += gameMemory_OnPlayerLostControl;
             _gameMemory.OnAreaCompleted += gameMemory_OnAreaCompleted;
-            _gameMemory.OnCutsceneStarted += gameMemory_OnCutsceneStarted;
-            _gameMemory.OnMovieEnded += gameMemory_OnMovieEnded;
-            _gameMemory.OnPlayerPositionChanged += gameMemory_OnPlayerPositionChanged;
+            _gameMemory.OnPostMoviePlayerPositionChanged += gameMemory_OnPostMoviePlayerPositionChanged;
+            _gameMemory.OnPostCutscenePlayerPositionChanged += gameMemory_OnPostCutscenePlayerPositionChanged;
+            _gameMemory.OnPostLoadPlayerPositionChanged += gameMemory_OnPostLoadPlayerPositionChanged;
         }
 
         public override void Dispose()
@@ -218,7 +212,7 @@ namespace LiveSplit.Dishonored
         {
             try
             {
-                _gameMemory.Update();
+                _gameMemory.Update(Settings.LogCoords);
             }
             catch (Exception ex)
             {
@@ -287,14 +281,14 @@ namespace LiveSplit.Dishonored
             }
         }
 
-        void gameMemory_OnLoadFinished(object sender, Level previousLevel, Level currentLevel, Movie movie, float playerPosX)
+        void gameMemory_OnLoadFinished(object sender, Level level, Level previousLevel, Movie movie, float x, float y, float z)
         {
             _timer.CurrentState.IsGameTimePaused = false;
 
-            var speedup = _loadSpeedups.Find(cs => cs.Matches(previousLevel, currentLevel, playerPosX, GetSettingsFloat));
+            var speedup = _loadDelaySpeedups.Find(cs => cs.Matches(level, previousLevel, x, y, z));
             if (speedup != null)
             {
-                Debug.WriteLine($"Found load speedup for level {speedup.PreviousLevel} -> {speedup.NextLevel}, setting {speedup.Setting}");
+                Debug.WriteLine($"Found load delay speedup {speedup.Setting} level={previousLevel}->{level}");
                 DelaySpeedup(speedup.Setting);
             }
         }
@@ -303,16 +297,6 @@ namespace LiveSplit.Dishonored
         {
             if (Settings.AutoStartEnd)
                 _timer.Split();
-        }
-
-        void gameMemory_OnCutsceneStarted(object sender, Level level, float playerPosX, bool isLoading)
-        {
-            var speedup = _cutsceneSpeedups.Find(cs => cs.Matches(level, playerPosX));
-            if (speedup != null)
-            {
-                Debug.WriteLine($"Found cutscene speedup for level {speedup.Level}, pos {speedup.PlayerPosX}, setting {speedup.Setting}");
-                DelaySpeedup(speedup.Setting);
-            }
         }
 
         void gameMemory_OnAreaCompleted(object sender, AreaCompletionType type)
@@ -327,26 +311,47 @@ namespace LiveSplit.Dishonored
             }
         }
 
-        void gameMemory_OnMovieEnded(object sender, Movie movie)
-        {
-            var speedup = _movieSpeedups.Find(ms => ms.Matches(movie));
-            if (speedup != null)
-            {
-                DelaySpeedup(speedup.Setting);
-            }
-        }
-
-        void gameMemory_OnPlayerPositionChanged(object sender, Level level, float x, float y, float z)
+        void gameMemory_OnPostMoviePlayerPositionChanged(object sender, Movie movie, float x, float y, float z)
         {
             if (_cutsceneTimer.Enabled)
             {
                 return;
             }
 
-            var speedup = _positionSpeedups.Find(ps => ps.Matches(level, x, y, z, GetSettingsFloat));
+            var speedup = _movieSpeedups.Find(ps => ps.Matches(movie, x, y, z));
             if (speedup != null)
             {
-                Debug.WriteLine($"Found position speedup for {speedup.Setting} level={level} x={x} y={y} z={z}");
+                Debug.WriteLine($"Found movie position speedup {speedup.Setting} movie={movie} x={x} y={y} z={z}");
+                TriggerSpeedup(speedup.Setting);
+            }
+        }
+
+        void gameMemory_OnPostCutscenePlayerPositionChanged(object sender, Level level, int count, float x, float y, float z)
+        {
+            if (_cutsceneTimer.Enabled)
+            {
+                return;
+            }
+
+            var speedup = _cutsceneSpeedups.Find(ps => ps.Matches(level, count, x, y, z));
+            if (speedup != null)
+            {
+                Debug.WriteLine($"Found cutscene position speedup {speedup.Setting} level={level} x={x} y={y} z={z}");
+                TriggerSpeedup(speedup.Setting);
+            }
+        }
+
+        void gameMemory_OnPostLoadPlayerPositionChanged(object sender, Level level, Level previousLevel, float x, float y, float z)
+        {
+            if (_cutsceneTimer.Enabled)
+            {
+                return;
+            }
+
+            var speedup = _loadPositionSpeedups.Find(ps => ps.Matches(level, previousLevel, x, y, z));
+            if (speedup != null)
+            {
+                Debug.WriteLine($"Found load position speedup {speedup.Setting} level={previousLevel}->{level} x={x} y={y} z={z}");
                 TriggerSpeedup(speedup.Setting);
             }
         }
@@ -405,7 +410,12 @@ namespace LiveSplit.Dishonored
 
         object GetSettingsValue(string setting)
         {
-            return typeof(DishonoredSettings).GetProperty(setting).GetValue(Settings, null);
+            var property = typeof(DishonoredSettings).GetProperty(setting);
+            if (property == null)
+            {
+                return null;
+            }
+            return property.GetValue(Settings);
         }
 
         bool GetSettingsBool(string setting)
@@ -415,12 +425,22 @@ namespace LiveSplit.Dishonored
 
         int GetSettingsInt(string setting)
         {
-            return (int)GetSettingsValue(setting);
+            var value = GetSettingsValue(setting);
+            if (value == null)
+            {
+                return 0;
+            }
+            return (int)value;
         }
 
         float GetSettingsFloat(string setting)
         {
-            return (float)GetSettingsValue(setting);
+            var value = GetSettingsValue(setting);
+            if (value == null)
+            {
+                return 0f;
+            }
+            return (float)value;
         }
 
         public override XmlNode GetSettings(XmlDocument document)

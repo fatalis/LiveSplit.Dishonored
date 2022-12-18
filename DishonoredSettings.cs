@@ -14,8 +14,10 @@ namespace LiveSplit.Dishonored
         public bool AutoSplitWeepers { get; set; }
 
         public bool CutsceneSpeedup { get; set; }
+        public bool LogCoords { get; set; }
 
         public bool EnabledIntro { get; set; }
+        public bool EnabledBlindIntro { get; set; }
         public bool EnabledIntroEnd { get; set; }
         public bool EnabledPrison { get; set; }
         public bool EnabledPostSewers { get; set; }
@@ -38,6 +40,7 @@ namespace LiveSplit.Dishonored
         public bool EnabledLighthouse { get; set; }
 
         public int SpeedupIntro { get; set; }
+        public int SpeedupBlindIntro { get; set; }
         public int SpeedupIntroEnd { get; set; }
         public int SpeedupPrison { get; set; }
         public int SpeedupPostSewers { get; set; }
@@ -59,8 +62,6 @@ namespace LiveSplit.Dishonored
         public int SpeedupKingsparrow { get; set; }
         public int SpeedupLighthouse { get; set; }
 
-        public int DelayIntro { get; set; }
-        public int DelayIntroEnd { get; set; }
         public int DelayPrison { get; set; }
         public int DelayPostSewers { get; set; }
         public int DelayCampbell { get; set; }
@@ -82,8 +83,8 @@ namespace LiveSplit.Dishonored
         public int DelayLighthouse { get; set; }
 
         public float XIntro { get; set; }
+        public float XBlindIntro { get; set; }
         public float XIntroEnd { get; set; }
-        public float XPrison { get; set; }
         public float XPostSewers { get; set; }
         public float XCampbell { get; set; }
         public float XPostCampbell { get; set; }
@@ -96,13 +97,11 @@ namespace LiveSplit.Dishonored
         public float XTower { get; set; }
         public float XPostTower { get; set; }
         public float XFlooded { get; set; }
-        public float XFloodedCell { get; set; }
         public float XKingsparrow { get; set; }
-        public float XLighthouse { get; set; }
 
         public float YIntro { get; set; }
+        public float YBlindIntro { get; set; }
         public float YIntroEnd { get; set; }
-        public float YPrison { get; set; }
         public float YPostSewers { get; set; }
         public float YCampbell { get; set; }
         public float YPostCampbell { get; set; }
@@ -115,13 +114,11 @@ namespace LiveSplit.Dishonored
         public float YTower { get; set; }
         public float YPostTower { get; set; }
         public float YFlooded { get; set; }
-        public float YFloodedCell { get; set; }
         public float YKingsparrow { get; set; }
-        public float YLighthouse { get; set; }
 
         public float ZIntro { get; set; }
+        public float ZBlindIntro { get; set; }
         public float ZIntroEnd { get; set; }
-        public float ZPrison { get; set; }
         public float ZPostSewers { get; set; }
         public float ZCampbell { get; set; }
         public float ZPostCampbell { get; set; }
@@ -134,271 +131,258 @@ namespace LiveSplit.Dishonored
         public float ZTower { get; set; }
         public float ZPostTower { get; set; }
         public float ZFlooded { get; set; }
-        public float ZFloodedCell { get; set; }
         public float ZKingsparrow { get; set; }
-        public float ZLighthouse { get; set; }
 
         public DishonoredSettings()
         {
             InitializeComponent();
 
-            this.chkAutoStartEnd.DataBindings.Add("Checked", this, "AutoStartEnd", false, DataSourceUpdateMode.OnPropertyChanged);
-            this.chkAutoSplitIntroEnd.DataBindings.Add("Checked", this, "AutoSplitIntroEnd", false, DataSourceUpdateMode.OnPropertyChanged);
-            this.chkAutoSplitMissionEnd.DataBindings.Add("Checked", this, "AutoSplitMissionEnd", false, DataSourceUpdateMode.OnPropertyChanged);
-            this.chkAutoSplitPrisonEscape.DataBindings.Add("Checked", this, "AutoSplitPrisonEscape", false, DataSourceUpdateMode.OnPropertyChanged);
-            this.chkAutoSplitOutsidersDream.DataBindings.Add("Checked", this, "AutoSplitOutsidersDream", false, DataSourceUpdateMode.OnPropertyChanged);
-            this.chkAutoSplitWeepers.DataBindings.Add("Checked", this, "AutoSplitWeepers", false, DataSourceUpdateMode.OnPropertyChanged);
+            chkAutoStartEnd.DataBindings.Add("Checked", this, "AutoStartEnd", false, DataSourceUpdateMode.OnPropertyChanged);
+            chkAutoSplitIntroEnd.DataBindings.Add("Checked", this, "AutoSplitIntroEnd", false, DataSourceUpdateMode.OnPropertyChanged);
+            chkAutoSplitMissionEnd.DataBindings.Add("Checked", this, "AutoSplitMissionEnd", false, DataSourceUpdateMode.OnPropertyChanged);
+            chkAutoSplitPrisonEscape.DataBindings.Add("Checked", this, "AutoSplitPrisonEscape", false, DataSourceUpdateMode.OnPropertyChanged);
+            chkAutoSplitOutsidersDream.DataBindings.Add("Checked", this, "AutoSplitOutsidersDream", false, DataSourceUpdateMode.OnPropertyChanged);
+            chkAutoSplitWeepers.DataBindings.Add("Checked", this, "AutoSplitWeepers", false, DataSourceUpdateMode.OnPropertyChanged);
 
-            this.chkCutsceneSpeedup.DataBindings.Add("Checked", this, "CutsceneSpeedup", false, DataSourceUpdateMode.OnPropertyChanged);
+            chkCutsceneSpeedup.DataBindings.Add("Checked", this, "CutsceneSpeedup", false, DataSourceUpdateMode.OnPropertyChanged);
+            chkLogCoords.DataBindings.Add("Checked", this, "LogCoords", false, DataSourceUpdateMode.OnPropertyChanged);
 
-            this.chkEnabledIntro.DataBindings.Add("Checked", this, "EnabledIntro", false, DataSourceUpdateMode.OnPropertyChanged);
-            this.chkEnabledIntroEnd.DataBindings.Add("Checked", this, "EnabledIntroEnd", false, DataSourceUpdateMode.OnPropertyChanged);
-            this.chkEnabledPrison.DataBindings.Add("Checked", this, "EnabledPrison", false, DataSourceUpdateMode.OnPropertyChanged);
-            this.chkEnabledPostSewers.DataBindings.Add("Checked", this, "EnabledPostSewers", false, DataSourceUpdateMode.OnPropertyChanged);
-            this.chkEnabledCampbell.DataBindings.Add("Checked", this, "EnabledCampbell", false, DataSourceUpdateMode.OnPropertyChanged);
-            this.chkEnabledPostCampbell.DataBindings.Add("Checked", this, "EnabledPostCampbell", false, DataSourceUpdateMode.OnPropertyChanged);
-            this.chkEnabledCat.DataBindings.Add("Checked", this, "EnabledCat", false, DataSourceUpdateMode.OnPropertyChanged);
-            this.chkEnabledPostCat.DataBindings.Add("Checked", this, "EnabledPostCat", false, DataSourceUpdateMode.OnPropertyChanged);
-            this.chkEnabledPostCat2.DataBindings.Add("Checked", this, "EnabledPostCat2", false, DataSourceUpdateMode.OnPropertyChanged);
-            this.chkEnabledPostCat3.DataBindings.Add("Checked", this, "EnabledPostCat3", false, DataSourceUpdateMode.OnPropertyChanged);
-            this.chkEnabledBridge.DataBindings.Add("Checked", this, "EnabledBridge", false, DataSourceUpdateMode.OnPropertyChanged);
-            this.chkEnabledPostBridge.DataBindings.Add("Checked", this, "EnabledPostBridge", false, DataSourceUpdateMode.OnPropertyChanged);
-            this.chkEnabledBoyle.DataBindings.Add("Checked", this, "EnabledBoyle", false, DataSourceUpdateMode.OnPropertyChanged);
-            this.chkEnabledPostBoyle.DataBindings.Add("Checked", this, "EnabledPostBoyle", false, DataSourceUpdateMode.OnPropertyChanged);
-            this.chkEnabledTower.DataBindings.Add("Checked", this, "EnabledTower", false, DataSourceUpdateMode.OnPropertyChanged);
-            this.chkEnabledPostTower.DataBindings.Add("Checked", this, "EnabledPostTower", false, DataSourceUpdateMode.OnPropertyChanged);
-            this.chkEnabledFlooded.DataBindings.Add("Checked", this, "EnabledFlooded", false, DataSourceUpdateMode.OnPropertyChanged);
-            this.chkEnabledFlooded2.DataBindings.Add("Checked", this, "EnabledFlooded2", false, DataSourceUpdateMode.OnPropertyChanged);
-            this.chkEnabledFloodedCell.DataBindings.Add("Checked", this, "EnabledFloodedCell", false, DataSourceUpdateMode.OnPropertyChanged);
-            this.chkEnabledKingsparrow.DataBindings.Add("Checked", this, "EnabledKingsparrow", false, DataSourceUpdateMode.OnPropertyChanged);
-            this.chkEnabledLighthouse.DataBindings.Add("Checked", this, "EnabledLighthouse", false, DataSourceUpdateMode.OnPropertyChanged);
+            chkEnabledIntro.DataBindings.Add("Checked", this, "EnabledIntro", false, DataSourceUpdateMode.OnPropertyChanged);
+            chkEnabledBlindIntro.DataBindings.Add("Checked", this, "EnabledBlindIntro", false, DataSourceUpdateMode.OnPropertyChanged);
+            chkEnabledIntroEnd.DataBindings.Add("Checked", this, "EnabledIntroEnd", false, DataSourceUpdateMode.OnPropertyChanged);
+            chkEnabledPrison.DataBindings.Add("Checked", this, "EnabledPrison", false, DataSourceUpdateMode.OnPropertyChanged);
+            chkEnabledPostSewers.DataBindings.Add("Checked", this, "EnabledPostSewers", false, DataSourceUpdateMode.OnPropertyChanged);
+            chkEnabledCampbell.DataBindings.Add("Checked", this, "EnabledCampbell", false, DataSourceUpdateMode.OnPropertyChanged);
+            chkEnabledPostCampbell.DataBindings.Add("Checked", this, "EnabledPostCampbell", false, DataSourceUpdateMode.OnPropertyChanged);
+            chkEnabledCat.DataBindings.Add("Checked", this, "EnabledCat", false, DataSourceUpdateMode.OnPropertyChanged);
+            chkEnabledPostCat.DataBindings.Add("Checked", this, "EnabledPostCat", false, DataSourceUpdateMode.OnPropertyChanged);
+            chkEnabledPostCat2.DataBindings.Add("Checked", this, "EnabledPostCat2", false, DataSourceUpdateMode.OnPropertyChanged);
+            chkEnabledPostCat3.DataBindings.Add("Checked", this, "EnabledPostCat3", false, DataSourceUpdateMode.OnPropertyChanged);
+            chkEnabledBridge.DataBindings.Add("Checked", this, "EnabledBridge", false, DataSourceUpdateMode.OnPropertyChanged);
+            chkEnabledPostBridge.DataBindings.Add("Checked", this, "EnabledPostBridge", false, DataSourceUpdateMode.OnPropertyChanged);
+            chkEnabledBoyle.DataBindings.Add("Checked", this, "EnabledBoyle", false, DataSourceUpdateMode.OnPropertyChanged);
+            chkEnabledPostBoyle.DataBindings.Add("Checked", this, "EnabledPostBoyle", false, DataSourceUpdateMode.OnPropertyChanged);
+            chkEnabledTower.DataBindings.Add("Checked", this, "EnabledTower", false, DataSourceUpdateMode.OnPropertyChanged);
+            chkEnabledPostTower.DataBindings.Add("Checked", this, "EnabledPostTower", false, DataSourceUpdateMode.OnPropertyChanged);
+            chkEnabledFlooded.DataBindings.Add("Checked", this, "EnabledFlooded", false, DataSourceUpdateMode.OnPropertyChanged);
+            chkEnabledFlooded2.DataBindings.Add("Checked", this, "EnabledFlooded2", false, DataSourceUpdateMode.OnPropertyChanged);
+            chkEnabledFloodedCell.DataBindings.Add("Checked", this, "EnabledFloodedCell", false, DataSourceUpdateMode.OnPropertyChanged);
+            chkEnabledKingsparrow.DataBindings.Add("Checked", this, "EnabledKingsparrow", false, DataSourceUpdateMode.OnPropertyChanged);
+            chkEnabledLighthouse.DataBindings.Add("Checked", this, "EnabledLighthouse", false, DataSourceUpdateMode.OnPropertyChanged);
 
-            this.txtSpeedupIntro.DataBindings.Add("Text", this, "SpeedupIntro", false, DataSourceUpdateMode.OnPropertyChanged);
-            this.txtSpeedupIntroEnd.DataBindings.Add("Text", this, "SpeedupIntroEnd", false, DataSourceUpdateMode.OnPropertyChanged);
-            this.txtSpeedupPrison.DataBindings.Add("Text", this, "SpeedupPrison", false, DataSourceUpdateMode.OnPropertyChanged);
-            this.txtSpeedupPostSewers.DataBindings.Add("Text", this, "SpeedupPostSewers", false, DataSourceUpdateMode.OnPropertyChanged);
-            this.txtSpeedupCampbell.DataBindings.Add("Text", this, "SpeedupCampbell", false, DataSourceUpdateMode.OnPropertyChanged);
-            this.txtSpeedupPostCampbell.DataBindings.Add("Text", this, "SpeedupPostCampbell", false, DataSourceUpdateMode.OnPropertyChanged);
-            this.txtSpeedupCat.DataBindings.Add("Text", this, "SpeedupCat", false, DataSourceUpdateMode.OnPropertyChanged);
-            this.txtSpeedupPostCat.DataBindings.Add("Text", this, "SpeedupPostCat", false, DataSourceUpdateMode.OnPropertyChanged);
-            this.txtSpeedupPostCat2.DataBindings.Add("Text", this, "SpeedupPostCat2", false, DataSourceUpdateMode.OnPropertyChanged);
-            this.txtSpeedupPostCat3.DataBindings.Add("Text", this, "SpeedupPostCat3", false, DataSourceUpdateMode.OnPropertyChanged);
-            this.txtSpeedupBridge.DataBindings.Add("Text", this, "SpeedupBridge", false, DataSourceUpdateMode.OnPropertyChanged);
-            this.txtSpeedupPostBridge.DataBindings.Add("Text", this, "SpeedupPostBridge", false, DataSourceUpdateMode.OnPropertyChanged);
-            this.txtSpeedupBoyle.DataBindings.Add("Text", this, "SpeedupBoyle", false, DataSourceUpdateMode.OnPropertyChanged);
-            this.txtSpeedupPostBoyle.DataBindings.Add("Text", this, "SpeedupPostBoyle", false, DataSourceUpdateMode.OnPropertyChanged);
-            this.txtSpeedupTower.DataBindings.Add("Text", this, "SpeedupTower", false, DataSourceUpdateMode.OnPropertyChanged);
-            this.txtSpeedupPostTower.DataBindings.Add("Text", this, "SpeedupPostTower", false, DataSourceUpdateMode.OnPropertyChanged);
-            this.txtSpeedupFlooded.DataBindings.Add("Text", this, "SpeedupFlooded", false, DataSourceUpdateMode.OnPropertyChanged);
-            this.txtSpeedupFlooded2.DataBindings.Add("Text", this, "SpeedupFlooded2", false, DataSourceUpdateMode.OnPropertyChanged);
-            this.txtSpeedupFloodedCell.DataBindings.Add("Text", this, "SpeedupFloodedCell", false, DataSourceUpdateMode.OnPropertyChanged);
-            this.txtSpeedupKingsparrow.DataBindings.Add("Text", this, "SpeedupKingsparrow", false, DataSourceUpdateMode.OnPropertyChanged);
-            this.txtSpeedupLighthouse.DataBindings.Add("Text", this, "SpeedupLighthouse", false, DataSourceUpdateMode.OnPropertyChanged);
+            txtSpeedupIntro.DataBindings.Add("Text", this, "SpeedupIntro", false, DataSourceUpdateMode.OnPropertyChanged);
+            txtSpeedupBlindIntro.DataBindings.Add("Text", this, "SpeedupBlindIntro", false, DataSourceUpdateMode.OnPropertyChanged);
+            txtSpeedupIntroEnd.DataBindings.Add("Text", this, "SpeedupIntroEnd", false, DataSourceUpdateMode.OnPropertyChanged);
+            txtSpeedupPrison.DataBindings.Add("Text", this, "SpeedupPrison", false, DataSourceUpdateMode.OnPropertyChanged);
+            txtSpeedupPostSewers.DataBindings.Add("Text", this, "SpeedupPostSewers", false, DataSourceUpdateMode.OnPropertyChanged);
+            txtSpeedupCampbell.DataBindings.Add("Text", this, "SpeedupCampbell", false, DataSourceUpdateMode.OnPropertyChanged);
+            txtSpeedupPostCampbell.DataBindings.Add("Text", this, "SpeedupPostCampbell", false, DataSourceUpdateMode.OnPropertyChanged);
+            txtSpeedupCat.DataBindings.Add("Text", this, "SpeedupCat", false, DataSourceUpdateMode.OnPropertyChanged);
+            txtSpeedupPostCat.DataBindings.Add("Text", this, "SpeedupPostCat", false, DataSourceUpdateMode.OnPropertyChanged);
+            txtSpeedupPostCat2.DataBindings.Add("Text", this, "SpeedupPostCat2", false, DataSourceUpdateMode.OnPropertyChanged);
+            txtSpeedupPostCat3.DataBindings.Add("Text", this, "SpeedupPostCat3", false, DataSourceUpdateMode.OnPropertyChanged);
+            txtSpeedupBridge.DataBindings.Add("Text", this, "SpeedupBridge", false, DataSourceUpdateMode.OnPropertyChanged);
+            txtSpeedupPostBridge.DataBindings.Add("Text", this, "SpeedupPostBridge", false, DataSourceUpdateMode.OnPropertyChanged);
+            txtSpeedupBoyle.DataBindings.Add("Text", this, "SpeedupBoyle", false, DataSourceUpdateMode.OnPropertyChanged);
+            txtSpeedupPostBoyle.DataBindings.Add("Text", this, "SpeedupPostBoyle", false, DataSourceUpdateMode.OnPropertyChanged);
+            txtSpeedupTower.DataBindings.Add("Text", this, "SpeedupTower", false, DataSourceUpdateMode.OnPropertyChanged);
+            txtSpeedupPostTower.DataBindings.Add("Text", this, "SpeedupPostTower", false, DataSourceUpdateMode.OnPropertyChanged);
+            txtSpeedupFlooded.DataBindings.Add("Text", this, "SpeedupFlooded", false, DataSourceUpdateMode.OnPropertyChanged);
+            txtSpeedupFlooded2.DataBindings.Add("Text", this, "SpeedupFlooded2", false, DataSourceUpdateMode.OnPropertyChanged);
+            txtSpeedupFloodedCell.DataBindings.Add("Text", this, "SpeedupFloodedCell", false, DataSourceUpdateMode.OnPropertyChanged);
+            txtSpeedupKingsparrow.DataBindings.Add("Text", this, "SpeedupKingsparrow", false, DataSourceUpdateMode.OnPropertyChanged);
+            txtSpeedupLighthouse.DataBindings.Add("Text", this, "SpeedupLighthouse", false, DataSourceUpdateMode.OnPropertyChanged);
 
-            this.txtDelayIntro.DataBindings.Add("Text", this, "DelayIntro", false, DataSourceUpdateMode.OnPropertyChanged);
-            this.txtDelayIntroEnd.DataBindings.Add("Text", this, "DelayIntroEnd", false, DataSourceUpdateMode.OnPropertyChanged);
-            this.txtDelayPrison.DataBindings.Add("Text", this, "DelayPrison", false, DataSourceUpdateMode.OnPropertyChanged);
-            this.txtDelayPostSewers.DataBindings.Add("Text", this, "DelayPostSewers", false, DataSourceUpdateMode.OnPropertyChanged);
-            this.txtDelayCampbell.DataBindings.Add("Text", this, "DelayCampbell", false, DataSourceUpdateMode.OnPropertyChanged);
-            this.txtDelayPostCampbell.DataBindings.Add("Text", this, "DelayPostCampbell", false, DataSourceUpdateMode.OnPropertyChanged);
-            this.txtDelayCat.DataBindings.Add("Text", this, "DelayCat", false, DataSourceUpdateMode.OnPropertyChanged);
-            this.txtDelayPostCat.DataBindings.Add("Text", this, "DelayPostCat", false, DataSourceUpdateMode.OnPropertyChanged);
-            this.txtDelayPostCat2.DataBindings.Add("Text", this, "DelayPostCat2", false, DataSourceUpdateMode.OnPropertyChanged);
-            this.txtDelayPostCat3.DataBindings.Add("Text", this, "DelayPostCat3", false, DataSourceUpdateMode.OnPropertyChanged);
-            this.txtDelayBridge.DataBindings.Add("Text", this, "DelayBridge", false, DataSourceUpdateMode.OnPropertyChanged);
-            this.txtDelayPostBridge.DataBindings.Add("Text", this, "DelayPostBridge", false, DataSourceUpdateMode.OnPropertyChanged);
-            this.txtDelayBoyle.DataBindings.Add("Text", this, "DelayBoyle", false, DataSourceUpdateMode.OnPropertyChanged);
-            this.txtDelayPostBoyle.DataBindings.Add("Text", this, "DelayPostBoyle", false, DataSourceUpdateMode.OnPropertyChanged);
-            this.txtDelayTower.DataBindings.Add("Text", this, "DelayTower", false, DataSourceUpdateMode.OnPropertyChanged);
-            this.txtDelayPostTower.DataBindings.Add("Text", this, "DelayPostTower", false, DataSourceUpdateMode.OnPropertyChanged);
-            this.txtDelayFlooded.DataBindings.Add("Text", this, "DelayFlooded", false, DataSourceUpdateMode.OnPropertyChanged);
-            this.txtDelayFlooded2.DataBindings.Add("Text", this, "DelayFlooded2", false, DataSourceUpdateMode.OnPropertyChanged);
-            this.txtDelayFloodedCell.DataBindings.Add("Text", this, "DelayFloodedCell", false, DataSourceUpdateMode.OnPropertyChanged);
-            this.txtDelayKingsparrow.DataBindings.Add("Text", this, "DelayKingsparrow", false, DataSourceUpdateMode.OnPropertyChanged);
-            this.txtDelayLighthouse.DataBindings.Add("Text", this, "DelayLighthouse", false, DataSourceUpdateMode.OnPropertyChanged);
+            txtDelayPrison.DataBindings.Add("Text", this, "DelayPrison", false, DataSourceUpdateMode.OnPropertyChanged);
+            txtDelayPostSewers.DataBindings.Add("Text", this, "DelayPostSewers", false, DataSourceUpdateMode.OnPropertyChanged);
+            txtDelayCampbell.DataBindings.Add("Text", this, "DelayCampbell", false, DataSourceUpdateMode.OnPropertyChanged);
+            txtDelayPostCampbell.DataBindings.Add("Text", this, "DelayPostCampbell", false, DataSourceUpdateMode.OnPropertyChanged);
+            txtDelayCat.DataBindings.Add("Text", this, "DelayCat", false, DataSourceUpdateMode.OnPropertyChanged);
+            txtDelayPostCat.DataBindings.Add("Text", this, "DelayPostCat", false, DataSourceUpdateMode.OnPropertyChanged);
+            txtDelayPostCat2.DataBindings.Add("Text", this, "DelayPostCat2", false, DataSourceUpdateMode.OnPropertyChanged);
+            txtDelayPostCat3.DataBindings.Add("Text", this, "DelayPostCat3", false, DataSourceUpdateMode.OnPropertyChanged);
+            txtDelayBridge.DataBindings.Add("Text", this, "DelayBridge", false, DataSourceUpdateMode.OnPropertyChanged);
+            txtDelayPostBridge.DataBindings.Add("Text", this, "DelayPostBridge", false, DataSourceUpdateMode.OnPropertyChanged);
+            txtDelayBoyle.DataBindings.Add("Text", this, "DelayBoyle", false, DataSourceUpdateMode.OnPropertyChanged);
+            txtDelayPostBoyle.DataBindings.Add("Text", this, "DelayPostBoyle", false, DataSourceUpdateMode.OnPropertyChanged);
+            txtDelayTower.DataBindings.Add("Text", this, "DelayTower", false, DataSourceUpdateMode.OnPropertyChanged);
+            txtDelayPostTower.DataBindings.Add("Text", this, "DelayPostTower", false, DataSourceUpdateMode.OnPropertyChanged);
+            txtDelayFlooded.DataBindings.Add("Text", this, "DelayFlooded", false, DataSourceUpdateMode.OnPropertyChanged);
+            txtDelayFlooded2.DataBindings.Add("Text", this, "DelayFlooded2", false, DataSourceUpdateMode.OnPropertyChanged);
+            txtDelayFloodedCell.DataBindings.Add("Text", this, "DelayFloodedCell", false, DataSourceUpdateMode.OnPropertyChanged);
+            txtDelayKingsparrow.DataBindings.Add("Text", this, "DelayKingsparrow", false, DataSourceUpdateMode.OnPropertyChanged);
+            txtDelayLighthouse.DataBindings.Add("Text", this, "DelayLighthouse", false, DataSourceUpdateMode.OnPropertyChanged);
 
-            this.txtXIntro.DataBindings.Add("Text", this, "XIntro", false, DataSourceUpdateMode.OnPropertyChanged);
-            this.txtXIntroEnd.DataBindings.Add("Text", this, "XIntroEnd", false, DataSourceUpdateMode.OnPropertyChanged);
-            this.txtXPrison.DataBindings.Add("Text", this, "XPrison", false, DataSourceUpdateMode.OnPropertyChanged);
-            this.txtXPostSewers.DataBindings.Add("Text", this, "XPostSewers", false, DataSourceUpdateMode.OnPropertyChanged);
-            this.txtXCampbell.DataBindings.Add("Text", this, "XCampbell", false, DataSourceUpdateMode.OnPropertyChanged);
-            this.txtXPostCampbell.DataBindings.Add("Text", this, "XPostCampbell", false, DataSourceUpdateMode.OnPropertyChanged);
-            this.txtXCat.DataBindings.Add("Text", this, "XCat", false, DataSourceUpdateMode.OnPropertyChanged);
-            this.txtXPostCat.DataBindings.Add("Text", this, "XPostCat", false, DataSourceUpdateMode.OnPropertyChanged);
-            this.txtXBridge.DataBindings.Add("Text", this, "XBridge", false, DataSourceUpdateMode.OnPropertyChanged);
-            this.txtXPostBridge.DataBindings.Add("Text", this, "XPostBridge", false, DataSourceUpdateMode.OnPropertyChanged);
-            this.txtXBoyle.DataBindings.Add("Text", this, "XBoyle", false, DataSourceUpdateMode.OnPropertyChanged);
-            this.txtXPostBoyle.DataBindings.Add("Text", this, "XPostBoyle", false, DataSourceUpdateMode.OnPropertyChanged);
-            this.txtXTower.DataBindings.Add("Text", this, "XTower", false, DataSourceUpdateMode.OnPropertyChanged);
-            this.txtXPostTower.DataBindings.Add("Text", this, "XPostTower", false, DataSourceUpdateMode.OnPropertyChanged);
-            this.txtXFlooded.DataBindings.Add("Text", this, "XFlooded", false, DataSourceUpdateMode.OnPropertyChanged);
-            this.txtXFloodedCell.DataBindings.Add("Text", this, "XFloodedCell", false, DataSourceUpdateMode.OnPropertyChanged);
-            this.txtXKingsparrow.DataBindings.Add("Text", this, "XKingsparrow", false, DataSourceUpdateMode.OnPropertyChanged);
-            this.txtXLighthouse.DataBindings.Add("Text", this, "XLighthouse", false, DataSourceUpdateMode.OnPropertyChanged);
+            txtXIntro.DataBindings.Add("Text", this, "XIntro", false, DataSourceUpdateMode.OnPropertyChanged);
+            txtXBlindIntro.DataBindings.Add("Text", this, "XBlindIntro", false, DataSourceUpdateMode.OnPropertyChanged);
+            txtXIntroEnd.DataBindings.Add("Text", this, "XIntroEnd", false, DataSourceUpdateMode.OnPropertyChanged);
+            txtXPostSewers.DataBindings.Add("Text", this, "XPostSewers", false, DataSourceUpdateMode.OnPropertyChanged);
+            txtXCampbell.DataBindings.Add("Text", this, "XCampbell", false, DataSourceUpdateMode.OnPropertyChanged);
+            txtXPostCampbell.DataBindings.Add("Text", this, "XPostCampbell", false, DataSourceUpdateMode.OnPropertyChanged);
+            txtXCat.DataBindings.Add("Text", this, "XCat", false, DataSourceUpdateMode.OnPropertyChanged);
+            txtXPostCat.DataBindings.Add("Text", this, "XPostCat", false, DataSourceUpdateMode.OnPropertyChanged);
+            txtXBridge.DataBindings.Add("Text", this, "XBridge", false, DataSourceUpdateMode.OnPropertyChanged);
+            txtXPostBridge.DataBindings.Add("Text", this, "XPostBridge", false, DataSourceUpdateMode.OnPropertyChanged);
+            txtXBoyle.DataBindings.Add("Text", this, "XBoyle", false, DataSourceUpdateMode.OnPropertyChanged);
+            txtXPostBoyle.DataBindings.Add("Text", this, "XPostBoyle", false, DataSourceUpdateMode.OnPropertyChanged);
+            txtXTower.DataBindings.Add("Text", this, "XTower", false, DataSourceUpdateMode.OnPropertyChanged);
+            txtXPostTower.DataBindings.Add("Text", this, "XPostTower", false, DataSourceUpdateMode.OnPropertyChanged);
+            txtXFlooded.DataBindings.Add("Text", this, "XFlooded", false, DataSourceUpdateMode.OnPropertyChanged);
+            txtXKingsparrow.DataBindings.Add("Text", this, "XKingsparrow", false, DataSourceUpdateMode.OnPropertyChanged);
 
-            this.txtYIntro.DataBindings.Add("Text", this, "YIntro", false, DataSourceUpdateMode.OnPropertyChanged);
-            this.txtYIntroEnd.DataBindings.Add("Text", this, "YIntroEnd", false, DataSourceUpdateMode.OnPropertyChanged);
-            this.txtYPrison.DataBindings.Add("Text", this, "YPrison", false, DataSourceUpdateMode.OnPropertyChanged);
-            this.txtYPostSewers.DataBindings.Add("Text", this, "YPostSewers", false, DataSourceUpdateMode.OnPropertyChanged);
-            this.txtYCampbell.DataBindings.Add("Text", this, "YCampbell", false, DataSourceUpdateMode.OnPropertyChanged);
-            this.txtYPostCampbell.DataBindings.Add("Text", this, "YPostCampbell", false, DataSourceUpdateMode.OnPropertyChanged);
-            this.txtYCat.DataBindings.Add("Text", this, "YCat", false, DataSourceUpdateMode.OnPropertyChanged);
-            this.txtYPostCat.DataBindings.Add("Text", this, "YPostCat", false, DataSourceUpdateMode.OnPropertyChanged);
-            this.txtYBridge.DataBindings.Add("Text", this, "YBridge", false, DataSourceUpdateMode.OnPropertyChanged);
-            this.txtYPostBridge.DataBindings.Add("Text", this, "YPostBridge", false, DataSourceUpdateMode.OnPropertyChanged);
-            this.txtYBoyle.DataBindings.Add("Text", this, "YBoyle", false, DataSourceUpdateMode.OnPropertyChanged);
-            this.txtYPostBoyle.DataBindings.Add("Text", this, "YPostBoyle", false, DataSourceUpdateMode.OnPropertyChanged);
-            this.txtYTower.DataBindings.Add("Text", this, "YTower", false, DataSourceUpdateMode.OnPropertyChanged);
-            this.txtYPostTower.DataBindings.Add("Text", this, "YPostTower", false, DataSourceUpdateMode.OnPropertyChanged);
-            this.txtYFlooded.DataBindings.Add("Text", this, "YFlooded", false, DataSourceUpdateMode.OnPropertyChanged);
-            this.txtYFloodedCell.DataBindings.Add("Text", this, "YFloodedCell", false, DataSourceUpdateMode.OnPropertyChanged);
-            this.txtYKingsparrow.DataBindings.Add("Text", this, "YKingsparrow", false, DataSourceUpdateMode.OnPropertyChanged);
-            this.txtYLighthouse.DataBindings.Add("Text", this, "YLighthouse", false, DataSourceUpdateMode.OnPropertyChanged);
+            txtYIntro.DataBindings.Add("Text", this, "YIntro", false, DataSourceUpdateMode.OnPropertyChanged);
+            txtYBlindIntro.DataBindings.Add("Text", this, "YBlindIntro", false, DataSourceUpdateMode.OnPropertyChanged);
+            txtYIntroEnd.DataBindings.Add("Text", this, "YIntroEnd", false, DataSourceUpdateMode.OnPropertyChanged);
+            txtYPostSewers.DataBindings.Add("Text", this, "YPostSewers", false, DataSourceUpdateMode.OnPropertyChanged);
+            txtYCampbell.DataBindings.Add("Text", this, "YCampbell", false, DataSourceUpdateMode.OnPropertyChanged);
+            txtYPostCampbell.DataBindings.Add("Text", this, "YPostCampbell", false, DataSourceUpdateMode.OnPropertyChanged);
+            txtYCat.DataBindings.Add("Text", this, "YCat", false, DataSourceUpdateMode.OnPropertyChanged);
+            txtYPostCat.DataBindings.Add("Text", this, "YPostCat", false, DataSourceUpdateMode.OnPropertyChanged);
+            txtYBridge.DataBindings.Add("Text", this, "YBridge", false, DataSourceUpdateMode.OnPropertyChanged);
+            txtYPostBridge.DataBindings.Add("Text", this, "YPostBridge", false, DataSourceUpdateMode.OnPropertyChanged);
+            txtYBoyle.DataBindings.Add("Text", this, "YBoyle", false, DataSourceUpdateMode.OnPropertyChanged);
+            txtYPostBoyle.DataBindings.Add("Text", this, "YPostBoyle", false, DataSourceUpdateMode.OnPropertyChanged);
+            txtYTower.DataBindings.Add("Text", this, "YTower", false, DataSourceUpdateMode.OnPropertyChanged);
+            txtYPostTower.DataBindings.Add("Text", this, "YPostTower", false, DataSourceUpdateMode.OnPropertyChanged);
+            txtYFlooded.DataBindings.Add("Text", this, "YFlooded", false, DataSourceUpdateMode.OnPropertyChanged);
+            txtYKingsparrow.DataBindings.Add("Text", this, "YKingsparrow", false, DataSourceUpdateMode.OnPropertyChanged);
 
-            this.txtZIntro.DataBindings.Add("Text", this, "ZIntro", false, DataSourceUpdateMode.OnPropertyChanged);
-            this.txtZIntroEnd.DataBindings.Add("Text", this, "ZIntroEnd", false, DataSourceUpdateMode.OnPropertyChanged);
-            this.txtZPrison.DataBindings.Add("Text", this, "ZPrison", false, DataSourceUpdateMode.OnPropertyChanged);
-            this.txtZPostSewers.DataBindings.Add("Text", this, "ZPostSewers", false, DataSourceUpdateMode.OnPropertyChanged);
-            this.txtZCampbell.DataBindings.Add("Text", this, "ZCampbell", false, DataSourceUpdateMode.OnPropertyChanged);
-            this.txtZPostCampbell.DataBindings.Add("Text", this, "ZPostCampbell", false, DataSourceUpdateMode.OnPropertyChanged);
-            this.txtZCat.DataBindings.Add("Text", this, "ZCat", false, DataSourceUpdateMode.OnPropertyChanged);
-            this.txtZPostCat.DataBindings.Add("Text", this, "ZPostCat", false, DataSourceUpdateMode.OnPropertyChanged);
-            this.txtZBridge.DataBindings.Add("Text", this, "ZBridge", false, DataSourceUpdateMode.OnPropertyChanged);
-            this.txtZPostBridge.DataBindings.Add("Text", this, "ZPostBridge", false, DataSourceUpdateMode.OnPropertyChanged);
-            this.txtZBoyle.DataBindings.Add("Text", this, "ZBoyle", false, DataSourceUpdateMode.OnPropertyChanged);
-            this.txtZPostBoyle.DataBindings.Add("Text", this, "ZPostBoyle", false, DataSourceUpdateMode.OnPropertyChanged);
-            this.txtZTower.DataBindings.Add("Text", this, "ZTower", false, DataSourceUpdateMode.OnPropertyChanged);
-            this.txtZPostTower.DataBindings.Add("Text", this, "ZPostTower", false, DataSourceUpdateMode.OnPropertyChanged);
-            this.txtZFlooded.DataBindings.Add("Text", this, "ZFlooded", false, DataSourceUpdateMode.OnPropertyChanged);
-            this.txtZFloodedCell.DataBindings.Add("Text", this, "ZFloodedCell", false, DataSourceUpdateMode.OnPropertyChanged);
-            this.txtZKingsparrow.DataBindings.Add("Text", this, "ZKingsparrow", false, DataSourceUpdateMode.OnPropertyChanged);
-            this.txtZLighthouse.DataBindings.Add("Text", this, "ZLighthouse", false, DataSourceUpdateMode.OnPropertyChanged);
+            txtZIntro.DataBindings.Add("Text", this, "ZIntro", false, DataSourceUpdateMode.OnPropertyChanged);
+            txtZBlindIntro.DataBindings.Add("Text", this, "ZBlindIntro", false, DataSourceUpdateMode.OnPropertyChanged);
+            txtZIntroEnd.DataBindings.Add("Text", this, "ZIntroEnd", false, DataSourceUpdateMode.OnPropertyChanged);
+            txtZPostSewers.DataBindings.Add("Text", this, "ZPostSewers", false, DataSourceUpdateMode.OnPropertyChanged);
+            txtZCampbell.DataBindings.Add("Text", this, "ZCampbell", false, DataSourceUpdateMode.OnPropertyChanged);
+            txtZPostCampbell.DataBindings.Add("Text", this, "ZPostCampbell", false, DataSourceUpdateMode.OnPropertyChanged);
+            txtZCat.DataBindings.Add("Text", this, "ZCat", false, DataSourceUpdateMode.OnPropertyChanged);
+            txtZPostCat.DataBindings.Add("Text", this, "ZPostCat", false, DataSourceUpdateMode.OnPropertyChanged);
+            txtZBridge.DataBindings.Add("Text", this, "ZBridge", false, DataSourceUpdateMode.OnPropertyChanged);
+            txtZPostBridge.DataBindings.Add("Text", this, "ZPostBridge", false, DataSourceUpdateMode.OnPropertyChanged);
+            txtZBoyle.DataBindings.Add("Text", this, "ZBoyle", false, DataSourceUpdateMode.OnPropertyChanged);
+            txtZPostBoyle.DataBindings.Add("Text", this, "ZPostBoyle", false, DataSourceUpdateMode.OnPropertyChanged);
+            txtZTower.DataBindings.Add("Text", this, "ZTower", false, DataSourceUpdateMode.OnPropertyChanged);
+            txtZPostTower.DataBindings.Add("Text", this, "ZPostTower", false, DataSourceUpdateMode.OnPropertyChanged);
+            txtZFlooded.DataBindings.Add("Text", this, "ZFlooded", false, DataSourceUpdateMode.OnPropertyChanged);
+            txtZKingsparrow.DataBindings.Add("Text", this, "ZKingsparrow", false, DataSourceUpdateMode.OnPropertyChanged);
 
             // defaults
-            this.AutoStartEnd = true;
+            AutoStartEnd = true;
 
-            this.EnabledIntro = true;
-            this.EnabledIntroEnd = true;
-            this.EnabledPrison = true;
-            this.EnabledPostSewers = true;
-            this.EnabledCampbell = true;
-            this.EnabledPostCampbell = true;
-            this.EnabledCat = true;
-            this.EnabledPostCat = true;
-            this.EnabledPostCat2 = true;
-            this.EnabledPostCat3 = true;
-            this.EnabledBridge = true;
-            this.EnabledPostBridge = true;
-            this.EnabledBoyle = true;
-            this.EnabledPostBoyle = true;
-            this.EnabledTower = true;
-            this.EnabledPostTower = true;
-            this.EnabledFlooded = true;
-            this.EnabledFlooded2 = true;
-            this.EnabledFloodedCell = true;
-            this.EnabledKingsparrow = true;
-            this.EnabledLighthouse  = true;
+            EnabledIntro = true;
+            EnabledBlindIntro = true;
+            EnabledIntroEnd = true;
+            EnabledPrison = true;
+            EnabledPostSewers = true;
+            EnabledCampbell = true;
+            EnabledPostCampbell = true;
+            EnabledCat = true;
+            EnabledPostCat = true;
+            EnabledPostCat2 = true;
+            EnabledPostCat3 = true;
+            EnabledBridge = true;
+            EnabledPostBridge = true;
+            EnabledBoyle = true;
+            EnabledPostBoyle = true;
+            EnabledTower = true;
+            EnabledPostTower = true;
+            EnabledFlooded = true;
+            EnabledFlooded2 = true;
+            EnabledFloodedCell = true;
+            EnabledKingsparrow = true;
+            EnabledLighthouse  = true;
 
-            this.SpeedupIntro = 9500;
-            this.SpeedupIntroEnd = 6350;
-            this.SpeedupPrison = 770;
-            this.SpeedupPostSewers = 5640;
-            this.SpeedupCampbell = 4450;
-            this.SpeedupPostCampbell = 2050;
-            this.SpeedupCat = 4550;
-            this.SpeedupPostCat = 4700;
-            this.SpeedupPostCat2 = 1500;
-            this.SpeedupPostCat3 = 900;
-            this.SpeedupBridge = 4040;
-            this.SpeedupPostBridge = 4000;
-            this.SpeedupBoyle = 2400;
-            this.SpeedupPostBoyle = 3130;
-            this.SpeedupTower = 5250;
-            this.SpeedupPostTower = 3340;
-            this.SpeedupFlooded = 5000;
-            this.SpeedupFlooded2 = 6700;
-            this.SpeedupFloodedCell = 1600;
-            this.SpeedupKingsparrow = 4550;
-            this.SpeedupLighthouse = 1100;
+            SpeedupIntro = 9200;
+            SpeedupBlindIntro = 3800;
+            SpeedupIntroEnd = 6350;
+            SpeedupPrison = 770;
+            SpeedupPostSewers = 5640;
+            SpeedupCampbell = 4450;
+            SpeedupPostCampbell = 2050;
+            SpeedupCat = 4550;
+            SpeedupPostCat = 4700;
+            SpeedupPostCat2 = 1500;
+            SpeedupPostCat3 = 900;
+            SpeedupBridge = 4040;
+            SpeedupPostBridge = 4000;
+            SpeedupBoyle = 2400;
+            SpeedupPostBoyle = 3130;
+            SpeedupTower = 5250;
+            SpeedupPostTower = 3340;
+            SpeedupFlooded = 5000;
+            SpeedupFlooded2 = 6700;
+            SpeedupFloodedCell = 1600;
+            SpeedupKingsparrow = 4550;
+            SpeedupLighthouse = 1100;
 
-            this.DelayIntro = 1500;
-            this.DelayIntroEnd = 500;
-            this.DelayPrison = 200;
-            this.DelayPostSewers = 1100;
-            this.DelayCampbell = 1500;
-            this.DelayPostCampbell = 1500;
-            this.DelayCat = 2000;
-            this.DelayPostCat = 1000;
-            this.DelayPostCat2 = 9200;
-            this.DelayPostCat3 = 1200;
-            this.DelayBridge = 1100;
-            this.DelayPostBridge = 1000;
-            this.DelayBoyle = 1500;
-            this.DelayPostBoyle = 700;
-            this.DelayTower = 1500;
-            this.DelayPostTower = 1100;
-            this.DelayFlooded = 1500;
-            this.DelayFlooded2 = 8000;
-            this.DelayFloodedCell = 1500;
-            this.DelayKingsparrow = 1500;
-            this.DelayLighthouse = 1000;
+            DelayPrison = 200;
+            DelayPostSewers = 1100;
+            DelayCampbell = 1500;
+            DelayPostCampbell = 1500;
+            DelayCat = 2000;
+            DelayPostCat = 1000;
+            DelayPostCat2 = 9200;
+            DelayPostCat3 = 1200;
+            DelayBridge = 1100;
+            DelayPostBridge = 1000;
+            DelayBoyle = 1500;
+            DelayPostBoyle = 700;
+            DelayTower = 1500;
+            DelayPostTower = 1100;
+            DelayFlooded = 1500;
+            DelayFlooded2 = 8000;
+            DelayFloodedCell = 1500;
+            DelayKingsparrow = 1500;
+            DelayLighthouse = 1000;
 
-            this.XIntro = 0;
-            this.XIntroEnd = 0;
-            this.XPrison = 0;
-            this.XPostSewers = 0;
-            this.XCampbell = 12809f;
-            this.XPostCampbell = 0;
-            this.XCat = 0;
-            this.XPostCat = -11185f;
-            this.XBridge = 0;
-            this.XPostBridge = 0;
-            this.XBoyle = 0;
-            this.XPostBoyle = 0;
-            this.XTower = 0;
-            this.XPostTower = 0;
-            this.XFlooded = -23249f;
-            this.XFloodedCell = 0;
-            this.XKingsparrow = 0;
-            this.XLighthouse = 0;
+            XIntro = -3908f;
+            XBlindIntro = 16242.7f;
+            XIntroEnd = 15591.5f;
+            XPostSewers = 0f;
+            XCampbell = 12809f;
+            XPostCampbell = -2374f;
+            XCat = 4471f;
+            XPostCat = -11185f;
+            XBridge = -12312f;
+            XPostBridge = -11186f;
+            XBoyle = -9340f;
+            XPostBoyle = 0f;
+            XTower = -9253f;
+            XPostTower = 0f;
+            XFlooded = -23249f;
+            XKingsparrow = 0f;
 
-            this.YIntro = 0;
-            this.YIntroEnd = 0;
-            this.YPrison = 0;
-            this.YPostSewers = 0;
-            this.YCampbell = 0;
-            this.YPostCampbell = 0;
-            this.YCat = 0;
-            this.YPostCat = 0;
-            this.YBridge = 0;
-            this.YPostBridge = 0;
-            this.YBoyle = 0;
-            this.YPostBoyle = 0;
-            this.YTower = 0;
-            this.YPostTower = 0;
-            this.YFlooded = 0;
-            this.YFloodedCell = 0;
-            this.YKingsparrow = 0;
-            this.YLighthouse = 0;
+            YIntro = 0f;
+            YBlindIntro = 21620f;
+            YIntroEnd = 21025.2f;
+            YPostSewers = 0f;
+            YCampbell = 0f;
+            YPostCampbell = 0f;
+            YCat = 0f;
+            YPostCat = 0f;
+            YBridge = 0f;
+            YPostBridge = 0f;
+            YBoyle = 0f;
+            YPostBoyle = -9518f;
+            YTower = 33007f;
+            YPostTower = -10593f;
+            YFlooded = 0f;
+            YKingsparrow = 0f;
 
-            this.ZIntro = 0;
-            this.ZIntroEnd = 0;
-            this.ZPrison = 0;
-            this.ZPostSewers = 0;
-            this.ZCampbell = 0;
-            this.ZPostCampbell = 0;
-            this.ZCat = 0;
-            this.ZPostCat = 0;
-            this.ZBridge = 0;
-            this.ZPostBridge = 0;
-            this.ZBoyle = 0;
-            this.ZPostBoyle = 0;
-            this.ZTower = 0;
-            this.ZPostTower = 0;
-            this.ZFlooded = 0;
-            this.ZFloodedCell = 0;
-            this.ZKingsparrow = 0;
-            this.ZLighthouse = 0;
+            ZIntro = -231f;
+            ZBlindIntro = 3354.9f;
+            ZIntroEnd = 3425.3f;
+            ZPostSewers = -599f;
+            ZCampbell = 0f;
+            ZPostCampbell = -601f;
+            ZCat = 1848f;
+            ZPostCat = 0f;
+            ZBridge = -583f;
+            ZPostBridge = -584f;
+            ZBoyle = -1951.4f;
+            ZPostBoyle = -609f;
+            ZTower = 0f;
+            ZPostTower = -584f;
+            ZFlooded = 0f;
+            ZKingsparrow = 1043f;
         }
 
         public XmlNode GetSettings(XmlDocument doc)
@@ -407,274 +391,264 @@ namespace LiveSplit.Dishonored
 
             settingsNode.AppendChild(ToElement(doc, "Version", Assembly.GetExecutingAssembly().GetName().Version.ToString(3)));
 
-            settingsNode.AppendChild(ToElement(doc, "AutoStartEnd", this.AutoStartEnd));
-            settingsNode.AppendChild(ToElement(doc, "AutoSplitIntroEnd", this.AutoSplitIntroEnd));
-            settingsNode.AppendChild(ToElement(doc, "AutoSplitMissionEnd", this.AutoSplitMissionEnd));
-            settingsNode.AppendChild(ToElement(doc, "AutoSplitPrisonEscape", this.AutoSplitPrisonEscape));
-            settingsNode.AppendChild(ToElement(doc, "AutoSplitOutsidersDream", this.AutoSplitOutsidersDream));
-            settingsNode.AppendChild(ToElement(doc, "AutoSplitWeepers", this.AutoSplitWeepers));
+            settingsNode.AppendChild(ToElement(doc, "AutoStartEnd", AutoStartEnd));
+            settingsNode.AppendChild(ToElement(doc, "AutoSplitIntroEnd", AutoSplitIntroEnd));
+            settingsNode.AppendChild(ToElement(doc, "AutoSplitMissionEnd", AutoSplitMissionEnd));
+            settingsNode.AppendChild(ToElement(doc, "AutoSplitPrisonEscape", AutoSplitPrisonEscape));
+            settingsNode.AppendChild(ToElement(doc, "AutoSplitOutsidersDream", AutoSplitOutsidersDream));
+            settingsNode.AppendChild(ToElement(doc, "AutoSplitWeepers", AutoSplitWeepers));
 
-            settingsNode.AppendChild(ToElement(doc, "CutsceneSpeedup", this.CutsceneSpeedup));
+            settingsNode.AppendChild(ToElement(doc, "CutsceneSpeedup", CutsceneSpeedup));
+            settingsNode.AppendChild(ToElement(doc, "LogCoords", LogCoords));
 
-            settingsNode.AppendChild(ToElement(doc, "EnabledIntro", this.EnabledIntro));
-            settingsNode.AppendChild(ToElement(doc, "EnabledIntroEnd", this.EnabledIntroEnd));
-            settingsNode.AppendChild(ToElement(doc, "EnabledPrison", this.EnabledPrison));
-            settingsNode.AppendChild(ToElement(doc, "EnabledPostSewers", this.EnabledPostSewers));
-            settingsNode.AppendChild(ToElement(doc, "EnabledCampbell", this.EnabledCampbell));
-            settingsNode.AppendChild(ToElement(doc, "EnabledPostCampbell", this.EnabledPostCampbell));
-            settingsNode.AppendChild(ToElement(doc, "EnabledCat", this.EnabledCat));
-            settingsNode.AppendChild(ToElement(doc, "EnabledPostCat", this.EnabledPostCat));
-            settingsNode.AppendChild(ToElement(doc, "EnabledPostCat2", this.EnabledPostCat2));
-            settingsNode.AppendChild(ToElement(doc, "EnabledPostCat3", this.EnabledPostCat3));
-            settingsNode.AppendChild(ToElement(doc, "EnabledBridge", this.EnabledBridge));
-            settingsNode.AppendChild(ToElement(doc, "EnabledPostBridge", this.EnabledPostBridge));
-            settingsNode.AppendChild(ToElement(doc, "EnabledBoyle", this.EnabledBoyle));
-            settingsNode.AppendChild(ToElement(doc, "EnabledPostBoyle", this.EnabledPostBoyle));
-            settingsNode.AppendChild(ToElement(doc, "EnabledTower", this.EnabledTower));
-            settingsNode.AppendChild(ToElement(doc, "EnabledPostTower", this.EnabledPostTower));
-            settingsNode.AppendChild(ToElement(doc, "EnabledFlooded", this.EnabledFlooded));
-            settingsNode.AppendChild(ToElement(doc, "EnabledFlooded2", this.EnabledFlooded2));
-            settingsNode.AppendChild(ToElement(doc, "EnabledFloodedCell", this.EnabledFloodedCell));
-            settingsNode.AppendChild(ToElement(doc, "EnabledKingsparrow", this.EnabledKingsparrow));
-            settingsNode.AppendChild(ToElement(doc, "EnabledLighthouse", this.EnabledLighthouse));
+            settingsNode.AppendChild(ToElement(doc, "EnabledIntro", EnabledIntro));
+            settingsNode.AppendChild(ToElement(doc, "EnabledBlindIntro", EnabledBlindIntro));
+            settingsNode.AppendChild(ToElement(doc, "EnabledIntroEnd", EnabledIntroEnd));
+            settingsNode.AppendChild(ToElement(doc, "EnabledPrison", EnabledPrison));
+            settingsNode.AppendChild(ToElement(doc, "EnabledPostSewers", EnabledPostSewers));
+            settingsNode.AppendChild(ToElement(doc, "EnabledCampbell", EnabledCampbell));
+            settingsNode.AppendChild(ToElement(doc, "EnabledPostCampbell", EnabledPostCampbell));
+            settingsNode.AppendChild(ToElement(doc, "EnabledCat", EnabledCat));
+            settingsNode.AppendChild(ToElement(doc, "EnabledPostCat", EnabledPostCat));
+            settingsNode.AppendChild(ToElement(doc, "EnabledPostCat2", EnabledPostCat2));
+            settingsNode.AppendChild(ToElement(doc, "EnabledPostCat3", EnabledPostCat3));
+            settingsNode.AppendChild(ToElement(doc, "EnabledBridge", EnabledBridge));
+            settingsNode.AppendChild(ToElement(doc, "EnabledPostBridge", EnabledPostBridge));
+            settingsNode.AppendChild(ToElement(doc, "EnabledBoyle", EnabledBoyle));
+            settingsNode.AppendChild(ToElement(doc, "EnabledPostBoyle", EnabledPostBoyle));
+            settingsNode.AppendChild(ToElement(doc, "EnabledTower", EnabledTower));
+            settingsNode.AppendChild(ToElement(doc, "EnabledPostTower", EnabledPostTower));
+            settingsNode.AppendChild(ToElement(doc, "EnabledFlooded", EnabledFlooded));
+            settingsNode.AppendChild(ToElement(doc, "EnabledFlooded2", EnabledFlooded2));
+            settingsNode.AppendChild(ToElement(doc, "EnabledFloodedCell", EnabledFloodedCell));
+            settingsNode.AppendChild(ToElement(doc, "EnabledKingsparrow", EnabledKingsparrow));
+            settingsNode.AppendChild(ToElement(doc, "EnabledLighthouse", EnabledLighthouse));
 
-            settingsNode.AppendChild(ToElement(doc, "SpeedupIntro", this.SpeedupIntro));
-            settingsNode.AppendChild(ToElement(doc, "SpeedupIntroEnd", this.SpeedupIntroEnd));
-            settingsNode.AppendChild(ToElement(doc, "SpeedupPrison", this.SpeedupPrison));
-            settingsNode.AppendChild(ToElement(doc, "SpeedupPostSewers", this.SpeedupPostSewers));
-            settingsNode.AppendChild(ToElement(doc, "SpeedupCampbell", this.SpeedupCampbell));
-            settingsNode.AppendChild(ToElement(doc, "SpeedupPostCampbell", this.SpeedupPostCampbell));
-            settingsNode.AppendChild(ToElement(doc, "SpeedupCat", this.SpeedupCat));
-            settingsNode.AppendChild(ToElement(doc, "SpeedupPostCat", this.SpeedupPostCat));
-            settingsNode.AppendChild(ToElement(doc, "SpeedupPostCat2", this.SpeedupPostCat2));
-            settingsNode.AppendChild(ToElement(doc, "SpeedupPostCat3", this.SpeedupPostCat3));
-            settingsNode.AppendChild(ToElement(doc, "SpeedupBridge", this.SpeedupBridge));
-            settingsNode.AppendChild(ToElement(doc, "SpeedupPostBridge", this.SpeedupPostBridge));
-            settingsNode.AppendChild(ToElement(doc, "SpeedupBoyle", this.SpeedupBoyle));
-            settingsNode.AppendChild(ToElement(doc, "SpeedupPostBoyle", this.SpeedupPostBoyle));
-            settingsNode.AppendChild(ToElement(doc, "SpeedupTower", this.SpeedupTower));
-            settingsNode.AppendChild(ToElement(doc, "SpeedupPostTower", this.SpeedupPostTower));
-            settingsNode.AppendChild(ToElement(doc, "SpeedupFlooded", this.SpeedupFlooded));
-            settingsNode.AppendChild(ToElement(doc, "SpeedupFlooded2", this.SpeedupFlooded2));
-            settingsNode.AppendChild(ToElement(doc, "SpeedupFloodedCell", this.SpeedupFloodedCell));
-            settingsNode.AppendChild(ToElement(doc, "SpeedupKingsparrow", this.SpeedupKingsparrow));
-            settingsNode.AppendChild(ToElement(doc, "SpeedupLighthouse", this.SpeedupLighthouse));
+            settingsNode.AppendChild(ToElement(doc, "SpeedupIntro", SpeedupIntro));
+            settingsNode.AppendChild(ToElement(doc, "SpeedupBlindIntro", SpeedupBlindIntro));
+            settingsNode.AppendChild(ToElement(doc, "SpeedupIntroEnd", SpeedupIntroEnd));
+            settingsNode.AppendChild(ToElement(doc, "SpeedupPrison", SpeedupPrison));
+            settingsNode.AppendChild(ToElement(doc, "SpeedupPostSewers", SpeedupPostSewers));
+            settingsNode.AppendChild(ToElement(doc, "SpeedupCampbell", SpeedupCampbell));
+            settingsNode.AppendChild(ToElement(doc, "SpeedupPostCampbell", SpeedupPostCampbell));
+            settingsNode.AppendChild(ToElement(doc, "SpeedupCat", SpeedupCat));
+            settingsNode.AppendChild(ToElement(doc, "SpeedupPostCat", SpeedupPostCat));
+            settingsNode.AppendChild(ToElement(doc, "SpeedupPostCat2", SpeedupPostCat2));
+            settingsNode.AppendChild(ToElement(doc, "SpeedupPostCat3", SpeedupPostCat3));
+            settingsNode.AppendChild(ToElement(doc, "SpeedupBridge", SpeedupBridge));
+            settingsNode.AppendChild(ToElement(doc, "SpeedupPostBridge", SpeedupPostBridge));
+            settingsNode.AppendChild(ToElement(doc, "SpeedupBoyle", SpeedupBoyle));
+            settingsNode.AppendChild(ToElement(doc, "SpeedupPostBoyle", SpeedupPostBoyle));
+            settingsNode.AppendChild(ToElement(doc, "SpeedupTower", SpeedupTower));
+            settingsNode.AppendChild(ToElement(doc, "SpeedupPostTower", SpeedupPostTower));
+            settingsNode.AppendChild(ToElement(doc, "SpeedupFlooded", SpeedupFlooded));
+            settingsNode.AppendChild(ToElement(doc, "SpeedupFlooded2", SpeedupFlooded2));
+            settingsNode.AppendChild(ToElement(doc, "SpeedupFloodedCell", SpeedupFloodedCell));
+            settingsNode.AppendChild(ToElement(doc, "SpeedupKingsparrow", SpeedupKingsparrow));
+            settingsNode.AppendChild(ToElement(doc, "SpeedupLighthouse", SpeedupLighthouse));
 
-            settingsNode.AppendChild(ToElement(doc, "DelayIntro", this.DelayIntro));
-            settingsNode.AppendChild(ToElement(doc, "DelayIntroEnd", this.DelayIntroEnd));
-            settingsNode.AppendChild(ToElement(doc, "DelayPrison", this.DelayPrison));
-            settingsNode.AppendChild(ToElement(doc, "DelayPostSewers", this.DelayPostSewers));
-            settingsNode.AppendChild(ToElement(doc, "DelayCampbell", this.DelayCampbell));
-            settingsNode.AppendChild(ToElement(doc, "DelayPostCampbell", this.DelayPostCampbell));
-            settingsNode.AppendChild(ToElement(doc, "DelayCat", this.DelayCat));
-            settingsNode.AppendChild(ToElement(doc, "DelayPostCat", this.DelayPostCat));
-            settingsNode.AppendChild(ToElement(doc, "DelayPostCat2", this.DelayPostCat2));
-            settingsNode.AppendChild(ToElement(doc, "DelayPostCat3", this.DelayPostCat3));
-            settingsNode.AppendChild(ToElement(doc, "DelayBridge", this.DelayBridge));
-            settingsNode.AppendChild(ToElement(doc, "DelayPostBridge", this.DelayPostBridge));
-            settingsNode.AppendChild(ToElement(doc, "DelayBoyle", this.DelayBoyle));
-            settingsNode.AppendChild(ToElement(doc, "DelayPostBoyle", this.DelayPostBoyle));
-            settingsNode.AppendChild(ToElement(doc, "DelayTower", this.DelayTower));
-            settingsNode.AppendChild(ToElement(doc, "DelayPostTower", this.DelayPostTower));
-            settingsNode.AppendChild(ToElement(doc, "DelayFlooded", this.DelayFlooded));
-            settingsNode.AppendChild(ToElement(doc, "DelayFlooded2", this.DelayFlooded2));
-            settingsNode.AppendChild(ToElement(doc, "DelayFloodedCell", this.DelayFloodedCell));
-            settingsNode.AppendChild(ToElement(doc, "DelayKingsparrow", this.DelayKingsparrow));
-            settingsNode.AppendChild(ToElement(doc, "DelayLighthouse", this.DelayLighthouse));
+            settingsNode.AppendChild(ToElement(doc, "DelayPrison", DelayPrison));
+            settingsNode.AppendChild(ToElement(doc, "DelayPostSewers", DelayPostSewers));
+            settingsNode.AppendChild(ToElement(doc, "DelayCampbell", DelayCampbell));
+            settingsNode.AppendChild(ToElement(doc, "DelayPostCampbell", DelayPostCampbell));
+            settingsNode.AppendChild(ToElement(doc, "DelayCat", DelayCat));
+            settingsNode.AppendChild(ToElement(doc, "DelayPostCat", DelayPostCat));
+            settingsNode.AppendChild(ToElement(doc, "DelayPostCat2", DelayPostCat2));
+            settingsNode.AppendChild(ToElement(doc, "DelayPostCat3", DelayPostCat3));
+            settingsNode.AppendChild(ToElement(doc, "DelayBridge", DelayBridge));
+            settingsNode.AppendChild(ToElement(doc, "DelayPostBridge", DelayPostBridge));
+            settingsNode.AppendChild(ToElement(doc, "DelayBoyle", DelayBoyle));
+            settingsNode.AppendChild(ToElement(doc, "DelayPostBoyle", DelayPostBoyle));
+            settingsNode.AppendChild(ToElement(doc, "DelayTower", DelayTower));
+            settingsNode.AppendChild(ToElement(doc, "DelayPostTower", DelayPostTower));
+            settingsNode.AppendChild(ToElement(doc, "DelayFlooded", DelayFlooded));
+            settingsNode.AppendChild(ToElement(doc, "DelayFlooded2", DelayFlooded2));
+            settingsNode.AppendChild(ToElement(doc, "DelayFloodedCell", DelayFloodedCell));
+            settingsNode.AppendChild(ToElement(doc, "DelayKingsparrow", DelayKingsparrow));
+            settingsNode.AppendChild(ToElement(doc, "DelayLighthouse", DelayLighthouse));
 
-            settingsNode.AppendChild(ToElement(doc, "XIntro", this.XIntro));
-            settingsNode.AppendChild(ToElement(doc, "XIntroEnd", this.XIntroEnd));
-            settingsNode.AppendChild(ToElement(doc, "XPrison", this.XPrison));
-            settingsNode.AppendChild(ToElement(doc, "XPostSewers", this.XPostSewers));
-            settingsNode.AppendChild(ToElement(doc, "XCampbell", this.XCampbell));
-            settingsNode.AppendChild(ToElement(doc, "XPostCampbell", this.XPostCampbell));
-            settingsNode.AppendChild(ToElement(doc, "XCat", this.XCat));
-            settingsNode.AppendChild(ToElement(doc, "XPostCat", this.XPostCat));
-            settingsNode.AppendChild(ToElement(doc, "XBridge", this.XBridge));
-            settingsNode.AppendChild(ToElement(doc, "XPostBridge", this.XPostBridge));
-            settingsNode.AppendChild(ToElement(doc, "XBoyle", this.XBoyle));
-            settingsNode.AppendChild(ToElement(doc, "XPostBoyle", this.XPostBoyle));
-            settingsNode.AppendChild(ToElement(doc, "XTower", this.XTower));
-            settingsNode.AppendChild(ToElement(doc, "XPostTower", this.XPostTower));
-            settingsNode.AppendChild(ToElement(doc, "XFlooded", this.XFlooded));
-            settingsNode.AppendChild(ToElement(doc, "XFloodedCell", this.XFloodedCell));
-            settingsNode.AppendChild(ToElement(doc, "XKingsparrow", this.XKingsparrow));
-            settingsNode.AppendChild(ToElement(doc, "XLighthouse", this.XLighthouse));
+            settingsNode.AppendChild(ToElement(doc, "XIntro", XIntro));
+            settingsNode.AppendChild(ToElement(doc, "XBlindIntro", XBlindIntro));
+            settingsNode.AppendChild(ToElement(doc, "XIntroEnd", XIntroEnd));
+            settingsNode.AppendChild(ToElement(doc, "XPostSewers", XPostSewers));
+            settingsNode.AppendChild(ToElement(doc, "XCampbell", XCampbell));
+            settingsNode.AppendChild(ToElement(doc, "XPostCampbell", XPostCampbell));
+            settingsNode.AppendChild(ToElement(doc, "XCat", XCat));
+            settingsNode.AppendChild(ToElement(doc, "XPostCat", XPostCat));
+            settingsNode.AppendChild(ToElement(doc, "XBridge", XBridge));
+            settingsNode.AppendChild(ToElement(doc, "XPostBridge", XPostBridge));
+            settingsNode.AppendChild(ToElement(doc, "XBoyle", XBoyle));
+            settingsNode.AppendChild(ToElement(doc, "XPostBoyle", XPostBoyle));
+            settingsNode.AppendChild(ToElement(doc, "XTower", XTower));
+            settingsNode.AppendChild(ToElement(doc, "XPostTower", XPostTower));
+            settingsNode.AppendChild(ToElement(doc, "XFlooded", XFlooded));
+            settingsNode.AppendChild(ToElement(doc, "XKingsparrow", XKingsparrow));
 
-            settingsNode.AppendChild(ToElement(doc, "YIntro", this.YIntro));
-            settingsNode.AppendChild(ToElement(doc, "YIntroEnd", this.YIntroEnd));
-            settingsNode.AppendChild(ToElement(doc, "YPrison", this.YPrison));
-            settingsNode.AppendChild(ToElement(doc, "YPostSewers", this.YPostSewers));
-            settingsNode.AppendChild(ToElement(doc, "YCampbell", this.YCampbell));
-            settingsNode.AppendChild(ToElement(doc, "YPostCampbell", this.YPostCampbell));
-            settingsNode.AppendChild(ToElement(doc, "YCat", this.YCat));
-            settingsNode.AppendChild(ToElement(doc, "YPostCat", this.YPostCat));
-            settingsNode.AppendChild(ToElement(doc, "YBridge", this.YBridge));
-            settingsNode.AppendChild(ToElement(doc, "YPostBridge", this.YPostBridge));
-            settingsNode.AppendChild(ToElement(doc, "YBoyle", this.YBoyle));
-            settingsNode.AppendChild(ToElement(doc, "YPostBoyle", this.YPostBoyle));
-            settingsNode.AppendChild(ToElement(doc, "YTower", this.YTower));
-            settingsNode.AppendChild(ToElement(doc, "YPostTower", this.YPostTower));
-            settingsNode.AppendChild(ToElement(doc, "YFlooded", this.YFlooded));
-            settingsNode.AppendChild(ToElement(doc, "YFloodedCell", this.YFloodedCell));
-            settingsNode.AppendChild(ToElement(doc, "YKingsparrow", this.YKingsparrow));
-            settingsNode.AppendChild(ToElement(doc, "YLighthouse", this.YLighthouse));
+            settingsNode.AppendChild(ToElement(doc, "YIntro", YIntro));
+            settingsNode.AppendChild(ToElement(doc, "YBlindIntro", YBlindIntro));
+            settingsNode.AppendChild(ToElement(doc, "YIntroEnd", YIntroEnd));
+            settingsNode.AppendChild(ToElement(doc, "YPostSewers", YPostSewers));
+            settingsNode.AppendChild(ToElement(doc, "YCampbell", YCampbell));
+            settingsNode.AppendChild(ToElement(doc, "YPostCampbell", YPostCampbell));
+            settingsNode.AppendChild(ToElement(doc, "YCat", YCat));
+            settingsNode.AppendChild(ToElement(doc, "YPostCat", YPostCat));
+            settingsNode.AppendChild(ToElement(doc, "YBridge", YBridge));
+            settingsNode.AppendChild(ToElement(doc, "YPostBridge", YPostBridge));
+            settingsNode.AppendChild(ToElement(doc, "YBoyle", YBoyle));
+            settingsNode.AppendChild(ToElement(doc, "YPostBoyle", YPostBoyle));
+            settingsNode.AppendChild(ToElement(doc, "YTower", YTower));
+            settingsNode.AppendChild(ToElement(doc, "YPostTower", YPostTower));
+            settingsNode.AppendChild(ToElement(doc, "YFlooded", YFlooded));
+            settingsNode.AppendChild(ToElement(doc, "YKingsparrow", YKingsparrow));
 
-            settingsNode.AppendChild(ToElement(doc, "ZIntro", this.ZIntro));
-            settingsNode.AppendChild(ToElement(doc, "ZIntroEnd", this.ZIntroEnd));
-            settingsNode.AppendChild(ToElement(doc, "ZPrison", this.ZPrison));
-            settingsNode.AppendChild(ToElement(doc, "ZPostSewers", this.ZPostSewers));
-            settingsNode.AppendChild(ToElement(doc, "ZCampbell", this.ZCampbell));
-            settingsNode.AppendChild(ToElement(doc, "ZPostCampbell", this.ZPostCampbell));
-            settingsNode.AppendChild(ToElement(doc, "ZCat", this.ZCat));
-            settingsNode.AppendChild(ToElement(doc, "ZPostCat", this.ZPostCat));
-            settingsNode.AppendChild(ToElement(doc, "ZBridge", this.ZBridge));
-            settingsNode.AppendChild(ToElement(doc, "ZPostBridge", this.ZPostBridge));
-            settingsNode.AppendChild(ToElement(doc, "ZBoyle", this.ZBoyle));
-            settingsNode.AppendChild(ToElement(doc, "ZPostBoyle", this.ZPostBoyle));
-            settingsNode.AppendChild(ToElement(doc, "ZTower", this.ZTower));
-            settingsNode.AppendChild(ToElement(doc, "ZPostTower", this.ZPostTower));
-            settingsNode.AppendChild(ToElement(doc, "ZFlooded", this.ZFlooded));
-            settingsNode.AppendChild(ToElement(doc, "ZFloodedCell", this.ZFloodedCell));
-            settingsNode.AppendChild(ToElement(doc, "ZKingsparrow", this.ZKingsparrow));
-            settingsNode.AppendChild(ToElement(doc, "ZLighthouse", this.ZLighthouse));
+            settingsNode.AppendChild(ToElement(doc, "ZIntro", ZIntro));
+            settingsNode.AppendChild(ToElement(doc, "ZBlindIntro", ZBlindIntro));
+            settingsNode.AppendChild(ToElement(doc, "ZIntroEnd", ZIntroEnd));
+            settingsNode.AppendChild(ToElement(doc, "ZPostSewers", ZPostSewers));
+            settingsNode.AppendChild(ToElement(doc, "ZCampbell", ZCampbell));
+            settingsNode.AppendChild(ToElement(doc, "ZPostCampbell", ZPostCampbell));
+            settingsNode.AppendChild(ToElement(doc, "ZCat", ZCat));
+            settingsNode.AppendChild(ToElement(doc, "ZPostCat", ZPostCat));
+            settingsNode.AppendChild(ToElement(doc, "ZBridge", ZBridge));
+            settingsNode.AppendChild(ToElement(doc, "ZPostBridge", ZPostBridge));
+            settingsNode.AppendChild(ToElement(doc, "ZBoyle", ZBoyle));
+            settingsNode.AppendChild(ToElement(doc, "ZPostBoyle", ZPostBoyle));
+            settingsNode.AppendChild(ToElement(doc, "ZTower", ZTower));
+            settingsNode.AppendChild(ToElement(doc, "ZPostTower", ZPostTower));
+            settingsNode.AppendChild(ToElement(doc, "ZFlooded", ZFlooded));
+            settingsNode.AppendChild(ToElement(doc, "ZKingsparrow", ZKingsparrow));
 
             return settingsNode;
         }
 
         public void SetSettings(XmlNode settings)
         {
-            this.AutoStartEnd = ParseBool(settings, "AutoStartEnd", true);
-            this.AutoSplitIntroEnd = ParseBool(settings, "AutoSplitIntroEnd");
-            this.AutoSplitMissionEnd = ParseBool(settings, "AutoSplitMissionEnd");
-            this.AutoSplitPrisonEscape = ParseBool(settings, "AutoSplitPrisonEscape");
-            this.AutoSplitOutsidersDream = ParseBool(settings, "AutoSplitOutsidersDream");
-            this.AutoSplitWeepers = ParseBool(settings, "AutoSplitWeepers");
+            AutoStartEnd = ParseBool(settings, "AutoStartEnd", true);
+            AutoSplitIntroEnd = ParseBool(settings, "AutoSplitIntroEnd");
+            AutoSplitMissionEnd = ParseBool(settings, "AutoSplitMissionEnd");
+            AutoSplitPrisonEscape = ParseBool(settings, "AutoSplitPrisonEscape");
+            AutoSplitOutsidersDream = ParseBool(settings, "AutoSplitOutsidersDream");
+            AutoSplitWeepers = ParseBool(settings, "AutoSplitWeepers");
 
-            this.CutsceneSpeedup = ParseBool(settings, "CutsceneSpeedup");
+            CutsceneSpeedup = ParseBool(settings, "CutsceneSpeedup");
+            LogCoords = ParseBool(settings, "LogCoords");
 
-            this.EnabledIntro = ParseBool(settings, "EnabledIntro", true);
-            this.EnabledIntroEnd = ParseBool(settings, "EnabledIntroEnd", true);
-            this.EnabledPrison = ParseBool(settings, "EnabledPrison", true);
-            this.EnabledPostSewers = ParseBool(settings, "EnabledPostSewers", true);
-            this.EnabledCampbell = ParseBool(settings, "EnabledCampbell", true);
-            this.EnabledPostCampbell = ParseBool(settings, "EnabledPostCampbell", true);
-            this.EnabledCat = ParseBool(settings, "EnabledCat", true);
-            this.EnabledPostCat = ParseBool(settings, "EnabledPostCat", true);
-            this.EnabledPostCat2 = ParseBool(settings, "EnabledPostCat2", true);
-            this.EnabledPostCat3 = ParseBool(settings, "EnabledPostCat3", true);
-            this.EnabledBridge = ParseBool(settings, "EnabledBridge", true);
-            this.EnabledPostBridge = ParseBool(settings, "EnabledPostBridge", true);
-            this.EnabledBoyle = ParseBool(settings, "EnabledBoyle", true);
-            this.EnabledPostBoyle = ParseBool(settings, "EnabledPostBoyle", true);
-            this.EnabledTower = ParseBool(settings, "EnabledTower", true);
-            this.EnabledPostTower = ParseBool(settings, "EnabledPostTower", true);
-            this.EnabledFlooded = ParseBool(settings, "EnabledFlooded", true);
-            this.EnabledFlooded2 = ParseBool(settings, "EnabledFlooded2", true);
-            this.EnabledFloodedCell = ParseBool(settings, "EnabledFloodedCell", true);
-            this.EnabledKingsparrow = ParseBool(settings, "EnabledKingsparrow", true);
-            this.EnabledLighthouse = ParseBool(settings, "EnabledLighthouse", true);
+            EnabledIntro = ParseBool(settings, "EnabledIntro", true);
+            EnabledBlindIntro = ParseBool(settings, "EnabledBlindIntro", true);
+            EnabledIntroEnd = ParseBool(settings, "EnabledIntroEnd", true);
+            EnabledPrison = ParseBool(settings, "EnabledPrison", true);
+            EnabledPostSewers = ParseBool(settings, "EnabledPostSewers", true);
+            EnabledCampbell = ParseBool(settings, "EnabledCampbell", true);
+            EnabledPostCampbell = ParseBool(settings, "EnabledPostCampbell", true);
+            EnabledCat = ParseBool(settings, "EnabledCat", true);
+            EnabledPostCat = ParseBool(settings, "EnabledPostCat", true);
+            EnabledPostCat2 = ParseBool(settings, "EnabledPostCat2", true);
+            EnabledPostCat3 = ParseBool(settings, "EnabledPostCat3", true);
+            EnabledBridge = ParseBool(settings, "EnabledBridge", true);
+            EnabledPostBridge = ParseBool(settings, "EnabledPostBridge", true);
+            EnabledBoyle = ParseBool(settings, "EnabledBoyle", true);
+            EnabledPostBoyle = ParseBool(settings, "EnabledPostBoyle", true);
+            EnabledTower = ParseBool(settings, "EnabledTower", true);
+            EnabledPostTower = ParseBool(settings, "EnabledPostTower", true);
+            EnabledFlooded = ParseBool(settings, "EnabledFlooded", true);
+            EnabledFlooded2 = ParseBool(settings, "EnabledFlooded2", true);
+            EnabledFloodedCell = ParseBool(settings, "EnabledFloodedCell", true);
+            EnabledKingsparrow = ParseBool(settings, "EnabledKingsparrow", true);
+            EnabledLighthouse = ParseBool(settings, "EnabledLighthouse", true);
 
-            this.SpeedupIntro = ParseInt(settings, "SpeedupIntro", 9500);
-            this.SpeedupIntroEnd = ParseInt(settings, "SpeedupIntroEnd", 6350);
-            this.SpeedupPrison = ParseInt(settings, "SpeedupPrison", 770);
-            this.SpeedupPostSewers = ParseInt(settings, "SpeedupPostSewers", 5640);
-            this.SpeedupCampbell = ParseInt(settings, "SpeedupCampbell", 4450);
-            this.SpeedupPostCampbell = ParseInt(settings, "SpeedupPostCampbell", 2050);
-            this.SpeedupCat = ParseInt(settings, "SpeedupCat", 4550);
-            this.SpeedupPostCat = ParseInt(settings, "SpeedupPostCat", 4700);
-            this.SpeedupPostCat2 = ParseInt(settings, "SpeedupPostCat2", 1500);
-            this.SpeedupPostCat3 = ParseInt(settings, "SpeedupPostCat3", 900);
-            this.SpeedupBridge = ParseInt(settings, "SpeedupBridge", 4040);
-            this.SpeedupPostBridge = ParseInt(settings, "SpeedupPostBridge", 4000);
-            this.SpeedupBoyle = ParseInt(settings, "SpeedupBoyle", 2400);
-            this.SpeedupPostBoyle = ParseInt(settings, "SpeedupPostBoyle", 3130);
-            this.SpeedupTower = ParseInt(settings, "SpeedupTower", 5250);
-            this.SpeedupPostTower = ParseInt(settings, "SpeedupPostTower", 3340);
-            this.SpeedupFlooded = ParseInt(settings, "SpeedupFlooded", 5000);
-            this.SpeedupFlooded2 = ParseInt(settings, "SpeedupFlooded2", 6700);
-            this.SpeedupFloodedCell = ParseInt(settings, "SpeedupFloodedCell", 1600);
-            this.SpeedupKingsparrow = ParseInt(settings, "SpeedupKingsparrow", 4550);
-            this.SpeedupLighthouse = ParseInt(settings, "SpeedupLighthouse", 1100);
+            SpeedupIntro = ParseInt(settings, "SpeedupIntro", 9200);
+            SpeedupBlindIntro = ParseInt(settings, "SpeedupBlindIntro", 3800);
+            SpeedupIntroEnd = ParseInt(settings, "SpeedupIntroEnd", 6350);
+            SpeedupPrison = ParseInt(settings, "SpeedupPrison", 770);
+            SpeedupPostSewers = ParseInt(settings, "SpeedupPostSewers", 5640);
+            SpeedupCampbell = ParseInt(settings, "SpeedupCampbell", 4450);
+            SpeedupPostCampbell = ParseInt(settings, "SpeedupPostCampbell", 2050);
+            SpeedupCat = ParseInt(settings, "SpeedupCat", 4550);
+            SpeedupPostCat = ParseInt(settings, "SpeedupPostCat", 4700);
+            SpeedupPostCat2 = ParseInt(settings, "SpeedupPostCat2", 1500);
+            SpeedupPostCat3 = ParseInt(settings, "SpeedupPostCat3", 900);
+            SpeedupBridge = ParseInt(settings, "SpeedupBridge", 4040);
+            SpeedupPostBridge = ParseInt(settings, "SpeedupPostBridge", 4000);
+            SpeedupBoyle = ParseInt(settings, "SpeedupBoyle", 2400);
+            SpeedupPostBoyle = ParseInt(settings, "SpeedupPostBoyle", 3130);
+            SpeedupTower = ParseInt(settings, "SpeedupTower", 5250);
+            SpeedupPostTower = ParseInt(settings, "SpeedupPostTower", 3340);
+            SpeedupFlooded = ParseInt(settings, "SpeedupFlooded", 5000);
+            SpeedupFlooded2 = ParseInt(settings, "SpeedupFlooded2", 6700);
+            SpeedupFloodedCell = ParseInt(settings, "SpeedupFloodedCell", 1600);
+            SpeedupKingsparrow = ParseInt(settings, "SpeedupKingsparrow", 4550);
+            SpeedupLighthouse = ParseInt(settings, "SpeedupLighthouse", 1100);
 
-            this.DelayIntro = ParseInt(settings, "DelayIntro", 1500);
-            this.DelayIntroEnd = ParseInt(settings, "DelayIntroEnd", 500);
-            this.DelayPrison = ParseInt(settings, "DelayPrison", 200);
-            this.DelayPostSewers = ParseInt(settings, "DelayPostSewers", 1100);
-            this.DelayCampbell = ParseInt(settings, "DelayCampbell", 1500);
-            this.DelayPostCampbell = ParseInt(settings, "DelayPostCampbell", 1500);
-            this.DelayCat = ParseInt(settings, "DelayCat", 2000);
-            this.DelayPostCat = ParseInt(settings, "DelayPostCat", 1000);
-            this.DelayPostCat2 = ParseInt(settings, "DelayPostCat2", 9200);
-            this.DelayPostCat3 = ParseInt(settings, "DelayPostCat3", 1200);
-            this.DelayBridge = ParseInt(settings, "DelayBridge", 1100);
-            this.DelayPostBridge = ParseInt(settings, "DelayPostBridge", 1000);
-            this.DelayBoyle = ParseInt(settings, "DelayBoyle", 1500);
-            this.DelayPostBoyle = ParseInt(settings, "DelayPostBoyle", 700);
-            this.DelayTower = ParseInt(settings, "DelayTower", 1500);
-            this.DelayPostTower = ParseInt(settings, "DelayPostTower", 1100);
-            this.DelayFlooded = ParseInt(settings, "DelayFlooded", 1500);
-            this.DelayFlooded2 = ParseInt(settings, "DelayFlooded2", 8000);
-            this.DelayFloodedCell = ParseInt(settings, "DelayFloodedCell", 1500);
-            this.DelayKingsparrow = ParseInt(settings, "DelayKingsparrow", 1500);
-            this.DelayLighthouse = ParseInt(settings, "DelayLighthouse", 1000);
+            DelayPrison = ParseInt(settings, "DelayPrison", 200);
+            DelayPostSewers = ParseInt(settings, "DelayPostSewers", 1100);
+            DelayCampbell = ParseInt(settings, "DelayCampbell", 1500);
+            DelayPostCampbell = ParseInt(settings, "DelayPostCampbell", 1500);
+            DelayCat = ParseInt(settings, "DelayCat", 2000);
+            DelayPostCat = ParseInt(settings, "DelayPostCat", 1000);
+            DelayPostCat2 = ParseInt(settings, "DelayPostCat2", 9200);
+            DelayPostCat3 = ParseInt(settings, "DelayPostCat3", 1200);
+            DelayBridge = ParseInt(settings, "DelayBridge", 1100);
+            DelayPostBridge = ParseInt(settings, "DelayPostBridge", 1000);
+            DelayBoyle = ParseInt(settings, "DelayBoyle", 1500);
+            DelayPostBoyle = ParseInt(settings, "DelayPostBoyle", 700);
+            DelayTower = ParseInt(settings, "DelayTower", 1500);
+            DelayPostTower = ParseInt(settings, "DelayPostTower", 1100);
+            DelayFlooded = ParseInt(settings, "DelayFlooded", 1500);
+            DelayFlooded2 = ParseInt(settings, "DelayFlooded2", 8000);
+            DelayFloodedCell = ParseInt(settings, "DelayFloodedCell", 1500);
+            DelayKingsparrow = ParseInt(settings, "DelayKingsparrow", 1500);
+            DelayLighthouse = ParseInt(settings, "DelayLighthouse", 1000);
 
-            this.XIntro = ParseFloat(settings, "XIntro");
-            this.XIntroEnd = ParseFloat(settings, "XIntroEnd");
-            this.XPrison = ParseFloat(settings, "XPrison");
-            this.XPostSewers = ParseFloat(settings, "XPostSewers");
-            this.XCampbell = ParseFloat(settings, "XCampbell", 12809f);
-            this.XPostCampbell = ParseFloat(settings, "XPostCampbell");
-            this.XCat = ParseFloat(settings, "XCat");
-            this.XPostCat = ParseFloat(settings, "XPostCat", -11185f);
-            this.XBridge = ParseFloat(settings, "XBridge");
-            this.XPostBridge = ParseFloat(settings, "XPostBridge");
-            this.XBoyle = ParseFloat(settings, "XBoyle");
-            this.XPostBoyle = ParseFloat(settings, "XPostBoyle");
-            this.XTower = ParseFloat(settings, "XTower");
-            this.XPostTower = ParseFloat(settings, "XPostTower");
-            this.XFlooded = ParseFloat(settings, "XFlooded", -23249f);
-            this.XFloodedCell = ParseFloat(settings, "XFloodedCell");
-            this.XKingsparrow = ParseFloat(settings, "XKingsparrow");
-            this.XLighthouse = ParseFloat(settings, "XLighthouse");
+            XIntro = ParseFloat(settings, "XIntro", -3908f);
+            XBlindIntro = ParseFloat(settings, "XBlindIntro", 16242.7f);
+            XIntroEnd = ParseFloat(settings, "XIntroEnd", 15591.5f);
+            XPostSewers = ParseFloat(settings, "XPostSewers", 0f);
+            XCampbell = ParseFloat(settings, "XCampbell", 12809f);
+            XPostCampbell = ParseFloat(settings, "XPostCampbell", -2374f);
+            XCat = ParseFloat(settings, "XCat", 4471f);
+            XPostCat = ParseFloat(settings, "XPostCat", -11185f);
+            XBridge = ParseFloat(settings, "XBridge", -12312f);
+            XPostBridge = ParseFloat(settings, "XPostBridge", -11186f);
+            XBoyle = ParseFloat(settings, "XBoyle", -9340f);
+            XPostBoyle = ParseFloat(settings, "XPostBoyle", 0f);
+            XTower = ParseFloat(settings, "XTower", -9253f);
+            XPostTower = ParseFloat(settings, "XPostTower", 0f);
+            XFlooded = ParseFloat(settings, "XFlooded", -23249f);
+            XKingsparrow = ParseFloat(settings, "XKingsparrow", 0f);
 
-            this.YIntro = ParseFloat(settings, "YIntro");
-            this.YIntroEnd = ParseFloat(settings, "YIntroEnd");
-            this.YPrison = ParseFloat(settings, "YPrison");
-            this.YPostSewers = ParseFloat(settings, "YPostSewers");
-            this.YCampbell = ParseFloat(settings, "YCampbell");
-            this.YPostCampbell = ParseFloat(settings, "YPostCampbell");
-            this.YCat = ParseFloat(settings, "YCat");
-            this.YPostCat = ParseFloat(settings, "YPostCat");
-            this.YBridge = ParseFloat(settings, "YBridge");
-            this.YPostBridge = ParseFloat(settings, "YPostBridge");
-            this.YBoyle = ParseFloat(settings, "YBoyle");
-            this.YPostBoyle = ParseFloat(settings, "YPostBoyle");
-            this.YTower = ParseFloat(settings, "YTower");
-            this.YPostTower = ParseFloat(settings, "YPostTower");
-            this.YFlooded = ParseFloat(settings, "YFlooded");
-            this.YFloodedCell = ParseFloat(settings, "YFloodedCell");
-            this.YKingsparrow = ParseFloat(settings, "YKingsparrow");
-            this.YLighthouse = ParseFloat(settings, "YLighthouse");
+            YIntro = ParseFloat(settings, "YIntro", 0f);
+            YBlindIntro = ParseFloat(settings, "YBlindIntro", 21620f);
+            YIntroEnd = ParseFloat(settings, "YIntroEnd", 21025.2f);
+            YPostSewers = ParseFloat(settings, "YPostSewers", 0f);
+            YCampbell = ParseFloat(settings, "YCampbell", 0f);
+            YPostCampbell = ParseFloat(settings, "YPostCampbell", 0f);
+            YCat = ParseFloat(settings, "YCat", 0f);
+            YPostCat = ParseFloat(settings, "YPostCat", 0f);
+            YBridge = ParseFloat(settings, "YBridge", 0f);
+            YPostBridge = ParseFloat(settings, "YPostBridge", 0f);
+            YBoyle = ParseFloat(settings, "YBoyle", 0f);
+            YPostBoyle = ParseFloat(settings, "YPostBoyle", -9518f);
+            YTower = ParseFloat(settings, "YTower", 33007f);
+            YPostTower = ParseFloat(settings, "YPostTower", -10593f);
+            YFlooded = ParseFloat(settings, "YFlooded", 0f);
+            YKingsparrow = ParseFloat(settings, "YKingsparrow", 0f);
 
-            this.ZIntro = ParseFloat(settings, "ZIntro");
-            this.ZIntroEnd = ParseFloat(settings, "ZIntroEnd");
-            this.ZPrison = ParseFloat(settings, "ZPrison");
-            this.ZPostSewers = ParseFloat(settings, "ZPostSewers");
-            this.ZCampbell = ParseFloat(settings, "ZCampbell");
-            this.ZPostCampbell = ParseFloat(settings, "ZPostCampbell");
-            this.ZCat = ParseFloat(settings, "ZCat");
-            this.ZPostCat = ParseFloat(settings, "ZPostCat");
-            this.ZBridge = ParseFloat(settings, "ZBridge");
-            this.ZPostBridge = ParseFloat(settings, "ZPostBridge");
-            this.ZBoyle = ParseFloat(settings, "ZBoyle");
-            this.ZPostBoyle = ParseFloat(settings, "ZPostBoyle");
-            this.ZTower = ParseFloat(settings, "ZTower");
-            this.ZPostTower = ParseFloat(settings, "ZPostTower");
-            this.ZFlooded = ParseFloat(settings, "ZFlooded");
-            this.ZFloodedCell = ParseFloat(settings, "ZFloodedCell");
-            this.ZKingsparrow = ParseFloat(settings, "ZKingsparrow");
-            this.ZLighthouse = ParseFloat(settings, "ZLighthouse");
+            ZIntro = ParseFloat(settings, "ZIntro", -231f);
+            ZBlindIntro = ParseFloat(settings, "ZBlindIntro", 3354.9f);
+            ZIntroEnd = ParseFloat(settings, "ZIntroEnd", 3425.3f);
+            ZPostSewers = ParseFloat(settings, "ZPostSewers", -599f);
+            ZCampbell = ParseFloat(settings, "ZCampbell", 0f);
+            ZPostCampbell = ParseFloat(settings, "ZPostCampbell", -601f);
+            ZCat = ParseFloat(settings, "ZCat", 1848f);
+            ZPostCat = ParseFloat(settings, "ZPostCat", 0f);
+            ZBridge = ParseFloat(settings, "ZBridge", -583f);
+            ZPostBridge = ParseFloat(settings, "ZPostBridge", -584f);
+            ZBoyle = ParseFloat(settings, "ZBoyle", -1951.4f);
+            ZPostBoyle = ParseFloat(settings, "ZPostBoyle", -609f);
+            ZTower = ParseFloat(settings, "ZTower", 0f);
+            ZPostTower = ParseFloat(settings, "ZPostTower", -584f);
+            ZFlooded = ParseFloat(settings, "ZFlooded", 0f);
+            ZKingsparrow = ParseFloat(settings, "ZKingsparrow", 1043f);
         }
 
         static bool ParseBool(XmlNode settings, string setting, bool default_ = false)
@@ -693,7 +667,7 @@ namespace LiveSplit.Dishonored
                 : default_;
         }
 
-        static float ParseFloat(XmlNode settings, string setting, float default_ = 0)
+        static float ParseFloat(XmlNode settings, string setting, float default_ = 0f)
         {
             float val;
             return settings[setting] != null ?
