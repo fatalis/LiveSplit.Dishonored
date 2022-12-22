@@ -39,6 +39,10 @@
             this.chkAutoSplitOutsidersDream = new System.Windows.Forms.CheckBox();
             this.gbCutsceneSpeedup = new System.Windows.Forms.GroupBox();
             this.tlpCutsceneSpeedup = new System.Windows.Forms.TableLayoutPanel();
+            this.txtZBlindIntro = new System.Windows.Forms.TextBox();
+            this.txtYBlindIntro = new System.Windows.Forms.TextBox();
+            this.txtXBlindIntro = new System.Windows.Forms.TextBox();
+            this.txtSpeedupBlindIntro = new System.Windows.Forms.TextBox();
             this.lblZHeader = new System.Windows.Forms.Label();
             this.lblYHeader = new System.Windows.Forms.Label();
             this.chkEnabledPostCat3 = new System.Windows.Forms.CheckBox();
@@ -152,11 +156,10 @@
             this.txtDelayLighthouse = new System.Windows.Forms.TextBox();
             this.txtSpeedupLighthouse = new System.Windows.Forms.TextBox();
             this.chkEnabledBlindIntro = new System.Windows.Forms.CheckBox();
-            this.txtSpeedupBlindIntro = new System.Windows.Forms.TextBox();
-            this.txtXBlindIntro = new System.Windows.Forms.TextBox();
-            this.txtYBlindIntro = new System.Windows.Forms.TextBox();
-            this.txtZBlindIntro = new System.Windows.Forms.TextBox();
             this.chkLogCoords = new System.Windows.Forms.CheckBox();
+            this.txtXLighthouse = new System.Windows.Forms.TextBox();
+            this.txtYLighthouse = new System.Windows.Forms.TextBox();
+            this.txtZLighthouse = new System.Windows.Forms.TextBox();
             this.tlpMain.SuspendLayout();
             this.gbAutoSplit.SuspendLayout();
             this.tlpAutoSplit.SuspendLayout();
@@ -418,6 +421,9 @@
             this.tlpCutsceneSpeedup.Controls.Add(this.txtSpeedupLighthouse, 1, 23);
             this.tlpCutsceneSpeedup.Controls.Add(this.chkEnabledBlindIntro, 0, 3);
             this.tlpCutsceneSpeedup.Controls.Add(this.chkLogCoords, 0, 1);
+            this.tlpCutsceneSpeedup.Controls.Add(this.txtXLighthouse, 3, 23);
+            this.tlpCutsceneSpeedup.Controls.Add(this.txtYLighthouse, 4, 23);
+            this.tlpCutsceneSpeedup.Controls.Add(this.txtZLighthouse, 5, 23);
             this.tlpCutsceneSpeedup.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tlpCutsceneSpeedup.Location = new System.Drawing.Point(3, 16);
             this.tlpCutsceneSpeedup.Name = "tlpCutsceneSpeedup";
@@ -448,6 +454,38 @@
             this.tlpCutsceneSpeedup.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpCutsceneSpeedup.Size = new System.Drawing.Size(464, 619);
             this.tlpCutsceneSpeedup.TabIndex = 0;
+            // 
+            // txtZBlindIntro
+            // 
+            this.txtZBlindIntro.Location = new System.Drawing.Point(376, 75);
+            this.txtZBlindIntro.Name = "txtZBlindIntro";
+            this.txtZBlindIntro.Size = new System.Drawing.Size(75, 20);
+            this.txtZBlindIntro.TabIndex = 155;
+            this.txtZBlindIntro.Text = "0";
+            // 
+            // txtYBlindIntro
+            // 
+            this.txtYBlindIntro.Location = new System.Drawing.Point(295, 75);
+            this.txtYBlindIntro.Name = "txtYBlindIntro";
+            this.txtYBlindIntro.Size = new System.Drawing.Size(75, 20);
+            this.txtYBlindIntro.TabIndex = 154;
+            this.txtYBlindIntro.Text = "0";
+            // 
+            // txtXBlindIntro
+            // 
+            this.txtXBlindIntro.Location = new System.Drawing.Point(214, 75);
+            this.txtXBlindIntro.Name = "txtXBlindIntro";
+            this.txtXBlindIntro.Size = new System.Drawing.Size(75, 20);
+            this.txtXBlindIntro.TabIndex = 153;
+            this.txtXBlindIntro.Text = "0";
+            // 
+            // txtSpeedupBlindIntro
+            // 
+            this.txtSpeedupBlindIntro.Location = new System.Drawing.Point(102, 75);
+            this.txtSpeedupBlindIntro.Name = "txtSpeedupBlindIntro";
+            this.txtSpeedupBlindIntro.Size = new System.Drawing.Size(50, 20);
+            this.txtSpeedupBlindIntro.TabIndex = 151;
+            this.txtSpeedupBlindIntro.Text = "0";
             // 
             // lblZHeader
             // 
@@ -1448,38 +1486,6 @@
             this.chkEnabledBlindIntro.Text = "Blind Intro";
             this.chkEnabledBlindIntro.UseVisualStyleBackColor = true;
             // 
-            // txtSpeedupBlindIntro
-            // 
-            this.txtSpeedupBlindIntro.Location = new System.Drawing.Point(102, 75);
-            this.txtSpeedupBlindIntro.Name = "txtSpeedupBlindIntro";
-            this.txtSpeedupBlindIntro.Size = new System.Drawing.Size(50, 20);
-            this.txtSpeedupBlindIntro.TabIndex = 151;
-            this.txtSpeedupBlindIntro.Text = "0";
-            // 
-            // txtXBlindIntro
-            // 
-            this.txtXBlindIntro.Location = new System.Drawing.Point(214, 75);
-            this.txtXBlindIntro.Name = "txtXBlindIntro";
-            this.txtXBlindIntro.Size = new System.Drawing.Size(75, 20);
-            this.txtXBlindIntro.TabIndex = 153;
-            this.txtXBlindIntro.Text = "0";
-            // 
-            // txtYBlindIntro
-            // 
-            this.txtYBlindIntro.Location = new System.Drawing.Point(295, 75);
-            this.txtYBlindIntro.Name = "txtYBlindIntro";
-            this.txtYBlindIntro.Size = new System.Drawing.Size(75, 20);
-            this.txtYBlindIntro.TabIndex = 154;
-            this.txtYBlindIntro.Text = "0";
-            // 
-            // txtZBlindIntro
-            // 
-            this.txtZBlindIntro.Location = new System.Drawing.Point(376, 75);
-            this.txtZBlindIntro.Name = "txtZBlindIntro";
-            this.txtZBlindIntro.Size = new System.Drawing.Size(75, 20);
-            this.txtZBlindIntro.TabIndex = 155;
-            this.txtZBlindIntro.Text = "0";
-            // 
             // chkLogCoords
             // 
             this.chkLogCoords.AutoSize = true;
@@ -1489,6 +1495,30 @@
             this.chkLogCoords.TabIndex = 156;
             this.chkLogCoords.Text = "Log Coords";
             this.chkLogCoords.UseVisualStyleBackColor = true;
+            // 
+            // txtXLighthouse
+            // 
+            this.txtXLighthouse.Location = new System.Drawing.Point(214, 595);
+            this.txtXLighthouse.Name = "txtXLighthouse";
+            this.txtXLighthouse.Size = new System.Drawing.Size(75, 20);
+            this.txtXLighthouse.TabIndex = 157;
+            this.txtXLighthouse.Text = "0";
+            // 
+            // txtYLighthouse
+            // 
+            this.txtYLighthouse.Location = new System.Drawing.Point(295, 595);
+            this.txtYLighthouse.Name = "txtYLighthouse";
+            this.txtYLighthouse.Size = new System.Drawing.Size(75, 20);
+            this.txtYLighthouse.TabIndex = 158;
+            this.txtYLighthouse.Text = "0";
+            // 
+            // txtZLighthouse
+            // 
+            this.txtZLighthouse.Location = new System.Drawing.Point(376, 595);
+            this.txtZLighthouse.Name = "txtZLighthouse";
+            this.txtZLighthouse.Size = new System.Drawing.Size(75, 20);
+            this.txtZLighthouse.TabIndex = 159;
+            this.txtZLighthouse.Text = "0";
             // 
             // DishonoredSettings
             // 
@@ -1642,5 +1672,8 @@
         private System.Windows.Forms.TextBox txtSpeedupBlindIntro;
         private System.Windows.Forms.CheckBox chkEnabledBlindIntro;
         private System.Windows.Forms.CheckBox chkLogCoords;
+        private System.Windows.Forms.TextBox txtXLighthouse;
+        private System.Windows.Forms.TextBox txtYLighthouse;
+        private System.Windows.Forms.TextBox txtZLighthouse;
     }
 }

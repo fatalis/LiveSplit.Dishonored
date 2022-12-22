@@ -183,6 +183,7 @@ namespace LiveSplit.Dishonored
                 new LoadPositionSpeedup { SettingsGetter = GetSettingsFloat, Setting = "PostTower", Level = Level.PubDusk, PreviousLevel = Level.TowerReturnYard },
                 new LoadPositionSpeedup { SettingsGetter = GetSettingsFloat, Setting = "Flooded", Level = Level.FloodedIntro, PreviousLevel = Level.PubDusk },
                 new LoadPositionSpeedup { SettingsGetter = GetSettingsFloat, Setting = "Kingsparrow", Level = Level.KingsparrowIsland, PreviousLevel = Level.Loyalists },
+                new LoadPositionSpeedup { SettingsGetter = GetSettingsFloat, Setting = "Lighthouse", Level = Level.KingsparrowLighthouse, PreviousLevel = Level.KingsparrowIsland, Tolerance = 10f },
             };
 
             _cutsceneTimer = new Timer() { Enabled = false };
