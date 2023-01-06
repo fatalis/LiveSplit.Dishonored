@@ -304,8 +304,8 @@ namespace LiveSplit.Dishonored
             SpeedupCampbell = 4250;
             SpeedupPostCampbell = 2050;
             SpeedupCat = 4550;
-            SpeedupPostCat = 4650;
-            SpeedupPostCat2 = 1500;
+            SpeedupPostCat = 5050;
+            SpeedupPostCat2 = 1400;
             SpeedupPostCat3 = 900;
             SpeedupBridge = 4040;
             SpeedupPostBridge = 4000;
@@ -325,7 +325,7 @@ namespace LiveSplit.Dishonored
             DelayPostCampbell = 1500;
             DelayCat = 2000;
             DelayPostCat = 1000;
-            DelayPostCat2 = 9200;
+            DelayPostCat2 = 8000;
             DelayPostCat3 = 1200;
             DelayBridge = 1100;
             DelayPostBridge = 1000;
@@ -576,8 +576,8 @@ namespace LiveSplit.Dishonored
             SpeedupCampbell = ParseInt(settings, "SpeedupCampbell", 4250);
             SpeedupPostCampbell = ParseInt(settings, "SpeedupPostCampbell", 2050);
             SpeedupCat = ParseInt(settings, "SpeedupCat", 4550);
-            SpeedupPostCat = ParseInt(settings, "SpeedupPostCat", 4650);
-            SpeedupPostCat2 = ParseInt(settings, "SpeedupPostCat2", 1500);
+            SpeedupPostCat = ParseInt(settings, "SpeedupPostCat", 5050);
+            SpeedupPostCat2 = ParseInt(settings, "SpeedupPostCat2", 1400);
             SpeedupPostCat3 = ParseInt(settings, "SpeedupPostCat3", 900);
             SpeedupBridge = ParseInt(settings, "SpeedupBridge", 4040);
             SpeedupPostBridge = ParseInt(settings, "SpeedupPostBridge", 4000);
@@ -597,7 +597,7 @@ namespace LiveSplit.Dishonored
             DelayPostCampbell = ParseInt(settings, "DelayPostCampbell", 1500);
             DelayCat = ParseInt(settings, "DelayCat", 2000);
             DelayPostCat = ParseInt(settings, "DelayPostCat", 1000);
-            DelayPostCat2 = ParseInt(settings, "DelayPostCat2", 9200);
+            DelayPostCat2 = ParseInt(settings, "DelayPostCat2", 8000);
             DelayPostCat3 = ParseInt(settings, "DelayPostCat3", 1200);
             DelayBridge = ParseInt(settings, "DelayBridge", 1100);
             DelayPostBridge = ParseInt(settings, "DelayPostBridge", 1000);
@@ -668,25 +668,22 @@ namespace LiveSplit.Dishonored
 
         static bool ParseBool(XmlNode settings, string setting, bool default_ = false)
         {
-            bool val;
             return settings[setting] != null ?
-                (bool.TryParse(settings[setting].InnerText, out val) ? val : default_)
+                (bool.TryParse(settings[setting].InnerText, out var val) ? val : default_)
                 : default_;
         }
 
         static int ParseInt(XmlNode settings, string setting, int default_ = 0)
         {
-            int val;
             return settings[setting] != null ?
-                (int.TryParse(settings[setting].InnerText, out val) ? val : default_)
+                (int.TryParse(settings[setting].InnerText, out var val) ? val : default_)
                 : default_;
         }
 
         static float ParseFloat(XmlNode settings, string setting, float default_ = 0f)
         {
-            float val;
             return settings[setting] != null ?
-                (float.TryParse(settings[setting].InnerText, out val) ? val : default_)
+                (float.TryParse(settings[setting].InnerText, out var val) ? val : default_)
                 : default_;
         }
 

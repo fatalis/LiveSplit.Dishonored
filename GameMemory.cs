@@ -150,7 +150,7 @@ namespace LiveSplit.Dishonored
         public delegate void PostLoadPlayerPositionChangedHandler(object sender, Level level, Level previousLevel, float x, float y, float z);
         public event PostLoadPlayerPositionChangedHandler OnPostLoadPlayerPositionChanged;
 
-        private List<int> _ignorePIDs;
+        private readonly List<int> _ignorePIDs;
 
         private GameData _data;
         private Process _process;
@@ -159,32 +159,34 @@ namespace LiveSplit.Dishonored
         private Level _previousLevel;
         private int _cutsceneCount;
 
+        private bool _worldSpeedInjected;
+        private int _scanAttempts;
         private IntPtr _worldSpeedPtr;
         private IntPtr _setWorldSpeedPtr;
         private IntPtr _injectedFuncPtr;
         private IntPtr _copyWorldSpeedPtr;
-        private int _overwriteBytes = 10;
+        private readonly int _overwriteBytes = 10;
 
-        private Timer _movieTimer;
-        private Timer _cutsceneTimer;
-        private Timer _loadTimer;
+        private readonly Timer _movieTimer;
+        private readonly Timer _cutsceneTimer;
+        private readonly Timer _loadTimer;
 
         private enum ExpectedDllSizes
         {
             DishonoredExe12 = 18219008,
             DishonoredExe14Reloaded = 18862080,
             DishonoredExe14Steam = 19427328,
-            BinkW32Dll = 241664
+            BinkW32Dll = 241664,
         }
 
-        private Dictionary<string, AreaCompletionType> _areaCompletions = new Dictionary<string, AreaCompletionType>
+        private readonly Dictionary<string, AreaCompletionType> _areaCompletions = new Dictionary<string, AreaCompletionType>
         {
             ["LoadingSewers|L_Prison_"]    = AreaCompletionType.PrisonEscape,
             ["LoadingStreets|L_Pub_Dusk_"] = AreaCompletionType.OutsidersDream,
             ["LoadingStreets|L_Pub_Day_"]  = AreaCompletionType.Weepers,
         };
 
-        private Dictionary<string, Level> _levels = new Dictionary<string, Level>
+        private readonly Dictionary<string, Level> _levels = new Dictionary<string, Level>
         {
             ["Dishonored_MainMenu"] = Level.MainMenu,
             ["l_tower_"] = Level.Intro,
@@ -220,7 +222,7 @@ namespace LiveSplit.Dishonored
             ["L_Out_"] = Level.Outro,
         };
 
-        private Dictionary<string, Movie> _movies = new Dictionary<string, Movie>
+        private readonly Dictionary<string, Movie> _movies = new Dictionary<string, Movie>
         {
             ["INTRO_LOC"] = Movie.Intro,
             ["Dishonored"] = Movie.DishonoredLogo,
@@ -264,12 +266,15 @@ namespace LiveSplit.Dishonored
                     return;
             }
 
+            if (!_worldSpeedInjected)
+                TryInjection();
+
             TimedTraceListener.Instance.UpdateCount++;
 
             _data.UpdateAll(_process);
 
-            var currentMovie = _data.CurrentBikMovie.Current;
-            var currentLevelStr = GetEngineStringByID(_data.CurrentLevel.Current);
+            var currentMovie = _data.CurrentBikMovie.Current ?? "";
+            var currentLevelStr = GetEngineStringByID(_data.CurrentLevel.Current) ?? "";
             var combinedStr = currentMovie + "|" + currentLevelStr;
             var level = _levels.Where(l => currentLevelStr.ToLower().StartsWith(l.Key.ToLower())).Select(l => l.Value).FirstOrDefault();
             _movies.TryGetValue(currentMovie, out var movie);
@@ -277,7 +282,7 @@ namespace LiveSplit.Dishonored
             var y = _data.PlayerPosY.Current;
             var z = _data.PlayerPosZ.Current;
 
-            if (logCoords && _movieTimer.Enabled || _cutsceneTimer.Enabled || _loadTimer.Enabled)
+            if (logCoords && (_movieTimer.Enabled || _cutsceneTimer.Enabled || _loadTimer.Enabled))
             {
                 Debug.WriteLine($"x={x} y={y} z={z}");
             }
@@ -400,7 +405,7 @@ namespace LiveSplit.Dishonored
                 OnAreaCompleted?.Invoke(this, AreaCompletionType.MissionEnd);
             }
 
-            if ((_movieTimer.Enabled || _cutsceneTimer.Enabled || _loadTimer.Enabled) && (_data.PlayerPosX.Changed || _data.PlayerPosY.Changed || _data.PlayerPosZ.Changed))
+            if (_worldSpeedInjected && (_movieTimer.Enabled || _cutsceneTimer.Enabled || _loadTimer.Enabled) && (_data.PlayerPosX.Changed || _data.PlayerPosY.Changed || _data.PlayerPosZ.Changed))
             {
                 if (_movieTimer.Enabled)
                 {
@@ -419,12 +424,15 @@ namespace LiveSplit.Dishonored
 
         bool TryGetGameProcess()
         {
+            _worldSpeedInjected = false;
+            _scanAttempts = 5;
+
             Process game = Process.GetProcesses().FirstOrDefault(p => p.ProcessName.ToLower() == "dishonored"
                 && !p.HasExited && !_ignorePIDs.Contains(p.Id));
             if (game == null)
                 return false;
 
-            ProcessModuleWow64Safe binkw32 = game.ModulesWow64Safe().FirstOrDefault(p => p.ModuleName.ToLower() == "binkw32.dll");
+            var binkw32 = game.ModulesWow64Safe().FirstOrDefault(p => p.ModuleName.ToLower() == "binkw32.dll");
             if (binkw32 == null)
                 return false;
 
@@ -449,7 +457,7 @@ namespace LiveSplit.Dishonored
             {
                 _ignorePIDs.Add(game.Id);
                 MessageBox.Show("Unexpected game version. Dishonored 1.2 or 1.4 is required.", "LiveSplit.Dishonored",
-                    MessageBoxButtons.OK, MessageBoxIcon.Error);    
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return false;
             }
 
@@ -457,21 +465,29 @@ namespace LiveSplit.Dishonored
             _data = new GameData(version);
             _process = game;
 
+            return true;
+        }
+
+        bool TryInjection()
+        {
+            _scanAttempts--;
+            if (_scanAttempts < 0)
+                return false;
+
             var ptr = IntPtr.Zero;
             var target = new SigScanTarget("8B 10 8B C8 8B 82 D0 03 00 00 53 FF D0");
-            foreach (var page in game.MemoryPages(true))
+            foreach (var page in _process.MemoryPages(true))
             {
-                var scanner = new SignatureScanner(game, page.BaseAddress, (int)page.RegionSize);
+                Debug.WriteLine($"scanning page {page.BaseAddress}, size={page.RegionSize}");
+                var scanner = new SignatureScanner(_process, page.BaseAddress, (int)page.RegionSize);
                 ptr = scanner.Scan(target);
                 if (ptr != IntPtr.Zero)
-                {
                     break;
-                }
             }
             if (ptr == IntPtr.Zero)
             {
-                Debug.WriteLine("Unable to find world speed pointer");
-                return true;
+                Debug.WriteLine($"Unable to find world speed pointer, trying {_scanAttempts} more times");
+                return false;
             }
 
             _worldSpeedPtr = ptr;
@@ -479,8 +495,8 @@ namespace LiveSplit.Dishonored
             Debug.WriteLine($"worldSpeedPtr={_worldSpeedPtr.ToString("X")}");
             Debug.WriteLine($"returnHerePtr={returnHerePtr.ToString("X")}");
 
-            _setWorldSpeedPtr = game.AllocateMemory(sizeof(float));
-            game.WriteBytes(_setWorldSpeedPtr, BitConverter.GetBytes(1f));
+            _setWorldSpeedPtr = _process.AllocateMemory(sizeof(float));
+            _process.WriteBytes(_setWorldSpeedPtr, BitConverter.GetBytes(1f));
             var setWorldSpeedPtrBytes = BitConverter.GetBytes((uint)_setWorldSpeedPtr);
 
             var worldSpeedDetourBytes = new List<byte>
@@ -500,17 +516,18 @@ namespace LiveSplit.Dishonored
                 255, 255, 255, 255, 255,            // jmp [returnHere] (placeholder)
             });
 
-            _injectedFuncPtr = game.AllocateMemory(worldSpeedDetourBytes.Count);
+            _injectedFuncPtr = _process.AllocateMemory(worldSpeedDetourBytes.Count);
             Debug.WriteLine($"injectedFuncPtr={_injectedFuncPtr.ToString("X")}");
 
-            game.Suspend();
+            _process.Suspend();
             try
             {
-                _copyWorldSpeedPtr = game.WriteDetour(_worldSpeedPtr, _overwriteBytes, _injectedFuncPtr);
+                _copyWorldSpeedPtr = _process.WriteDetour(_worldSpeedPtr, _overwriteBytes, _injectedFuncPtr);
                 Debug.WriteLine($"copyWorldSpeedPtr={_copyWorldSpeedPtr.ToString("X")}");
-                game.WriteBytes(_injectedFuncPtr, worldSpeedDetourBytes.ToArray());
-                game.WriteJumpInstruction(_injectedFuncPtr + jumpOffset, returnHerePtr);
+                _process.WriteBytes(_injectedFuncPtr, worldSpeedDetourBytes.ToArray());
+                _process.WriteJumpInstruction(_injectedFuncPtr + jumpOffset, returnHerePtr);
                 Debug.WriteLine("injection successful");
+                _worldSpeedInjected = true;
             }
             catch
             {
@@ -519,7 +536,7 @@ namespace LiveSplit.Dishonored
             }
             finally
             {
-                game.Resume();
+                _process.Resume();
             }
 
             return true;
@@ -604,7 +621,7 @@ namespace LiveSplit.Dishonored
     enum GameVersion
     {
         v12,
-        v14
+        v14,
     }
 
     class FakeMemoryWatcher<T>

@@ -16,7 +16,7 @@ namespace LiveSplit.Dishonored
         public Func<string, float> SettingsGetter { get; set; }
         public string Setting { get; set; }
         public Level Level { get; set; }
-        public float Tolerance = 0.5f;
+        public float Tolerance = 1f;
 
         protected float _setX { get => SettingsGetter($"X{Setting}"); }
         protected float _setY { get => SettingsGetter($"Y{Setting}"); }
@@ -98,10 +98,10 @@ namespace LiveSplit.Dishonored
 
         public DishonoredSettings Settings { get; }
 
-        private TimerModel _timer;
-        private GameMemory _gameMemory;
-        private Timer _updateTimer;
-        private Timer _cutsceneTimer;
+        private readonly TimerModel _timer;
+        private readonly GameMemory _gameMemory;
+        private readonly Timer _updateTimer;
+        private readonly Timer _cutsceneTimer;
 
         private string _pendingSpeedup = null;
         private long _elapsedTime = 0;
@@ -109,12 +109,12 @@ namespace LiveSplit.Dishonored
         private TimeSpan _lastTime;
         private string _currentSpeedup = null;
 
-        private List<MovieSpeedup> _movieSpeedups;
-        private List<CutsceneSpeedup> _cutsceneSpeedups;
-        private List<LoadDelaySpeedup> _loadDelaySpeedups;
-        private List<LoadPositionSpeedup> _loadPositionSpeedups;
+        private readonly List<MovieSpeedup> _movieSpeedups;
+        private readonly List<CutsceneSpeedup> _cutsceneSpeedups;
+        private readonly List<LoadDelaySpeedup> _loadDelaySpeedups;
+        private readonly List<LoadPositionSpeedup> _loadPositionSpeedups;
 
-        private Dictionary<string, string> _speedupFollowups = new Dictionary<string, string>
+        private readonly Dictionary<string, string> _speedupFollowups = new Dictionary<string, string>
         {
             ["PostCat"] = "PostCat2",
             ["PostCat2"] = "PostCat3",
@@ -174,14 +174,14 @@ namespace LiveSplit.Dishonored
                 new LoadPositionSpeedup { SettingsGetter = GetSettingsFloat, Setting = "Campbell", Level = Level.CampbellStreets, PreviousLevel = Level.PubDusk },
                 new LoadPositionSpeedup { SettingsGetter = GetSettingsFloat, Setting = "PostCampbell", Level = Level.PubMorning, PreviousLevel = Level.CampbellBack },
                 new LoadPositionSpeedup { SettingsGetter = GetSettingsFloat, Setting = "Cat", Level = Level.CatStreets, PreviousLevel = Level.PubDay },
-                new LoadPositionSpeedup { SettingsGetter = GetSettingsFloat, Setting = "PostCat", Level = Level.PubDusk, PreviousLevel = Level.CatStreets },
+                new LoadPositionSpeedup { SettingsGetter = GetSettingsFloat, Setting = "PostCat", Level = Level.PubDusk, PreviousLevel = Level.CatStreets, Tolerance = 0.5f },
                 new LoadPositionSpeedup { SettingsGetter = GetSettingsFloat, Setting = "Bridge", Level = Level.Bridge1, PreviousLevel = Level.PubDusk },
                 new LoadPositionSpeedup { SettingsGetter = GetSettingsFloat, Setting = "PostBridge", Level = Level.PubNight, PreviousLevel = Level.Bridge4 },
                 new LoadPositionSpeedup { SettingsGetter = GetSettingsFloat, Setting = "Boyle", Level = Level.BoyleExterior, PreviousLevel = Level.PubDay },
                 new LoadPositionSpeedup { SettingsGetter = GetSettingsFloat, Setting = "PostBoyle", Level = Level.PubMorning, PreviousLevel = Level.BoyleExterior, Tolerance = 4f },
                 new LoadPositionSpeedup { SettingsGetter = GetSettingsFloat, Setting = "Tower", Level = Level.TowerReturnYard, PreviousLevel = Level.PubMorning },
                 new LoadPositionSpeedup { SettingsGetter = GetSettingsFloat, Setting = "PostTower", Level = Level.PubDusk, PreviousLevel = Level.TowerReturnYard },
-                new LoadPositionSpeedup { SettingsGetter = GetSettingsFloat, Setting = "Flooded", Level = Level.FloodedIntro, PreviousLevel = Level.PubDusk },
+                new LoadPositionSpeedup { SettingsGetter = GetSettingsFloat, Setting = "Flooded", Level = Level.FloodedIntro, PreviousLevel = Level.PubDusk, Tolerance = 0.5f },
                 new LoadPositionSpeedup { SettingsGetter = GetSettingsFloat, Setting = "Kingsparrow", Level = Level.KingsparrowIsland, PreviousLevel = Level.Loyalists },
                 new LoadPositionSpeedup { SettingsGetter = GetSettingsFloat, Setting = "Lighthouse", Level = Level.KingsparrowLighthouse, PreviousLevel = Level.KingsparrowIsland, Tolerance = 10f },
             };
