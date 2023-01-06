@@ -63,7 +63,8 @@ namespace LiveSplit.Dishonored
             MissionEnd,
             PrisonEscape,
             OutsidersDream,
-            Weepers
+            Weepers,
+            DLC06IntroEnd,
         }
 
         public event EventHandler OnFirstLevelLoading;
@@ -86,14 +87,15 @@ namespace LiveSplit.Dishonored
             DishonoredExe12 = 18219008,
             DishonoredExe14Reloaded = 18862080,
             DishonoredExe14Steam = 19427328,
-            BinkW32Dll = 241664
+            BinkW32Dll = 241664,
         }
 
         private Dictionary<string, AreaCompletionType> _areaCompletions = new Dictionary<string, AreaCompletionType>
         {
-            ["LoadingSewers|L_Prison_"]    = AreaCompletionType.PrisonEscape,
-            ["LoadingStreets|L_Pub_Dusk_"] = AreaCompletionType.OutsidersDream,
-            ["LoadingStreets|L_Pub_Day_"]  = AreaCompletionType.Weepers
+            ["LoadingSewers|L_Prison_"]            = AreaCompletionType.PrisonEscape,
+            ["LoadingStreets|L_Pub_Dusk_"]         = AreaCompletionType.OutsidersDream,
+            ["LoadingStreets|L_Pub_Day_"]          = AreaCompletionType.Weepers,
+            ["LoadingDLC06Slaughter|DLC06_Tower_"] = AreaCompletionType.DLC06IntroEnd,
         };
 
         public GameMemory()
@@ -133,7 +135,7 @@ namespace LiveSplit.Dishonored
                 string currentLevelStr = this.GetEngineStringByID(_data.CurrentLevel.Current);
                 Debug.WriteLine($"Level Changed - {_data.CurrentLevel.Old} -> {_data.CurrentLevel.Current} '{currentLevelStr}'");
 
-                if (currentLevelStr == "L_DLC07_BaseIntro_P" || currentLevelStr == "DLC06_Tower_P")
+                if (currentLevelStr == "DLC06_Tower_P" || currentLevelStr == "L_DLC07_BaseIntro_P")
                     this.OnFirstLevelLoading?.Invoke(this, EventArgs.Empty);
 
                 _oncePerLevelFlag = true;
@@ -178,11 +180,18 @@ namespace LiveSplit.Dishonored
                     {
                         this.OnPlayerGainedControl?.Invoke(this, EventArgs.Empty);
                     }
+
+                    if ((currentMovie == "Loading" || currentMovie == "LoadingDLC07Intro") &&
+                        currentLevelStr == "L_DLC07_BaseIntro_P" && _data.PlayerPosX.Current == -1831.55188f)
+                    {
+                        this.OnPlayerGainedControl?.Invoke(this, EventArgs.Empty);
+                        _oncePerLevelFlag = false;
+                    }
                 }
             }
 
-            if (_data.PlayerPosX.Changed && _data.PlayerPosX.Old == 0.0f && _loadingStarted &&
-                _data.PlayerPosX.Current<9826.5f && _data.PlayerPosX.Current>9826.0f)
+            if (_data.PlayerPosX.Changed && _loadingStarted &&
+                _data.PlayerPosX.Old == 0.0f && Math.Abs(_data.PlayerPosX.Current-9826.25f) < 0.25f)
             {
                 string currentLevelStr = this.GetEngineStringByID(_data.CurrentLevel.Current);
 
@@ -266,7 +275,7 @@ namespace LiveSplit.Dishonored
     enum GameVersion
     {
         v12,
-        v14
+        v14,
     }
 
     class FakeMemoryWatcher<T>

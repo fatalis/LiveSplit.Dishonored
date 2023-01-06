@@ -106,7 +106,8 @@ namespace LiveSplit.Dishonored
                 || (type == GameMemory.AreaCompletionType.MissionEnd && this.Settings.AutoSplitMissionEnd)
                 || (type == GameMemory.AreaCompletionType.PrisonEscape && this.Settings.AutoSplitPrisonEscape)
                 || (type == GameMemory.AreaCompletionType.OutsidersDream && this.Settings.AutoSplitOutsidersDream)
-                || (type == GameMemory.AreaCompletionType.Weepers && this.Settings.AutoSplitWeepers))
+                || (type == GameMemory.AreaCompletionType.Weepers && this.Settings.AutoSplitWeepers)
+                || (type == GameMemory.AreaCompletionType.DLC06IntroEnd && this.Settings.AutoSplitDLC06IntroEnd))
             {
                 _timer.Split();
             }

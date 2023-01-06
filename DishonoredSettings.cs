@@ -13,6 +13,7 @@ namespace LiveSplit.Dishonored
         public bool AutoSplitPrisonEscape { get; set; }
         public bool AutoSplitOutsidersDream { get; set; }
         public bool AutoSplitWeepers { get; set; }
+        public bool AutoSplitDLC06IntroEnd { get; set; }
 
         public DishonoredSettings()
         {
@@ -24,6 +25,7 @@ namespace LiveSplit.Dishonored
             this.chkAutoSplitPrisonEscape.DataBindings.Add("Checked", this, "AutoSplitPrisonEscape", false, DataSourceUpdateMode.OnPropertyChanged);
             this.chkAutoSplitOutsidersDream.DataBindings.Add("Checked", this, "AutoSplitOutsidersDream", false, DataSourceUpdateMode.OnPropertyChanged);
             this.chkAutoSplitWeepers.DataBindings.Add("Checked", this, "AutoSplitWeepers", false, DataSourceUpdateMode.OnPropertyChanged);
+            this.chkAutoSplitDLC06IntroEnd.DataBindings.Add("Checked", this, "AutoSplitDLC06IntroEnd", false, DataSourceUpdateMode.OnPropertyChanged);
 
             // defaults
             this.AutoStartEnd = true;
@@ -41,6 +43,7 @@ namespace LiveSplit.Dishonored
             settingsNode.AppendChild(ToElement(doc, "AutoSplitPrisonEscape", this.AutoSplitPrisonEscape));
             settingsNode.AppendChild(ToElement(doc, "AutoSplitOutsidersDream", this.AutoSplitOutsidersDream));
             settingsNode.AppendChild(ToElement(doc, "AutoSplitWeepers", this.AutoSplitWeepers));
+            settingsNode.AppendChild(ToElement(doc, "AutoSplitDLC06IntroEnd", this.AutoSplitDLC06IntroEnd));
 
             return settingsNode;
         }
@@ -53,6 +56,7 @@ namespace LiveSplit.Dishonored
             this.AutoSplitPrisonEscape = ParseBool(settings, "AutoSplitPrisonEscape");
             this.AutoSplitOutsidersDream = ParseBool(settings, "AutoSplitOutsidersDream");
             this.AutoSplitWeepers = ParseBool(settings, "AutoSplitWeepers");
+            this.AutoSplitDLC06IntroEnd = ParseBool(settings, "AutoSplitDLC06IntroEnd");
         }
 
         static bool ParseBool(XmlNode settings, string setting, bool default_ = false)
