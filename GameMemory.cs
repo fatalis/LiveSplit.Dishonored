@@ -470,6 +470,7 @@ namespace LiveSplit.Dishonored
 
         bool TryInjection()
         {
+            // scanning 1.4 doesn't seem to work immediately
             _scanAttempts--;
             if (_scanAttempts < 0)
                 return false;
