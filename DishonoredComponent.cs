@@ -83,7 +83,8 @@ namespace LiveSplit.Dishonored
 
         private readonly List<MovieSpeedup> _movieSpeedups;
         private readonly List<CutsceneSpeedup> _cutsceneSpeedups;
-        private readonly List<LoadSpeedup> _loadSpeedups;
+        private readonly List<LoadSpeedup> _loadPositionSpeedups;
+        private readonly List<LoadSpeedup> _loadDelaySpeedups;
 
         public DishonoredComponent(LiveSplitState state)
         {
@@ -111,16 +112,22 @@ namespace LiveSplit.Dishonored
                 new CutsceneSpeedup { Level = Level.Intro, Count = 4, Duration = 6350, X = 15591.5f, Y = 21025.2f, Z = 3425.3f, Tolerance = 0.1f },
             };
 
-            _loadSpeedups = new List<LoadSpeedup>
+            _loadDelaySpeedups = new List<LoadSpeedup>
             {
                 new LoadSpeedup { Level = Level.Prison, PreviousLevel = Level.Intro, Duration = 720, Delay = 500 },
+                new LoadSpeedup { Level = Level.FloodedStreets, PreviousLevel = Level.FloodedIntro, Duration = 1600, Delay = 1500 },
+                new LoadSpeedup { Level = Level.FloodedStreets, PreviousLevel = Level.FloodedRefinery, Duration = 1600, Delay = 1500, X = -5397.104f },
+            };
+
+            _loadPositionSpeedups = new List<LoadSpeedup>
+            {
                 new LoadSpeedup { Level = Level.PubDay, PreviousLevel = Level.Sewers, Duration = 5640, Z = -599f },
                 new LoadSpeedup { Level = Level.CampbellStreets, PreviousLevel = Level.PubDusk, Duration = 4250, X = 12809f },
                 new LoadSpeedup { Level = Level.PubMorning, PreviousLevel = Level.CampbellBack, Duration = 2050, X = -2374f, Z = -601f },
                 new LoadSpeedup { Level = Level.CatStreets, PreviousLevel = Level.PubDay, Duration = 4550, X = 4471f, Z = 1848f },
                 new LoadSpeedup { Level = Level.PubDusk, PreviousLevel = Level.CatStreets, Duration = 5050, X = -11185f, Tolerance = 0.5f,
                     Followup = new Speedup { Duration = 1400, Delay = 8000,
-                        Followup = new Speedup { Duration = 900, Delay = 1200 } } },
+                        Followup = new Speedup { Duration = 900, Delay = 1210 } } },
                 new LoadSpeedup { Level = Level.Bridge1, PreviousLevel = Level.PubDusk, Duration = 4040, X = -12312f, Z = -583f },
                 new LoadSpeedup { Level = Level.PubNight, PreviousLevel = Level.Bridge4, Duration = 4000, X = -11186f, Z = -584.3f },
                 new LoadSpeedup { Level = Level.BoyleExterior, PreviousLevel = Level.PubDay, Duration = 2500, X = -9340f, Z = -1951.4f },
@@ -129,8 +136,6 @@ namespace LiveSplit.Dishonored
                 new LoadSpeedup { Level = Level.PubDusk, PreviousLevel = Level.TowerReturnYard, Duration = 3340, Y = -10593f, Z = -584f },
                 new LoadSpeedup { Level = Level.FloodedIntro, PreviousLevel = Level.PubDusk, Duration = 5000, X = -23249f, Tolerance = 0.5f,
                     Followup = new Speedup { Duration = 6850, Delay = 7850 } },
-                new LoadSpeedup { Level = Level.FloodedStreets, PreviousLevel = Level.FloodedIntro, Duration = 1600, Delay = 1500 },
-                new LoadSpeedup { Level = Level.FloodedStreets, PreviousLevel = Level.FloodedRefinery, Duration = 1600, Delay = 1500, X = -5397.104f },
                 new LoadSpeedup { Level = Level.KingsparrowIsland, PreviousLevel = Level.Loyalists, Duration = 4550, Z = 1043f },
                 new LoadSpeedup { Level = Level.KingsparrowLighthouse, PreviousLevel = Level.KingsparrowIsland, Duration = 900, Z = 1060f, Tolerance = 10f },
             };
@@ -172,7 +177,7 @@ namespace LiveSplit.Dishonored
             var now = _timer.CurrentState.CurrentTime.RealTime;
             if (now != null)
             {
-                if (!_timer.CurrentState.IsGameTimePaused && Settings.CutsceneSpeedup)
+                if (!_timer.CurrentState.IsGameTimePaused && Settings.EnableSpeedups)
                 {
                     // when speeding up the game, also speed up IGT in the timer
                     _elapsedTime += ((TimeSpan)now - _lastTime).Ticks * _timeMultiplier;
@@ -236,13 +241,13 @@ namespace LiveSplit.Dishonored
         {
             _timer.CurrentState.IsGameTimePaused = false;
 
-            if (!Settings.CutsceneSpeedup || _cutsceneTimer.Enabled)
+            if (!Settings.EnableSpeedups || !Settings.SpeedupLoadDelays || _cutsceneTimer.Enabled)
                 return;
 
-            var speedup = _loadSpeedups.Find(cs => cs.Matches(level, previousLevel, x, y, z));
+            var speedup = _loadDelaySpeedups.Find(cs => cs.Matches(level, previousLevel, x, y, z));
             if (speedup != null)
             {
-                Debug.WriteLine($"Found load speedup level={previousLevel}->{level} x={x} y={y} z={z}");
+                Debug.WriteLine($"Found load delay speedup level={previousLevel}->{level} x={x} y={y} z={z}");
                 DelaySpeedup(speedup);
             }
         }
@@ -268,7 +273,7 @@ namespace LiveSplit.Dishonored
 
         void gameMemory_OnPostMoviePlayerPositionChanged(object sender, Movie movie, float x, float y, float z)
         {
-            if (!Settings.CutsceneSpeedup || _cutsceneTimer.Enabled)
+            if (!Settings.EnableSpeedups || !Settings.SpeedupMovies || _cutsceneTimer.Enabled)
                 return;
 
             var speedup = _movieSpeedups.Find(ps => ps.Matches(movie, x, y, z));
@@ -281,7 +286,7 @@ namespace LiveSplit.Dishonored
 
         void gameMemory_OnPostCutscenePlayerPositionChanged(object sender, Level level, int count, float x, float y, float z)
         {
-            if (!Settings.CutsceneSpeedup || _cutsceneTimer.Enabled)
+            if (!Settings.EnableSpeedups || !Settings.SpeedupInGameCutscenes || _cutsceneTimer.Enabled)
                 return;
 
             var speedup = _cutsceneSpeedups.Find(ps => ps.Matches(level, count, x, y, z));
@@ -294,10 +299,10 @@ namespace LiveSplit.Dishonored
 
         void gameMemory_OnPostLoadPlayerPositionChanged(object sender, Level level, Level previousLevel, float x, float y, float z)
         {
-            if (!Settings.CutsceneSpeedup || _cutsceneTimer.Enabled)
+            if (!Settings.EnableSpeedups || !Settings.SpeedupLoadPositions || _cutsceneTimer.Enabled)
                 return;
 
-            var speedup = _loadSpeedups.Find(ps => ps.Matches(level, previousLevel, x, y, z));
+            var speedup = _loadPositionSpeedups.Find(ps => ps.Matches(level, previousLevel, x, y, z));
             if (speedup != null)
             {
                 Debug.WriteLine($"Found load position speedup level={previousLevel}->{level} x={x} y={y} z={z}");
@@ -307,7 +312,7 @@ namespace LiveSplit.Dishonored
 
         void DelaySpeedup(Speedup speedup)
         {
-            if (!Settings.CutsceneSpeedup || _cutsceneTimer.Enabled)
+            if (!Settings.EnableSpeedups || _cutsceneTimer.Enabled)
                 return;
 
             if (speedup.Delay <= 0)
@@ -326,7 +331,7 @@ namespace LiveSplit.Dishonored
         {
             _pendingSpeedup = null;
 
-            if (!Settings.CutsceneSpeedup || _cutsceneTimer.Enabled || speedup.Duration <= 0)
+            if (!Settings.EnableSpeedups || _cutsceneTimer.Enabled || speedup.Duration <= 0)
                 return;
 
             Debug.WriteLine($"Triggering speedup for {speedup.Duration}ms");

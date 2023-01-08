@@ -40,7 +40,11 @@
             this.chkAutoSplitOutsidersDream = new System.Windows.Forms.CheckBox();
             this.gbCutsceneSpeedup = new System.Windows.Forms.GroupBox();
             this.tplCutsceneSpeedup = new System.Windows.Forms.TableLayoutPanel();
-            this.chkCutsceneSpeedup = new System.Windows.Forms.CheckBox();
+            this.chkEnableSpeedups = new System.Windows.Forms.CheckBox();
+            this.chkSpeedupMovies = new System.Windows.Forms.CheckBox();
+            this.chkSpeedupInGameCutscenes = new System.Windows.Forms.CheckBox();
+            this.chkSpeedupLoadDelays = new System.Windows.Forms.CheckBox();
+            this.chkSpeedupLoadPositions = new System.Windows.Forms.CheckBox();
             this.tlpMain.SuspendLayout();
             this.gbAutoSplit.SuspendLayout();
             this.tlpAutoSplit.SuspendLayout();
@@ -60,7 +64,7 @@
             this.tlpMain.RowCount = 2;
             this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlpMain.Size = new System.Drawing.Size(476, 241);
+            this.tlpMain.Size = new System.Drawing.Size(476, 330);
             this.tlpMain.TabIndex = 0;
             // 
             // gbAutoSplit
@@ -176,7 +180,7 @@
             this.gbCutsceneSpeedup.Controls.Add(this.tplCutsceneSpeedup);
             this.gbCutsceneSpeedup.Location = new System.Drawing.Point(3, 192);
             this.gbCutsceneSpeedup.Name = "gbCutsceneSpeedup";
-            this.gbCutsceneSpeedup.Size = new System.Drawing.Size(470, 50);
+            this.gbCutsceneSpeedup.Size = new System.Drawing.Size(470, 134);
             this.gbCutsceneSpeedup.TabIndex = 6;
             this.gbCutsceneSpeedup.TabStop = false;
             this.gbCutsceneSpeedup.Text = "Cutscene Speedups";
@@ -185,23 +189,79 @@
             // 
             this.tplCutsceneSpeedup.ColumnCount = 1;
             this.tplCutsceneSpeedup.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tplCutsceneSpeedup.Controls.Add(this.chkCutsceneSpeedup, 0, 0);
+            this.tplCutsceneSpeedup.Controls.Add(this.chkEnableSpeedups, 0, 0);
+            this.tplCutsceneSpeedup.Controls.Add(this.chkSpeedupMovies, 0, 1);
+            this.tplCutsceneSpeedup.Controls.Add(this.chkSpeedupInGameCutscenes, 0, 2);
+            this.tplCutsceneSpeedup.Controls.Add(this.chkSpeedupLoadDelays, 0, 3);
+            this.tplCutsceneSpeedup.Controls.Add(this.chkSpeedupLoadPositions, 0, 4);
             this.tplCutsceneSpeedup.Location = new System.Drawing.Point(3, 19);
             this.tplCutsceneSpeedup.Name = "tplCutsceneSpeedup";
-            this.tplCutsceneSpeedup.RowCount = 1;
+            this.tplCutsceneSpeedup.RowCount = 5;
             this.tplCutsceneSpeedup.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tplCutsceneSpeedup.Size = new System.Drawing.Size(461, 24);
+            this.tplCutsceneSpeedup.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tplCutsceneSpeedup.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tplCutsceneSpeedup.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tplCutsceneSpeedup.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tplCutsceneSpeedup.Size = new System.Drawing.Size(461, 115);
             this.tplCutsceneSpeedup.TabIndex = 0;
             // 
-            // chkCutsceneSpeedup
+            // chkEnableSpeedups
             // 
-            this.chkCutsceneSpeedup.AutoSize = true;
-            this.chkCutsceneSpeedup.Location = new System.Drawing.Point(3, 3);
-            this.chkCutsceneSpeedup.Name = "chkCutsceneSpeedup";
-            this.chkCutsceneSpeedup.Size = new System.Drawing.Size(65, 17);
-            this.chkCutsceneSpeedup.TabIndex = 0;
-            this.chkCutsceneSpeedup.Text = "Enabled";
-            this.chkCutsceneSpeedup.UseVisualStyleBackColor = true;
+            this.chkEnableSpeedups.AutoSize = true;
+            this.chkEnableSpeedups.Location = new System.Drawing.Point(3, 3);
+            this.chkEnableSpeedups.Name = "chkEnableSpeedups";
+            this.chkEnableSpeedups.Size = new System.Drawing.Size(65, 17);
+            this.chkEnableSpeedups.TabIndex = 0;
+            this.chkEnableSpeedups.Text = "Enabled";
+            this.chkEnableSpeedups.UseVisualStyleBackColor = true;
+            // 
+            // chkSpeedupMovies
+            // 
+            this.chkSpeedupMovies.AutoSize = true;
+            this.chkSpeedupMovies.Checked = true;
+            this.chkSpeedupMovies.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.chkSpeedupMovies.Location = new System.Drawing.Point(3, 26);
+            this.chkSpeedupMovies.Name = "chkSpeedupMovies";
+            this.chkSpeedupMovies.Size = new System.Drawing.Size(204, 17);
+            this.chkSpeedupMovies.TabIndex = 1;
+            this.chkSpeedupMovies.Text = "Enable Movie Speedups (New Game)";
+            this.chkSpeedupMovies.UseVisualStyleBackColor = true;
+            // 
+            // chkSpeedupInGameCutscenes
+            // 
+            this.chkSpeedupInGameCutscenes.AutoSize = true;
+            this.chkSpeedupInGameCutscenes.Checked = true;
+            this.chkSpeedupInGameCutscenes.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.chkSpeedupInGameCutscenes.Location = new System.Drawing.Point(3, 49);
+            this.chkSpeedupInGameCutscenes.Name = "chkSpeedupInGameCutscenes";
+            this.chkSpeedupInGameCutscenes.Size = new System.Drawing.Size(231, 17);
+            this.chkSpeedupInGameCutscenes.TabIndex = 2;
+            this.chkSpeedupInGameCutscenes.Text = "Enable In-Game Cutscene Speedups (Intro)";
+            this.chkSpeedupInGameCutscenes.UseVisualStyleBackColor = true;
+            // 
+            // chkSpeedupLoadDelays
+            // 
+            this.chkSpeedupLoadDelays.AutoSize = true;
+            this.chkSpeedupLoadDelays.Checked = true;
+            this.chkSpeedupLoadDelays.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.chkSpeedupLoadDelays.Location = new System.Drawing.Point(3, 72);
+            this.chkSpeedupLoadDelays.Name = "chkSpeedupLoadDelays";
+            this.chkSpeedupLoadDelays.Size = new System.Drawing.Size(269, 17);
+            this.chkSpeedupLoadDelays.TabIndex = 3;
+            this.chkSpeedupLoadDelays.Text = "Enable Load Delay Speedups (Prison, Flooded Cell)";
+            this.chkSpeedupLoadDelays.UseVisualStyleBackColor = true;
+            // 
+            // chkSpeedupLoadPositions
+            // 
+            this.chkSpeedupLoadPositions.AutoSize = true;
+            this.chkSpeedupLoadPositions.Checked = true;
+            this.chkSpeedupLoadPositions.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.chkSpeedupLoadPositions.Location = new System.Drawing.Point(3, 95);
+            this.chkSpeedupLoadPositions.Name = "chkSpeedupLoadPositions";
+            this.chkSpeedupLoadPositions.Size = new System.Drawing.Size(292, 17);
+            this.chkSpeedupLoadPositions.TabIndex = 4;
+            this.chkSpeedupLoadPositions.Text = "Enable Load Position Speedups (Missions, Intermissions)";
+            this.chkSpeedupLoadPositions.UseVisualStyleBackColor = true;
             // 
             // DishonoredSettings
             // 
@@ -209,7 +269,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.tlpMain);
             this.Name = "DishonoredSettings";
-            this.Size = new System.Drawing.Size(476, 241);
+            this.Size = new System.Drawing.Size(476, 330);
             this.tlpMain.ResumeLayout(false);
             this.gbAutoSplit.ResumeLayout(false);
             this.tlpAutoSplit.ResumeLayout(false);
@@ -235,6 +295,10 @@
         private System.Windows.Forms.CheckBox chkAutoSplitDLC06IntroEnd;
         private System.Windows.Forms.GroupBox gbCutsceneSpeedup;
         private System.Windows.Forms.TableLayoutPanel tplCutsceneSpeedup;
-        private System.Windows.Forms.CheckBox chkCutsceneSpeedup;
+        private System.Windows.Forms.CheckBox chkEnableSpeedups;
+        private System.Windows.Forms.CheckBox chkSpeedupMovies;
+        private System.Windows.Forms.CheckBox chkSpeedupInGameCutscenes;
+        private System.Windows.Forms.CheckBox chkSpeedupLoadDelays;
+        private System.Windows.Forms.CheckBox chkSpeedupLoadPositions;
     }
 }
