@@ -251,14 +251,14 @@ namespace LiveSplit.Dishonored
         {
             _ignorePIDs = new List<int>();
             _movieTimer = new Timer { Enabled = false };
-            _movieTimer.Tick += movieTimer_OnTick;
+            _movieTimer.Tick += Timer_OnTick;
             _cutsceneTimer = new Timer { Enabled = false };
-            _cutsceneTimer.Tick += cutsceneTimer_OnTick;
+            _cutsceneTimer.Tick += Timer_OnTick;
             _loadTimer = new Timer { Enabled = false };
-            _loadTimer.Tick += loadTimer_OnTick;
+            _loadTimer.Tick += Timer_OnTick;
         }
 
-        public void Update(bool logCoords)
+        public void Update()
         {
             if (_process == null || _process.HasExited)
             {
@@ -281,11 +281,6 @@ namespace LiveSplit.Dishonored
             var x = _data.PlayerPosX.Current;
             var y = _data.PlayerPosY.Current;
             var z = _data.PlayerPosZ.Current;
-
-            if (logCoords && (_movieTimer.Enabled || _cutsceneTimer.Enabled || _loadTimer.Enabled))
-            {
-                Debug.WriteLine($"x={x} y={y} z={z}");
-            }
 
             if (_data.CurrentBikMovie.Changed && _data.CurrentBikMovie.Old != String.Empty)
             {
@@ -344,9 +339,7 @@ namespace LiveSplit.Dishonored
                         OnLoadFinished?.Invoke(this, level, _previousLevel, movie, x, y, z);
 
                         if (level != _previousLevel)
-                        {
                             _cutsceneCount = 0;
-                        }
                     }
 
                     if (((currentMovie == "LoadingEmpressTower" || currentMovie == "INTRO_LOC") && currentLevelStr == "l_tower_p")
@@ -368,13 +361,10 @@ namespace LiveSplit.Dishonored
                 }
             }
 
-            if (_data.PlayerPosX.Changed && _data.PlayerPosX.Old == 0.0f && _loadingStarted && x < 9826.5f && x > 9826.0f)
+            if (_data.PlayerPosX.Changed && _data.PlayerPosX.Old == 0.0f && _loadingStarted && x < 9826.5f && x > 9826.0f && currentLevelStr == "l_tower_p")
             {
-                if (currentLevelStr == "l_tower_p")
-                {
-                    _cutsceneCount = 0;
-                    OnFirstLevelLoading?.Invoke(this, EventArgs.Empty);
-                }
+                _cutsceneCount = 0;
+                OnFirstLevelLoading?.Invoke(this, EventArgs.Empty);
             }
 
             if (_data.CutsceneActive.Changed)
@@ -546,9 +536,7 @@ namespace LiveSplit.Dishonored
         void FreeMemory()
         {
             if (_process == null || _process.HasExited)
-            {
                 return;
-            }
 
             if (_setWorldSpeedPtr != IntPtr.Zero)
                 _process.FreeMemory(_setWorldSpeedPtr);
@@ -565,9 +553,7 @@ namespace LiveSplit.Dishonored
             _loadTimer?.Dispose();
 
             if (_process == null || _process.HasExited)
-            {
                 return;
-            }
 
             _process.Suspend();
             try
@@ -603,19 +589,9 @@ namespace LiveSplit.Dishonored
             return ptr.DerefString(_process, 32);
         }
 
-        void movieTimer_OnTick(object sender, EventArgs e)
+        void Timer_OnTick(object sender, EventArgs e)
         {
-            _movieTimer.Stop();
-        }
-
-        void cutsceneTimer_OnTick(object sender, EventArgs e)
-        {
-            _cutsceneTimer.Stop();
-        }
-
-        void loadTimer_OnTick(object sender, EventArgs e)
-        {
-            _loadTimer.Stop();
+            ((Timer)sender).Stop();
         }
     }
 
