@@ -69,7 +69,8 @@ namespace LiveSplit.Dishonored
             MissionEnd,
             PrisonEscape,
             OutsidersDream,
-            Weepers
+            Weepers,
+            DLC06IntroEnd,
         }
 
         public enum Level
@@ -181,9 +182,10 @@ namespace LiveSplit.Dishonored
 
         private readonly Dictionary<string, AreaCompletionType> _areaCompletions = new Dictionary<string, AreaCompletionType>
         {
-            ["LoadingSewers|L_Prison_"]    = AreaCompletionType.PrisonEscape,
-            ["LoadingStreets|L_Pub_Dusk_"] = AreaCompletionType.OutsidersDream,
-            ["LoadingStreets|L_Pub_Day_"]  = AreaCompletionType.Weepers,
+            ["LoadingSewers|L_Prison_"]            = AreaCompletionType.PrisonEscape,
+            ["LoadingStreets|L_Pub_Dusk_"]         = AreaCompletionType.OutsidersDream,
+            ["LoadingStreets|L_Pub_Day_"]          = AreaCompletionType.Weepers,
+            ["LoadingDLC06Slaughter|DLC06_Tower_"] = AreaCompletionType.DLC06IntroEnd,
         };
 
         private readonly Dictionary<string, Level> _levels = new Dictionary<string, Level>
@@ -301,7 +303,7 @@ namespace LiveSplit.Dishonored
             {
                 Debug.WriteLine($"Level Changed - {_data.CurrentLevel.Old} -> {_data.CurrentLevel.Current} '{currentLevelStr}' x={x}");
 
-                if (currentLevelStr == "L_DLC07_BaseIntro_P" || currentLevelStr == "DLC06_Tower_P")
+                if (currentLevelStr == "DLC06_Tower_P" || currentLevelStr == "L_DLC07_BaseIntro_P")
                     OnFirstLevelLoading?.Invoke(this, EventArgs.Empty);
 
                 _oncePerLevelFlag = true;
@@ -348,6 +350,13 @@ namespace LiveSplit.Dishonored
                         OnPlayerGainedControl?.Invoke(this, EventArgs.Empty);
                     }
 
+                    if ((currentMovie == "Loading" || currentMovie == "LoadingDLC07Intro")
+                        && currentLevelStr == "L_DLC07_BaseIntro_P" && _data.PlayerPosX.Current == -1831.55188f)
+                    {
+                        OnPlayerGainedControl?.Invoke(this, EventArgs.Empty);
+                        _oncePerLevelFlag = false;
+                    }
+
                     if (currentMovie.StartsWith("Loading"))
                     {
                         _loadTimer.Interval = 5000;
@@ -361,7 +370,8 @@ namespace LiveSplit.Dishonored
                 }
             }
 
-            if (_data.PlayerPosX.Changed && _data.PlayerPosX.Old == 0.0f && _loadingStarted && x < 9826.5f && x > 9826.0f && currentLevelStr == "l_tower_p")
+            if (_data.PlayerPosX.Changed && _loadingStarted &&
+                _data.PlayerPosX.Old == 0.0f && Math.Abs(x-9826.25f) < 0.25f)
             {
                 _cutsceneCount = 0;
                 OnFirstLevelLoading?.Invoke(this, EventArgs.Empty);

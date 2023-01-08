@@ -37,6 +37,7 @@
             this.chkAutoSplitPrisonEscape = new System.Windows.Forms.CheckBox();
             this.chkAutoSplitWeepers = new System.Windows.Forms.CheckBox();
             this.chkAutoSplitOutsidersDream = new System.Windows.Forms.CheckBox();
+            this.chkAutoSplitDLC06IntroEnd = new System.Windows.Forms.CheckBox();
             this.tlpMain.SuspendLayout();
             this.gbAutoSplit.SuspendLayout();
             this.tlpAutoSplit.SuspendLayout();
@@ -51,8 +52,8 @@
             this.tlpMain.Location = new System.Drawing.Point(0, 0);
             this.tlpMain.Name = "tlpMain";
             this.tlpMain.RowCount = 2;
-            this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 75F));
-            this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 25F));
+            this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 83.62832F));
+            this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 16.37168F));
             this.tlpMain.Size = new System.Drawing.Size(476, 226);
             this.tlpMain.TabIndex = 0;
             // 
@@ -62,7 +63,7 @@
             this.gbAutoSplit.Dock = System.Windows.Forms.DockStyle.Fill;
             this.gbAutoSplit.Location = new System.Drawing.Point(3, 3);
             this.gbAutoSplit.Name = "gbAutoSplit";
-            this.gbAutoSplit.Size = new System.Drawing.Size(470, 163);
+            this.gbAutoSplit.Size = new System.Drawing.Size(470, 183);
             this.gbAutoSplit.TabIndex = 5;
             this.gbAutoSplit.TabStop = false;
             this.gbAutoSplit.Text = "Auto-Split";
@@ -71,6 +72,7 @@
             // 
             this.tlpAutoSplit.ColumnCount = 1;
             this.tlpAutoSplit.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tlpAutoSplit.Controls.Add(this.chkAutoSplitDLC06IntroEnd, 0, 6);
             this.tlpAutoSplit.Controls.Add(this.chkAutoStartEnd, 0, 0);
             this.tlpAutoSplit.Controls.Add(this.chkAutoSplitIntroEnd, 0, 1);
             this.tlpAutoSplit.Controls.Add(this.chkAutoSplitMissionEnd, 0, 2);
@@ -80,14 +82,15 @@
             this.tlpAutoSplit.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tlpAutoSplit.Location = new System.Drawing.Point(3, 16);
             this.tlpAutoSplit.Name = "tlpAutoSplit";
-            this.tlpAutoSplit.RowCount = 6;
+            this.tlpAutoSplit.RowCount = 7;
             this.tlpAutoSplit.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpAutoSplit.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpAutoSplit.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpAutoSplit.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpAutoSplit.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpAutoSplit.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlpAutoSplit.Size = new System.Drawing.Size(464, 144);
+            this.tlpAutoSplit.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+            this.tlpAutoSplit.Size = new System.Drawing.Size(464, 164);
             this.tlpAutoSplit.TabIndex = 0;
             // 
             // chkAutoStartEnd
@@ -152,6 +155,16 @@
             this.chkAutoSplitOutsidersDream.Text = "Outsider\'s Dream";
             this.chkAutoSplitOutsidersDream.UseVisualStyleBackColor = true;
             // 
+            // chkAutoSplitDLC06IntroEnd
+            // 
+            this.chkAutoSplitDLC06IntroEnd.AutoSize = true;
+            this.chkAutoSplitDLC06IntroEnd.Location = new System.Drawing.Point(3, 141);
+            this.chkAutoSplitDLC06IntroEnd.Name = "chkAutoSplitDLC06IntroEnd";
+            this.chkAutoSplitDLC06IntroEnd.Size = new System.Drawing.Size(149, 17);
+            this.chkAutoSplitDLC06IntroEnd.TabIndex = 7;
+            this.chkAutoSplitDLC06IntroEnd.Text = "Knife of Dunwall Intro End";
+            this.chkAutoSplitDLC06IntroEnd.UseVisualStyleBackColor = true;
+            // 
             // DishonoredSettings
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -178,5 +191,6 @@
         private System.Windows.Forms.TableLayoutPanel tlpAutoSplit;
         private System.Windows.Forms.CheckBox chkAutoSplitIntroEnd;
         private System.Windows.Forms.CheckBox chkAutoSplitOutsidersDream;
+        private System.Windows.Forms.CheckBox chkAutoSplitDLC06IntroEnd;
     }
 }

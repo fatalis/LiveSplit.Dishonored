@@ -162,7 +162,7 @@ namespace LiveSplit.Dishonored
         {
             try
             {
-                _gameMemory.Update(Settings.LogCoords);
+                _gameMemory.Update();
             }
             catch (Exception ex)
             {
@@ -259,7 +259,8 @@ namespace LiveSplit.Dishonored
                 || (type == AreaCompletionType.MissionEnd && Settings.AutoSplitMissionEnd)
                 || (type == AreaCompletionType.PrisonEscape && Settings.AutoSplitPrisonEscape)
                 || (type == AreaCompletionType.OutsidersDream && Settings.AutoSplitOutsidersDream)
-                || (type == AreaCompletionType.Weepers && Settings.AutoSplitWeepers))
+                || (type == AreaCompletionType.Weepers && Settings.AutoSplitWeepers)
+                || (type == AreaCompletionType.DLC06IntroEnd && Settings.AutoSplitDLC06IntroEnd))
             {
                 _timer.Split();
             }
