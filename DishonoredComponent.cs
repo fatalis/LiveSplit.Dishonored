@@ -127,7 +127,7 @@ namespace LiveSplit.Dishonored
                 new LoadSpeedup { Level = Level.CatStreets, PreviousLevel = Level.PubDay, Duration = 4550, X = 4471f, Z = 1848f },
                 new LoadSpeedup { Level = Level.PubDusk, PreviousLevel = Level.CatStreets, Duration = 5050, X = -11185f, Tolerance = 0.5f,
                     Followup = new Speedup { Duration = 1400, Delay = 8000,
-                        Followup = new Speedup { Duration = 900, Delay = 1210 } } },
+                        Followup = new Speedup { Duration = 900, Delay = 12100 } } },
                 new LoadSpeedup { Level = Level.Bridge1, PreviousLevel = Level.PubDusk, Duration = 4040, X = -12312f, Z = -583f },
                 new LoadSpeedup { Level = Level.PubNight, PreviousLevel = Level.Bridge4, Duration = 4000, X = -11186f, Z = -584.3f },
                 new LoadSpeedup { Level = Level.BoyleExterior, PreviousLevel = Level.PubDay, Duration = 2500, X = -9340f, Z = -1951.4f },

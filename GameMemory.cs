@@ -268,7 +268,7 @@ namespace LiveSplit.Dishonored
                     return;
             }
 
-            if (!_worldSpeedInjected)
+            if (!_worldSpeedInjected && !_process.Is64Bit())
                 TryInjection();
 
             TimedTraceListener.Instance.UpdateCount++;
