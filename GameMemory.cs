@@ -32,6 +32,7 @@ namespace LiveSplit.Dishonored
                 this.CutsceneActive = new MemoryWatcher<bool>(new DeepPointer(0xFB51CC, 0x744));
                 this.MissionStatsScreenFlags = new MemoryWatcher<int>(new DeepPointer(0xFDEB08, 0x24, 0x41C, 0x2E0, 0xC4));
                 this.StringTableBase = 0xFA3624;
+                this.IsLoading = new MemoryWatcher<bool>(new DeepPointer("binkw32.dll", 0x312F4));
             }
             else if (version == GameVersion.v14)
             {
@@ -41,11 +42,20 @@ namespace LiveSplit.Dishonored
                 this.CutsceneActive = new MemoryWatcher<bool>(new DeepPointer(0x103B20C, 0x744));
                 this.MissionStatsScreenFlags = new MemoryWatcher<int>(new DeepPointer(0x1065184, 0x24, 0x41C, 0x2F4, 0xC4));
                 this.StringTableBase = 0x1029664;
+                this.IsLoading = new MemoryWatcher<bool>(new DeepPointer("binkw32.dll", 0x312F4));
+            }
+            else if (version == GameVersion.EGS)
+            {
+                this.PlayerPosX = new MemoryWatcher<float>(new DeepPointer(0x1815310, 0xb0));
+                this.CurrentLevel = new MemoryWatcher<int>(new DeepPointer(0x1815310, 0x1a0, 0x5b8));
+                this.CurrentBikMovie = new StringWatcher(new DeepPointer(0x1810348, 0x48, 0), 64);
+                this.CutsceneActive = new MemoryWatcher<bool>(new DeepPointer(0x1802D88, 0x9ec));
+                this.MissionStatsScreenFlags = new MemoryWatcher<int>(new DeepPointer(0x18292F8, 0x3c, 0x550, 0x420, 0x110));
+                this.StringTableBase = 0x17F4270;
+                this.IsLoading = new MemoryWatcher<bool>(new DeepPointer("binkw64.dll", 0x31494));
             }
 
             this.CurrentLevel.FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull;
-
-            this.IsLoading = new MemoryWatcher<bool>(new DeepPointer("binkw32.dll", 0x312F4));
 
             this.AddRange(this.GetType().GetProperties()
                 .Where(p => !p.GetIndexParameters().Any())
@@ -87,7 +97,9 @@ namespace LiveSplit.Dishonored
             DishonoredExe12 = 18219008,
             DishonoredExe14Reloaded = 18862080,
             DishonoredExe14Steam = 19427328,
+            DishonoredExeEGS = 27553792,
             BinkW32Dll = 241664,
+            BinkW64Dll = 364544,
         }
 
         private Dictionary<string, AreaCompletionType> _areaCompletions = new Dictionary<string, AreaCompletionType>
@@ -229,11 +241,11 @@ namespace LiveSplit.Dishonored
             if (game == null)
                 return false;
 
-            ProcessModuleWow64Safe binkw32 = game.ModulesWow64Safe().FirstOrDefault(p => p.ModuleName.ToLower() == "binkw32.dll");
-            if (binkw32 == null)
+            ProcessModuleWow64Safe binkw = game.ModulesWow64Safe().FirstOrDefault(p => p.ModuleName.ToLower() == "binkw32.dll" || p.ModuleName.ToLower() == "binkw64.dll");
+            if (binkw == null)
                 return false;
 
-            if (binkw32.ModuleMemorySize != (int)ExpectedDllSizes.BinkW32Dll)
+            if (binkw.ModuleMemorySize != (int)ExpectedDllSizes.BinkW32Dll && binkw.ModuleMemorySize != (int)ExpectedDllSizes.BinkW64Dll)
             {
                 _ignorePIDs.Add(game.Id);
                 MessageBox.Show("binkw32.dll was not the expected version.", "LiveSplit.Dishonored",
@@ -249,6 +261,10 @@ namespace LiveSplit.Dishonored
             else if (game.MainModuleWow64Safe().ModuleMemorySize == (int)ExpectedDllSizes.DishonoredExe14Reloaded || game.MainModuleWow64Safe().ModuleMemorySize == (int)ExpectedDllSizes.DishonoredExe14Steam)
             {
                 version = GameVersion.v14;
+            }
+            else if (game.MainModuleWow64Safe().ModuleMemorySize == (int)ExpectedDllSizes.DishonoredExeEGS)
+            {
+                version = GameVersion.EGS;
             }
             else
             {
@@ -267,7 +283,15 @@ namespace LiveSplit.Dishonored
 
         string GetEngineStringByID(int id)
         {
-            var ptr = new DeepPointer(_data.StringTableBase, (id*4), 0x10);
+            DeepPointer ptr;
+            if (_process.Is64Bit())
+            {
+                ptr = new DeepPointer(_data.StringTableBase, (id * 8), 0x14);
+            }
+            else
+            {
+                ptr = new DeepPointer(_data.StringTableBase, (id * 4), 0x10);
+            }
             return ptr.DerefString(_process, 32);
         }
     }
@@ -276,6 +300,7 @@ namespace LiveSplit.Dishonored
     {
         v12,
         v14,
+        EGS,
     }
 
     class FakeMemoryWatcher<T>
