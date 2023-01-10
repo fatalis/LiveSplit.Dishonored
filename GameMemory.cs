@@ -50,7 +50,7 @@ namespace LiveSplit.Dishonored
                 this.CurrentLevel = new MemoryWatcher<int>(new DeepPointer(0x1815310, 0x1a0, 0x5b8));
                 this.CurrentBikMovie = new StringWatcher(new DeepPointer(0x1810348, 0x48, 0), 64);
                 this.CutsceneActive = new MemoryWatcher<bool>(new DeepPointer(0x1802D88, 0x9ec));
-                this.MissionStatsScreenFlags = new MemoryWatcher<int>(new DeepPointer(0x18292F8, 0x3c, 0x550, 0x520, 0x110));
+                this.MissionStatsScreenFlags = new MemoryWatcher<int>(new DeepPointer(0x18292F8, 0x3c, 0x550, 0x420, 0x110));
                 this.StringTableBase = 0x17F4270;
                 this.IsLoading = new MemoryWatcher<bool>(new DeepPointer("binkw64.dll", 0x31494));
             }
