@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<updates>
+	<update version="1.3.0">
+		<files>
+			<file path="Components/LiveSplit.Dishonored.dll" status="changed"/>
+		</files>
+		<changelog>
+			<change>Adds automatic cutscene 10x speedup for 32bit versions (by DrTChops)</change>
+		</changelog>
+	</update>
+	<update version="1.2.6">
+		<files>
+			<file path="Components/LiveSplit.Dishonored.dll" status="changed"/>
+		</files>
+		<changelog>
+			<change>Added EGS support (by rythin), KoD intro split (by Som1Lse)</change>
+		</changelog>
+	</update>
+	<update version="1.2.4">
+		<files>
+			<file path="Components/LiveSplit.Dishonored.dll" status="changed"/>
+		</files>
+		<changelog>
+			<change>Improved auto reset and implement support for high chaos auto final split (by Som1Lse)</change>
+		</changelog>
+	</update>
+	<update version="1.2.3">
+		<files>
+			<file path="Components/LiveSplit.Dishonored.dll" status="changed"/>
+		</files>
+		<changelog>
+			<change>Fixed auto-reset.</change>
+		</changelog>
+	</update>
+	<update version="1.2.2">
+		<files>
+			<file path="Components/LiveSplit.Dishonored.dll" status="changed"/>
+		</files>
+		<changelog>
+			<change>LiveSplit 1.6 support.</change>
+		</changelog>
+	</update>
+	<update version="1.2.1">
+		<files>
+			<file path="Components/LiveSplit.Dishonored.dll" status="changed"/>
+		</files>
+		<changelog>
+			<change>Fixed auto-updater being broken due to dead domain name.</change>
+		</changelog>
+	</update>
+	<update version="1.2.0">
+		<files>
+			<file path="Components/LiveSplit.Dishonored.dll" status="changed"/>
+		</files>
+		<changelog>
+			<change>Added support for LiveSplit 1.4's 'Game Time as primary timing method' feature.</change>
+			<change>Right-click-&gt;Compare By-&gt;Game Time</change>
+		</changelog>
+	</update>
+	<update version="1.1.0">
+		<files>
+			<file path="Components/LiveSplit.Dishonored.dll" status="changed"/>
+		</files>
+		<changelog>
+			<change>Added support for Dishonored 1.4 (latest version)</change>
+			<change>Added support for Knife of Dunwall and Brigmore Witches. Auto-end is not currently implemented.</change>
+			<change>Thanks to twitch.tv/weirddbeard for testing.</change>
+		</changelog>
+	</update>
+	<update version="1.0.0">
+		<files>
+			<file path="Components/LiveSplit.Dishonored.dll" status="changed"/>
+		</files>
+		<changelog>
+			<change>Official release, finally. Uploaded source code and a better readme to the SDA thread.</change>
+			<change>Thanks to all testers, especially twitch.tv/xtorcox!</change>
+		</changelog>
+	</update>
+</updates>
