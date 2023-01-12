@@ -22,6 +22,6 @@ namespace LiveSplit.Dishonored
         public string UpdateName => this.ComponentName;
         public string UpdateURL => "https://raw.githubusercontent.com/fatalis/LiveSplit.Dishonored/master/";
         public Version Version => Assembly.GetExecutingAssembly().GetName().Version;
-        public string XMLURL => this.UpdateURL + "Release/update.LiveSplit.Dishonored.xml";
+        public string XMLURL => this.UpdateURL + "Components/update.LiveSplit.Dishonored.xml";
     }
 }
