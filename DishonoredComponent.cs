@@ -8,6 +8,7 @@ using System.Xml;
 using System.Windows.Forms;
 using System.Collections.Generic;
 using static LiveSplit.Dishonored.GameMemory;
+using System.Numerics;
 
 namespace LiveSplit.Dishonored
 {
@@ -15,20 +16,20 @@ namespace LiveSplit.Dishonored
     {
         public int Duration { get; set; }
         public int Delay { get; set; } = 0;
-        public float X { get; set; } = 0f;
-        public float Y { get; set; } = 0f;
-        public float Z { get; set; } = 0f;
-        public float Tolerance { get; set; } = 1f;
+        public float X { get; set; } = float.NaN;
+        public float Y { get; set; } = float.NaN;
+        public float Z { get; set; } = float.NaN;
+        public float Tolerance { get; set; } = 1.0f;
         public Speedup Followup { get; set; }
 
         protected bool ApproxEqual(float value, float expected)
         {
-            return expected == 0 || (value >= (expected - Tolerance) && value <= (expected + Tolerance));
+            return float.IsNaN(expected) || (Math.Abs(value - expected) <= Tolerance);
         }
 
-        public bool Matches(float x, float y, float z)
+        public bool Matches(Vector3 pos)
         {
-            return ApproxEqual(x, X) && ApproxEqual(y, Y) && ApproxEqual(z, Z);
+            return ApproxEqual(pos.X, X) && ApproxEqual(pos.Y, Y) && ApproxEqual(pos.Z, Z);
         }
     }
 
@@ -36,9 +37,9 @@ namespace LiveSplit.Dishonored
     {
         public Movie Movie { get; set; }
 
-        public bool Matches(Movie movie, float x, float y, float z)
+        public bool Matches(Movie movie, Vector3 pos)
         {
-            return movie == Movie && Matches(x, y, z);
+            return movie == Movie && Matches(pos);
         }
     }
 
@@ -47,9 +48,9 @@ namespace LiveSplit.Dishonored
         public Level Level { get; set; }
         public int Count { get; set; }
 
-        public bool Matches(Level level, int count, float x, float y, float z)
+        public bool Matches(Level level, int count, Vector3 pos)
         {
-            return level == Level && count == Count && Matches(x, y, z);
+            return level == Level && count == Count && Matches(pos);
         }
     }
 
@@ -58,9 +59,9 @@ namespace LiveSplit.Dishonored
         public Level Level { get; set; }
         public Level PreviousLevel { get; set; }
 
-        public bool Matches(Level level, Level previousLevel, float x, float y, float z)
+        public bool Matches(Level level, Level previousLevel, Vector3 pos)
         {
-            return level == Level && previousLevel == PreviousLevel && Matches(x, y, z);
+            return level == Level && previousLevel == PreviousLevel && Matches(pos);
         }
     }
 
@@ -241,17 +242,17 @@ namespace LiveSplit.Dishonored
             }
         }
 
-        void gameMemory_OnLoadFinished(object sender, Level level, Level previousLevel, Movie movie, float x, float y, float z)
+        void gameMemory_OnLoadFinished(object sender, Level level, Level previousLevel, Movie movie, Vector3 pos)
         {
             _timer.CurrentState.IsGameTimePaused = false;
 
             if (!Settings.EnableSpeedups || !Settings.SpeedupLoadDelays || _speedupTimer.Enabled)
                 return;
 
-            var speedup = _loadDelaySpeedups.Find(cs => cs.Matches(level, previousLevel, x, y, z));
+            var speedup = _loadDelaySpeedups.Find(cs => cs.Matches(level, previousLevel, pos));
             if (speedup != null)
             {
-                Debug.WriteLine($"Found load delay speedup level={previousLevel}->{level} x={x} y={y} z={z}");
+                Debug.WriteLine($"Found load delay speedup level={previousLevel}->{level} pos={pos}");
                 DelaySpeedup(speedup);
             }
         }
@@ -275,41 +276,41 @@ namespace LiveSplit.Dishonored
             }
         }
 
-        void gameMemory_OnPostMoviePlayerPositionChanged(object sender, Movie movie, float x, float y, float z)
+        void gameMemory_OnPostMoviePlayerPositionChanged(object sender, Movie movie, Vector3 pos)
         {
             if (!Settings.EnableSpeedups || !Settings.SpeedupMovies || _speedupTimer.Enabled)
                 return;
 
-            var speedup = _movieSpeedups.Find(ps => ps.Matches(movie, x, y, z));
+            var speedup = _movieSpeedups.Find(ps => ps.Matches(movie, pos));
             if (speedup != null)
             {
-                Debug.WriteLine($"Found movie position speedup movie={movie} x={x} y={y} z={z}");
+                Debug.WriteLine($"Found movie position speedup movie={movie} pos={pos}");
                 DelaySpeedup(speedup);
             }
         }
 
-        void gameMemory_OnPostCutscenePlayerPositionChanged(object sender, Level level, int count, float x, float y, float z)
+        void gameMemory_OnPostCutscenePlayerPositionChanged(object sender, Level level, int count, Vector3 pos)
         {
             if (!Settings.EnableSpeedups || !Settings.SpeedupInGameCutscenes || _speedupTimer.Enabled)
                 return;
 
-            var speedup = _cutsceneSpeedups.Find(ps => ps.Matches(level, count, x, y, z));
+            var speedup = _cutsceneSpeedups.Find(ps => ps.Matches(level, count, pos));
             if (speedup != null)
             {
-                Debug.WriteLine($"Found cutscene position speedup level={level} x={x} y={y} z={z}");
+                Debug.WriteLine($"Found cutscene position speedup level={level} pos={pos}");
                 DelaySpeedup(speedup);
             }
         }
 
-        void gameMemory_OnPostLoadPlayerPositionChanged(object sender, Level level, Level previousLevel, float x, float y, float z)
+        void gameMemory_OnPostLoadPlayerPositionChanged(object sender, Level level, Level previousLevel, Vector3 pos)
         {
             if (!Settings.EnableSpeedups || !Settings.SpeedupLoadPositions || _speedupTimer.Enabled)
                 return;
 
-            var speedup = _loadPositionSpeedups.Find(ps => ps.Matches(level, previousLevel, x, y, z));
+            var speedup = _loadPositionSpeedups.Find(ps => ps.Matches(level, previousLevel, pos));
             if (speedup != null)
             {
-                Debug.WriteLine($"Found load position speedup level={previousLevel}->{level} x={x} y={y} z={z}");
+                Debug.WriteLine($"Found load position speedup level={previousLevel}->{level} pos={pos}");
                 DelaySpeedup(speedup);
             }
         }
