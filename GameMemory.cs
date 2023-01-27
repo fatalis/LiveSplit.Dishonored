@@ -45,6 +45,16 @@ namespace LiveSplit.Dishonored
                 StringTableBase = 0x1029664;
                 IsLoading = new MemoryWatcher<bool>(new DeepPointer("binkw32.dll", 0x312F4));
             }
+            else if (version == GameVersion.v15)
+            {
+                PlayerPos = new MemoryWatcher<Vector3>(new DeepPointer(0x105F628, 0xC4));
+                CurrentLevel = new MemoryWatcher<int>(new DeepPointer(0x1049888, 0x2C0, 0x314, 0, 0x38));
+                CurrentBikMovie = new StringWatcher(new DeepPointer(0x1058B28, 0x48, 0), 64);  // or 0x105BE80
+                CutsceneActive = new MemoryWatcher<bool>(new DeepPointer(0x104721C, 0x744));
+                MissionStatsScreenFlags = new MemoryWatcher<int>(new DeepPointer(0x10719C4, 0x24, 0x41C, 0x2F4, 0xC4)); // or 0x1071CE4
+                StringTableBase = 0x1035674; // diff by 0xC010
+                IsLoading = new MemoryWatcher<bool>(new DeepPointer("binkw32.dll", 0x312F4));
+            }
             else if (version == GameVersion.EGS)
             {
                 PlayerPos = new MemoryWatcher<Vector3>(new DeepPointer(0x1815310, 0xB0));
@@ -182,6 +192,7 @@ namespace LiveSplit.Dishonored
             DishonoredExe12 = 18219008,
             DishonoredExe14Reloaded = 18862080,
             DishonoredExe14Steam = 19427328,
+            DishonoredExe15 = 18903040,
             DishonoredExeEGS = 27553792,
             BinkW32Dll = 241664,
             BinkW64Dll = 364544,
@@ -450,23 +461,33 @@ namespace LiveSplit.Dishonored
             }
 
             GameVersion version;
-            if (game.MainModuleWow64Safe().ModuleMemorySize == (int)ExpectedDllSizes.DishonoredExe12)
+            switch (game.MainModuleWow64Safe().ModuleMemorySize)
             {
-                version = GameVersion.v12;
+                case (int)ExpectedDllSizes.DishonoredExe12:
+                    version = GameVersion.v12;
+                    break;
+                case (int)ExpectedDllSizes.DishonoredExe14Reloaded:
+                case (int)ExpectedDllSizes.DishonoredExe14Steam:
+                    version = GameVersion.v14;
+                    break;
+                case (int)ExpectedDllSizes.DishonoredExe15:
+                    version = GameVersion.v15;
+                    break;
+                case (int)ExpectedDllSizes.DishonoredExeEGS:
+                    version = GameVersion.EGS;
+                    break;
+                default:
+                    Debug.WriteLine($"Unknown game of size {game.MainModuleWow64Safe().ModuleMemorySize} found");
+                    _ignorePIDs.Add(game.Id);
+                    MessageBox.Show("Unexpected game version. Dishonored Steam 1.2, 1.4, or 1.5, or EGS is required.", "LiveSplit.Dishonored",
+                        MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return false;
             }
-            else if (game.MainModuleWow64Safe().ModuleMemorySize == (int)ExpectedDllSizes.DishonoredExe14Reloaded || game.MainModuleWow64Safe().ModuleMemorySize == (int)ExpectedDllSizes.DishonoredExe14Steam)
-            {
-                version = GameVersion.v14;
-            }
-            else if (game.MainModuleWow64Safe().ModuleMemorySize == (int)ExpectedDllSizes.DishonoredExeEGS)
-            {
-                version = GameVersion.EGS;
-            }
-            else
+
+            if (version != GameVersion.v15)
             {
                 _ignorePIDs.Add(game.Id);
-                MessageBox.Show("Unexpected game version. Dishonored 1.2 or 1.4 is required.", "LiveSplit.Dishonored",
-                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("Currently only testing v1.5", "LiveSplit.Dishonored", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return false;
             }
 
@@ -621,6 +642,7 @@ namespace LiveSplit.Dishonored
     {
         v12,
         v14,
+        v15,
         EGS,
     }
 
