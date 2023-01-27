@@ -151,7 +151,7 @@ namespace LiveSplit.Dishonored
         public event AreaCompletedEventHandler OnAreaCompleted;
         public delegate void PostMoviePlayerPositionChangedHandler(object sender, Movie movie, Vector3 pos);
         public event PostMoviePlayerPositionChangedHandler OnPostMoviePlayerPositionChanged;
-        public delegate void PostCutscenePlayerPositionChangedHandler(object sender, Level level, int count, Vector3 pos);
+        public delegate void PostCutscenePlayerPositionChangedHandler(object sender, Level level, Vector3 pos);
         public event PostCutscenePlayerPositionChangedHandler OnPostCutscenePlayerPositionChanged;
         public delegate void PostLoadPlayerPositionChangedHandler(object sender, Level level, Level previousLevel, Vector3 pos);
         public event PostLoadPlayerPositionChangedHandler OnPostLoadPlayerPositionChanged;
@@ -163,7 +163,6 @@ namespace LiveSplit.Dishonored
         private bool _loadingStarted;
         private bool _oncePerLevelFlag;
         private Level _previousLevel;
-        private int _cutsceneCount;
 
         private bool _worldSpeedInjected;
         private int _scanAttempts;
@@ -344,9 +343,6 @@ namespace LiveSplit.Dishonored
                     {
                         _loadingStarted = false;
                         OnLoadFinished?.Invoke(this, level, _previousLevel, movie, pos);
-
-                        if (level != _previousLevel)
-                            _cutsceneCount = 0;
                     }
 
                     if (((currentMovie == "LoadingEmpressTower" || currentMovie == "INTRO_LOC") && currentLevelStr == "l_tower_p")
@@ -378,7 +374,6 @@ namespace LiveSplit.Dishonored
             if (_data.PlayerPos.Changed && _loadingStarted &&
                 _data.PlayerPos.Old.X == 0.0f && Math.Abs(pos.X-9826.25f) < 0.25f)
             {
-                _cutsceneCount = 0;
                 OnFirstLevelLoading?.Invoke(this, EventArgs.Empty);
             }
 
@@ -398,7 +393,6 @@ namespace LiveSplit.Dishonored
 
                 if (_data.CutsceneActive.Current)
                 {
-                    _cutsceneCount++;
                     _cutsceneTimer.Interval = 5000;
                     _cutsceneTimer.Start();
                 }
@@ -418,7 +412,7 @@ namespace LiveSplit.Dishonored
                 }
                 if (_cutsceneTimer.Enabled)
                 {
-                    OnPostCutscenePlayerPositionChanged?.Invoke(this, level, _cutsceneCount, pos);
+                    OnPostCutscenePlayerPositionChanged?.Invoke(this, level, pos);
                 }
                 if (_loadTimer.Enabled)
                 {
