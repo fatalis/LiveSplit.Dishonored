@@ -46,11 +46,46 @@ namespace LiveSplit.Dishonored
     class CutsceneSpeedup : Speedup
     {
         public Level Level { get; set; }
-        public int Count { get; set; }
+        public int Count { get; set; } = 0;
 
-        public bool Matches(Level level, int count, Vector3 pos)
+        private int _count = 0;
+
+        public bool Matches(Level level, Vector3 pos)
         {
-            return level == Level && count == Count && Matches(pos);
+            if(level == Level && Matches(pos)) {
+                if(Count == 0) {
+                    return true;
+                }
+                else if(_count >= 0)
+                {
+                    if (++_count == Count)
+                    {
+                        _count = -1;
+                        return true;
+                    }
+                    else
+                    {
+                        Debug.WriteLine($"Incrementing cutscene position count level={level} pos={pos} counts=({_count} < {Count})");
+                    }
+                }
+            }
+
+            return false;
+        }
+
+        public void OnReset()
+        {
+            _count = 0;
+        }
+
+        public void OnLoad()
+        {
+            // If a level is loaded and the `currentCount` has been incremented,
+            // we could be loading a save before or after the it was increment.
+            // There is no way to tell so we just disable the speedup.
+            if (_count > 0) {
+                _count = -1;
+            }
         }
     }
 
@@ -111,8 +146,9 @@ namespace LiveSplit.Dishonored
             // these are triggered after an in-game cutscene starts
             _cutsceneSpeedups = new List<CutsceneSpeedup>
             {
-                new CutsceneSpeedup { Level = Level.Intro, Count = 2, Duration = 3700, X = 16242.7f, Y = 21620f, Z = 3354.9f, Tolerance = 0.1f },
-                new CutsceneSpeedup { Level = Level.Intro, Count = 4, Duration = 6350, X = 15591.5f, Y = 21025.2f, Z = 3425.3f, Tolerance = 0.1f },
+                new CutsceneSpeedup { Level = Level.Intro, Duration = 1600, X = 13276.1f, Y = 23073.2f, Z = 2636.3f, Tolerance = 0.1f },
+                new CutsceneSpeedup { Level = Level.Intro, Duration = 3700, X = 16242.7f, Y = 21620.0f, Z = 3354.9f, Tolerance = 0.1f },
+                new CutsceneSpeedup { Level = Level.Intro, Count = 2, Duration = 6350, X = 15591.5f, Y = 21025.2f, Z = 3425.3f, Tolerance = 0.1f },
             };
 
             // these are triggered after a delay after a load finishes
@@ -126,7 +162,7 @@ namespace LiveSplit.Dishonored
             // these are triggered after hitting coordinates after a load finishes
             _loadPositionSpeedups = new List<LoadSpeedup>
             {
-                new LoadSpeedup { Level = Level.PubDay, PreviousLevel = Level.Sewers, Duration = 5640, Z = -599f },
+                new LoadSpeedup { Level = Level.PubDay, PreviousLevel = Level.Sewers, Duration = 5640, X = 8380f, Tolerance = 3.0f },
                 new LoadSpeedup { Level = Level.CampbellStreets, PreviousLevel = Level.PubDusk, Duration = 4250, X = 12809f },
                 new LoadSpeedup { Level = Level.PubMorning, PreviousLevel = Level.CampbellBack, Duration = 2050, X = -2374f, Z = -601f },
                 new LoadSpeedup { Level = Level.CatStreets, PreviousLevel = Level.PubDay, Duration = 4550, X = 4471f, Z = 1848f },
@@ -141,7 +177,7 @@ namespace LiveSplit.Dishonored
                 new LoadSpeedup { Level = Level.PubDusk, PreviousLevel = Level.TowerReturnYard, Duration = 3340, Y = -10593f, Z = -584f },
                 new LoadSpeedup { Level = Level.FloodedIntro, PreviousLevel = Level.PubDusk, Duration = 5000, X = -23249f, Tolerance = 0.5f,
                     Followup = new Speedup { Duration = 6850, Delay = 7850 } },
-                new LoadSpeedup { Level = Level.KingsparrowIsland, PreviousLevel = Level.Loyalists, Duration = 4550, Z = 1043f },
+                new LoadSpeedup { Level = Level.KingsparrowIsland, PreviousLevel = Level.Loyalists, Duration = 4550, Y = 18349, Tolerance = 2.0f },
                 new LoadSpeedup { Level = Level.KingsparrowLighthouse, PreviousLevel = Level.KingsparrowIsland, Duration = 900, Z = 1060f, Tolerance = 10f },
             };
 
@@ -210,6 +246,10 @@ namespace LiveSplit.Dishonored
         {
             _timer.InitializeGameTime();
             _elapsedTime = 0;
+            foreach (var speedup in _cutsceneSpeedups)
+            {
+                speedup.OnReset();
+            }
         }
 
         public override void Update(IInvalidator invalidator, LiveSplitState state, float width, float height, LayoutMode mode)
@@ -232,6 +272,11 @@ namespace LiveSplit.Dishonored
         void gameMemory_OnLoadStarted(object sender, EventArgs e)
         {
             _timer.CurrentState.IsGameTimePaused = true;
+
+            foreach (var speedup in _cutsceneSpeedups)
+            {
+                speedup.OnLoad();
+            }
 
             // must be a manual load, just let the player deal with it
             if (_speedupTimer.Enabled)
@@ -289,12 +334,12 @@ namespace LiveSplit.Dishonored
             }
         }
 
-        void gameMemory_OnPostCutscenePlayerPositionChanged(object sender, Level level, int count, Vector3 pos)
+        void gameMemory_OnPostCutscenePlayerPositionChanged(object sender, Level level, Vector3 pos)
         {
             if (!Settings.EnableSpeedups || !Settings.SpeedupInGameCutscenes || _speedupTimer.Enabled)
                 return;
 
-            var speedup = _cutsceneSpeedups.Find(ps => ps.Matches(level, count, pos));
+            var speedup = _cutsceneSpeedups.Find(ps => ps.Matches(level, pos));
             if (speedup != null)
             {
                 Debug.WriteLine($"Found cutscene position speedup level={level} pos={pos}");
