@@ -479,16 +479,9 @@ namespace LiveSplit.Dishonored
                 default:
                     Debug.WriteLine($"Unknown game of size {game.MainModuleWow64Safe().ModuleMemorySize} found");
                     _ignorePIDs.Add(game.Id);
-                    MessageBox.Show("Unexpected game version. Dishonored Steam 1.2, 1.4, or 1.5, or EGS is required.", "LiveSplit.Dishonored",
-                        MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show("Unexpected game version. Dishonored Steam (1.2, 1.4, or 1.5) or EGS is required.",
+                        "LiveSplit.Dishonored", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return false;
-            }
-
-            if (version != GameVersion.v15)
-            {
-                _ignorePIDs.Add(game.Id);
-                MessageBox.Show("Currently only testing v1.5", "LiveSplit.Dishonored", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return false;
             }
 
             Debug.WriteLine("game version " + version);
