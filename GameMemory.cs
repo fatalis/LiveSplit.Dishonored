@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.Windows.Forms;
 using System.Numerics;
 using LiveSplit.ComponentUtil;
+using System.ComponentModel;
 
 namespace LiveSplit.Dishonored
 {
@@ -180,7 +181,7 @@ namespace LiveSplit.Dishonored
         private IntPtr _setWorldSpeedPtr;
         private IntPtr _injectedFuncPtr;
         private IntPtr _copyWorldSpeedPtr;
-        private readonly int _overwriteBytes = 10;
+        private int _overwriteBytes;
 
         private readonly Timer _movieTimer;
         private readonly Timer _cutsceneTimer;
@@ -285,7 +286,7 @@ namespace LiveSplit.Dishonored
                     return;
             }
             
-            if (!_worldSpeedInjected && !_process.Is64Bit())
+            if (!_worldSpeedInjected)
                 TryInjection();
 
             TimedTraceListener.Instance.UpdateCount++;
@@ -492,11 +493,21 @@ namespace LiveSplit.Dishonored
             if (_scanAttempts < 0)
                 return false;
 
+            SigScanTarget target;
+            if (_process.Is64Bit())
+            {
+                target = new SigScanTarget("F3 44 0F 11 9F 8C 04 00 00 F3 44 0F 11 AF 88 04 00 00 F3 45 0F 59 E7 F3 44 0F 11 A7 98 04 00 00");
+                _overwriteBytes = 32;
+            }
+            else
+            {
+                target = new SigScanTarget("8B 10 8B C8 8B 82 D0 03 00 00 53 FF D0");
+                _overwriteBytes = 10;
+            }
+
             var ptr = IntPtr.Zero;
-            var target = new SigScanTarget("8B 10 8B C8 8B 82 D0 03 00 00 53 FF D0");
             foreach (var page in _process.MemoryPages(true))
             {
-                Debug.WriteLine($"scanning page {page.BaseAddress}, size={page.RegionSize}");
                 var scanner = new SignatureScanner(_process, page.BaseAddress, (int)page.RegionSize);
                 ptr = scanner.Scan(target);
                 if (ptr != IntPtr.Zero)
@@ -513,28 +524,53 @@ namespace LiveSplit.Dishonored
             Debug.WriteLine($"worldSpeedPtr={_worldSpeedPtr.ToString("X")}");
             Debug.WriteLine($"returnHerePtr={returnHerePtr.ToString("X")}");
 
+            _injectedFuncPtr = _process.AllocateMemory(128);
+            Debug.WriteLine($"injectedFuncPtr={_injectedFuncPtr.ToString("X")}");
+
             _setWorldSpeedPtr = _process.AllocateMemory(sizeof(float));
             _process.WriteBytes(_setWorldSpeedPtr, BitConverter.GetBytes(1f));
-            var setWorldSpeedPtrBytes = BitConverter.GetBytes((uint)_setWorldSpeedPtr);
+            Debug.WriteLine($"setWorldSpeedPtr={_setWorldSpeedPtr.ToString("X")}");
 
-            var worldSpeedDetourBytes = new List<byte>
+            var worldSpeedDetourBytes = new List<byte>();
+            if (_process.Is64Bit())
             {
-                0x8B, 0x15,                         // mov edx,[setWorldSpeed]
-            };
-            worldSpeedDetourBytes.AddRange(setWorldSpeedPtrBytes);
-            worldSpeedDetourBytes.AddRange(new byte[] {
-                0x89, 0x90, 0xE0, 0x04, 0x00, 0x00, // mov[ecx - 10],edx
-                0x8B, 0x10,                         // mov edx,[eax]
-                0x8B, 0xC8,                         // mov ecx,eax
-                0x8B, 0x82, 0xD0, 0x03, 0x00, 0x00, // mov eax,[edx+000003D0]
-            });
+                var worldSpeedOffset = (uint)_setWorldSpeedPtr - (uint)_injectedFuncPtr;
+                worldSpeedDetourBytes.AddRange(new byte[] {
+                    0xF3, 0x44, 0x0F, 0x10, 0x1D,                           // movss xmm11,[setWorldSpeed]
+                });
+                worldSpeedDetourBytes.AddRange(BitConverter.GetBytes(worldSpeedOffset - 9));
+                worldSpeedDetourBytes.AddRange(new byte[] {
+                    0xF3, 0x44, 0x0F, 0x10, 0x2D,                           // movss xmm13,[setWorldSpeed]
+                });
+                worldSpeedDetourBytes.AddRange(BitConverter.GetBytes(worldSpeedOffset - 18));
+                worldSpeedDetourBytes.AddRange(new byte[] {
+                    0xF3, 0x44, 0x0F, 0x11, 0x9F, 0x8C, 0x04, 0x00, 0x00,   // movss[rdi + 0000048C],xmm11
+                    0xF3, 0x44, 0x0F, 0x11, 0xAF, 0x88, 0x04, 0x00, 0x00,   // movss[rdi + 00000488],xmm13
+                    0xF3, 0x45, 0x0F, 0x59, 0xE7,                           // mulss xmm12,xmm15
+                    0xF3, 0x44, 0x0F, 0x11, 0xA7, 0x98, 0x04, 0x00, 0x00,   // movss[rdi + 00000498],xmm12
+                });
+            }
+            else
+            {
+                var setWorldSpeedPtrBytes = BitConverter.GetBytes((uint)_setWorldSpeedPtr);
+                worldSpeedDetourBytes.AddRange(new byte[] {
+                    0x8B, 0x15,                         // mov edx,[setWorldSpeed]
+                });
+                worldSpeedDetourBytes.AddRange(setWorldSpeedPtrBytes);
+                worldSpeedDetourBytes.AddRange(new byte[] {
+                    0x89, 0x90, 0xE0, 0x04, 0x00, 0x00, // mov[ecx - 10],edx
+                    0x8B, 0x10,                         // mov edx,[eax]
+                    0x8B, 0xC8,                         // mov ecx,eax
+                    0x8B, 0x82, 0xD0, 0x03, 0x00, 0x00, // mov eax,[edx+000003D0]
+                });
+            }
+
             var jumpOffset = worldSpeedDetourBytes.Count;
             worldSpeedDetourBytes.AddRange(new byte[] {
-                255, 255, 255, 255, 255,            // jmp [returnHere] (placeholder)
+                0x90, 0x90, 0x90, 0x90, // jmp [returnHere] (placeholder)
+                0x90, 0x90, 0x90, 0x90,
+                0x90, 0x90, 0x90, 0x90,
             });
-
-            _injectedFuncPtr = _process.AllocateMemory(worldSpeedDetourBytes.Count);
-            Debug.WriteLine($"injectedFuncPtr={_injectedFuncPtr.ToString("X")}");
 
             _process.Suspend();
             try
@@ -564,6 +600,7 @@ namespace LiveSplit.Dishonored
             if (_process == null || _process.HasExited)
                 return;
 
+            Debug.WriteLine("Freeing memory");
             if (_setWorldSpeedPtr != IntPtr.Zero)
                 _process.FreeMemory(_setWorldSpeedPtr);
             if (_injectedFuncPtr != IntPtr.Zero)
@@ -642,6 +679,108 @@ namespace LiveSplit.Dishonored
         {
             Old = old;
             Current = current;
+        }
+    }
+
+    // Copied from LiveSplit.ComponentUtil.ExtensionMethods and adjusted
+    // It uses a bad jmp command for 64 bit processes that corrupts the registers :(
+    public static class ExtensionMethods
+    {
+        private static bool WriteJumpOrCall(Process process, IntPtr addr, IntPtr dest, bool call)
+        {
+            bool is64Bit = process.Is64Bit();
+            int size = (is64Bit ? 14 : 5);
+            List<byte> list = new List<byte>(size);
+            if (is64Bit)
+            {
+                list.AddRange(new byte[6] { 0xFF, 0x25, 0x00, 0x00, 0x00, 0x00 });
+                list.AddRange(BitConverter.GetBytes((long)dest));
+            }
+            else
+            {
+                int value = (int)dest - (int)(addr + size);
+                list.AddRange(new byte[1] { (byte)(call ? 232 : 233) });
+                list.AddRange(BitConverter.GetBytes(value));
+            }
+
+            process.VirtualProtect(addr, size, MemPageProtect.PAGE_EXECUTE_READWRITE, out var oldProtect);
+            bool result = process.WriteBytes(addr, list.ToArray());
+            process.VirtualProtect(addr, size, oldProtect);
+            return result;
+        }
+
+        public static bool WriteJumpInstruction(this Process process, IntPtr addr, IntPtr dest)
+        {
+            return WriteJumpOrCall(process, addr, dest, call: false);
+        }
+
+        public static bool WriteCallInstruction(this Process process, IntPtr addr, IntPtr dest)
+        {
+            return WriteJumpOrCall(process, addr, dest, call: true);
+        }
+
+        public static IntPtr WriteDetour(this Process process, IntPtr src, int overwrittenBytes, IntPtr dest)
+        {
+            int jmpSize = (process.Is64Bit() ? 14 : 5);
+            if (overwrittenBytes < jmpSize)
+            {
+                throw new ArgumentOutOfRangeException("overwrittenBytes", $"must be >= length of jmp instruction ({jmpSize})");
+            }
+
+            IntPtr intPtr;
+            if ((intPtr = process.AllocateMemory(jmpSize + overwrittenBytes)) == IntPtr.Zero)
+            {
+                throw new Win32Exception();
+            }
+
+            try
+            {
+                byte[] array = process.ReadBytes(src, overwrittenBytes);
+                if (array == null)
+                {
+                    throw new Win32Exception();
+                }
+
+                if (!process.WriteBytes(intPtr, array))
+                {
+                    throw new Win32Exception();
+                }
+
+                if (!process.WriteJumpInstruction(intPtr + overwrittenBytes, src + overwrittenBytes))
+                {
+                    throw new Win32Exception();
+                }
+
+                if (!process.WriteJumpInstruction(src, dest))
+                {
+                    throw new Win32Exception();
+                }
+
+                int remainingBytes = overwrittenBytes - jmpSize;
+                if (remainingBytes > 0)
+                {
+                    byte[] array2 = Enumerable.Repeat((byte)144, remainingBytes).ToArray();
+                    if (!process.VirtualProtect(src + jmpSize, array2.Length, MemPageProtect.PAGE_EXECUTE_READWRITE, out var oldProtect))
+                    {
+                        throw new Win32Exception();
+                    }
+
+                    if (!process.WriteBytes(src + jmpSize, array2))
+                    {
+                        throw new Win32Exception();
+                    }
+
+                    process.VirtualProtect(src + jmpSize, array2.Length, oldProtect);
+                    return intPtr;
+                }
+
+                return intPtr;
+            }
+            catch
+            {
+                process.FreeMemory(intPtr);
+                throw;
+            }
         }
     }
 }
