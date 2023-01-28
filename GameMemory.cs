@@ -536,11 +536,11 @@ namespace LiveSplit.Dishonored
             {
                 var worldSpeedOffset = (uint)_setWorldSpeedPtr - (uint)_injectedFuncPtr;
                 worldSpeedDetourBytes.AddRange(new byte[] {
-                    0xF3, 0x44, 0x0F, 0x10, 0x1D,                           // movss xmm11,[setWorldSpeed]
+                    0xF3, 0x44, 0x0F, 0x59, 0x1D,                           // mulss xmm11,[setWorldSpeed]
                 });
                 worldSpeedDetourBytes.AddRange(BitConverter.GetBytes(worldSpeedOffset - 9));
                 worldSpeedDetourBytes.AddRange(new byte[] {
-                    0xF3, 0x44, 0x0F, 0x10, 0x2D,                           // movss xmm13,[setWorldSpeed]
+                    0xF3, 0x44, 0x0F, 0x59, 0x2D,                           // mulss xmm13,[setWorldSpeed]
                 });
                 worldSpeedDetourBytes.AddRange(BitConverter.GetBytes(worldSpeedOffset - 18));
                 worldSpeedDetourBytes.AddRange(new byte[] {
@@ -552,11 +552,11 @@ namespace LiveSplit.Dishonored
             {
                 var setWorldSpeedPtrBytes = BitConverter.GetBytes((uint)_setWorldSpeedPtr);
                 worldSpeedDetourBytes.AddRange(new byte[] {
-                    0xF3, 0x0F, 0x10, 0x05,                         // movss xmm0,[setWorldSpeed]
+                    0xF3, 0x0F, 0x59, 0x05,                         // mulss xmm0,[setWorldSpeed]
                 });
                 worldSpeedDetourBytes.AddRange(setWorldSpeedPtrBytes);
                 worldSpeedDetourBytes.AddRange(new byte[] {
-                    0xF3, 0x0F, 0x10, 0x15,                         // movss xmm2,[setWorldSpeed]
+                    0xF3, 0x0F, 0x59, 0x15,                         // mulss xmm2,[setWorldSpeed]
                 });
                 worldSpeedDetourBytes.AddRange(setWorldSpeedPtrBytes);
                 worldSpeedDetourBytes.AddRange(new byte[] {
