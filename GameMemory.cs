@@ -496,13 +496,13 @@ namespace LiveSplit.Dishonored
             SigScanTarget target;
             if (_process.Is64Bit())
             {
-                target = new SigScanTarget("F3 44 0F 11 9F 8C 04 00 00 F3 44 0F 11 AF 88 04 00 00 F3 45 0F 59 E7 F3 44 0F 11 A7 98 04 00 00");
-                _overwriteBytes = 32;
+                target = new SigScanTarget("F3 44 0F 11 9F 8C 04 00 00 F3 44 0F 11 AF 88 04 00 00");
+                _overwriteBytes = 18;
             }
             else
             {
-                target = new SigScanTarget("8B 10 8B C8 8B 82 D0 03 00 00 53 FF D0");
-                _overwriteBytes = 10;
+                target = new SigScanTarget("F3 0F 11 86 AC 03 00 00 F3 0F 11 8E B8 03 00 00");
+                _overwriteBytes = 8;
             }
 
             var ptr = IntPtr.Zero;
@@ -546,31 +546,25 @@ namespace LiveSplit.Dishonored
                 worldSpeedDetourBytes.AddRange(new byte[] {
                     0xF3, 0x44, 0x0F, 0x11, 0x9F, 0x8C, 0x04, 0x00, 0x00,   // movss[rdi + 0000048C],xmm11
                     0xF3, 0x44, 0x0F, 0x11, 0xAF, 0x88, 0x04, 0x00, 0x00,   // movss[rdi + 00000488],xmm13
-                    0xF3, 0x45, 0x0F, 0x59, 0xE7,                           // mulss xmm12,xmm15
-                    0xF3, 0x44, 0x0F, 0x11, 0xA7, 0x98, 0x04, 0x00, 0x00,   // movss[rdi + 00000498],xmm12
                 });
             }
             else
             {
                 var setWorldSpeedPtrBytes = BitConverter.GetBytes((uint)_setWorldSpeedPtr);
                 worldSpeedDetourBytes.AddRange(new byte[] {
-                    0x8B, 0x15,                         // mov edx,[setWorldSpeed]
+                    0xF3, 0x0F, 0x10, 0x05,                         // movss xmm0,[setWorldSpeed]
                 });
                 worldSpeedDetourBytes.AddRange(setWorldSpeedPtrBytes);
                 worldSpeedDetourBytes.AddRange(new byte[] {
-                    0x89, 0x90, 0xE0, 0x04, 0x00, 0x00, // mov[ecx - 10],edx
-                    0x8B, 0x10,                         // mov edx,[eax]
-                    0x8B, 0xC8,                         // mov ecx,eax
-                    0x8B, 0x82, 0xD0, 0x03, 0x00, 0x00, // mov eax,[edx+000003D0]
+                    0xF3, 0x0F, 0x10, 0x15,                         // movss xmm2,[setWorldSpeed]
+                });
+                worldSpeedDetourBytes.AddRange(setWorldSpeedPtrBytes);
+                worldSpeedDetourBytes.AddRange(new byte[] {
+                    0xF3, 0x0F, 0x11, 0x86, 0xAC, 0x03, 0x00, 0x00, // movss [esi+000003AC],xmm0
                 });
             }
 
             var jumpOffset = worldSpeedDetourBytes.Count;
-            worldSpeedDetourBytes.AddRange(new byte[] {
-                0x90, 0x90, 0x90, 0x90, // jmp [returnHere] (placeholder)
-                0x90, 0x90, 0x90, 0x90,
-                0x90, 0x90, 0x90, 0x90,
-            });
 
             _process.Suspend();
             try
