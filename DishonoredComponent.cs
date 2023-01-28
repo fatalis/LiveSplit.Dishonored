@@ -52,11 +52,13 @@ namespace LiveSplit.Dishonored
 
         public bool Matches(Level level, Vector3 pos)
         {
-            if(level == Level && Matches(pos)) {
-                if(Count == 0) {
+            if (level == Level && Matches(pos))
+            {
+                if (Count == 0)
+                {
                     return true;
                 }
-                else if(_count >= 0)
+                else if (_count >= 0)
                 {
                     if (++_count == Count)
                     {
@@ -177,7 +179,7 @@ namespace LiveSplit.Dishonored
                 new LoadSpeedup { Level = Level.PubDusk, PreviousLevel = Level.TowerReturnYard, Duration = 3340, Y = -10593f, Z = -584f },
                 new LoadSpeedup { Level = Level.FloodedIntro, PreviousLevel = Level.PubDusk, Duration = 5000, X = -23249f, Tolerance = 0.5f,
                     Followup = new Speedup { Duration = 6850, Delay = 7850 } },
-                new LoadSpeedup { Level = Level.KingsparrowIsland, PreviousLevel = Level.Loyalists, Duration = 4550, Y = 18349, Tolerance = 2.0f },
+                new LoadSpeedup { Level = Level.KingsparrowIsland, PreviousLevel = Level.Loyalists, Duration = 4550, Y = 18200f, Z = 1040.8f, Tolerance = 3.0f },
                 new LoadSpeedup { Level = Level.KingsparrowLighthouse, PreviousLevel = Level.KingsparrowIsland, Duration = 900, Z = 1060f, Tolerance = 10f },
             };
 
