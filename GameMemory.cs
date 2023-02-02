@@ -158,6 +158,7 @@ namespace LiveSplit.Dishonored
         public delegate void LoadFinishedHandler(object sender, Level level, Level previousLevel, Movie movie, Vector3 pos);
         public event LoadFinishedHandler OnLoadFinished;
         public event EventHandler OnPlayerLostControl;
+        public event EventHandler OnCutsceneEnd;
         public delegate void AreaCompletedEventHandler(object sender, AreaCompletionType type);
         public event AreaCompletedEventHandler OnAreaCompleted;
         public delegate void PostMoviePlayerPositionChangedHandler(object sender, Movie movie, Vector3 pos);
@@ -285,7 +286,7 @@ namespace LiveSplit.Dishonored
                 if (!TryGetGameProcess())
                     return;
             }
-            
+
             if (!_worldSpeedInjected)
                 TryInjection();
 
@@ -393,20 +394,31 @@ namespace LiveSplit.Dishonored
             {
                 Debug.WriteLine($"In-Game Cutscene {(_data.CutsceneActive.Current ? "Start" : "End")} - {combinedStr} pos={pos}");
 
-                if (_data.CutsceneActive.Current && currentLevelStr.StartsWith("L_LightH_"))
-                {
-                    OnPlayerLostControl?.Invoke(this, EventArgs.Empty);
-                }
-                else if (!_data.CutsceneActive.Current && currentLevelStr == "L_DLC07_BaseIntro_P" && _oncePerLevelFlag)
-                {
-                    _oncePerLevelFlag = false;
-                    OnPlayerGainedControl?.Invoke(this, EventArgs.Empty);
-                }
-
                 if (_data.CutsceneActive.Current)
                 {
-                    _cutsceneTimer.Interval = 5000;
-                    _cutsceneTimer.Start();
+                    if (currentLevelStr.StartsWith("L_LightH_"))
+                    {
+                        OnPlayerLostControl?.Invoke(this, EventArgs.Empty);
+                    }
+                    else
+                    {
+                        _cutsceneTimer.Interval = 5000;
+                        _cutsceneTimer.Start();
+                    }
+                }
+                else
+                {
+                    if (currentLevelStr == "L_DLC07_BaseIntro_P" && _oncePerLevelFlag)
+                    {
+                        _oncePerLevelFlag = false;
+                        OnPlayerGainedControl?.Invoke(this, EventArgs.Empty);
+                    }
+                    else
+                    {
+                        _cutsceneTimer.Stop();
+
+                        OnCutsceneEnd?.Invoke(this, EventArgs.Empty);
+                    }
                 }
             }
 
@@ -416,7 +428,7 @@ namespace LiveSplit.Dishonored
                 OnAreaCompleted?.Invoke(this, AreaCompletionType.MissionEnd);
             }
 
-            if (_worldSpeedInjected && (_movieTimer.Enabled || _cutsceneTimer.Enabled || _loadTimer.Enabled) && (_data.PlayerPos.Changed))
+            if (_worldSpeedInjected && _data.PlayerPos.Changed)
             {
                 if (_movieTimer.Enabled)
                 {

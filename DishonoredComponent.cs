@@ -49,11 +49,14 @@ namespace LiveSplit.Dishonored
         public int Count { get; set; } = 0;
 
         private int _count = 0;
+        private bool _triggered = false;
 
         public bool Matches(Level level, Vector3 pos)
         {
-            if (level == Level && Matches(pos))
+            if (!_triggered && level == Level && Matches(pos))
             {
+                _triggered = true;
+
                 if (Count == 0)
                 {
                     return true;
@@ -78,6 +81,11 @@ namespace LiveSplit.Dishonored
         public void OnReset()
         {
             _count = 0;
+        }
+
+        public void OnCutsceneEnd()
+        {
+            _triggered = false;
         }
 
         public void OnLoad()
@@ -189,6 +197,7 @@ namespace LiveSplit.Dishonored
             _gameMemory = new GameMemory();
             _gameMemory.OnFirstLevelLoading += gameMemory_OnFirstLevelLoading;
             _gameMemory.OnPlayerGainedControl += gameMemory_OnPlayerGainedControl;
+            _gameMemory.OnCutsceneEnd += gameMemory_OnCutsceneEnd;
             _gameMemory.OnLoadStarted += gameMemory_OnLoadStarted;
             _gameMemory.OnLoadFinished += gameMemory_OnLoadFinished;
             _gameMemory.OnPlayerLostControl += gameMemory_OnPlayerLostControl;
@@ -269,6 +278,14 @@ namespace LiveSplit.Dishonored
         {
             if (Settings.AutoStartEnd)
                 _timer.Start();
+        }
+
+        void gameMemory_OnCutsceneEnd(object sender, EventArgs e)
+        {
+            foreach (var speedup in _cutsceneSpeedups)
+            {
+                speedup.OnCutsceneEnd();
+            }
         }
 
         void gameMemory_OnLoadStarted(object sender, EventArgs e)
