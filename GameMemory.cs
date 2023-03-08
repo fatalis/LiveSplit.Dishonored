@@ -6,6 +6,7 @@ using System.Windows.Forms;
 using System.Numerics;
 using LiveSplit.ComponentUtil;
 using System.ComponentModel;
+using System.Security.Cryptography;
 
 namespace LiveSplit.Dishonored
 {
@@ -179,7 +180,7 @@ namespace LiveSplit.Dishonored
         private bool _worldSpeedInjected;
         private int _scanAttempts;
         private IntPtr _worldSpeedPtr;
-        private IntPtr _setWorldSpeedPtr;
+        private IntPtr _speedMultiplersPtr;
         private IntPtr _injectedFuncPtr;
         private IntPtr _copyWorldSpeedPtr;
         private int _overwriteBytes;
@@ -187,6 +188,9 @@ namespace LiveSplit.Dishonored
         private readonly Timer _movieTimer;
         private readonly Timer _cutsceneTimer;
         private readonly Timer _loadTimer;
+
+        private float _worldSpeed = 1.0f;
+        private readonly Timer _playerSpeedTimer;
 
         private enum ExpectedDllSizes
         {
@@ -277,6 +281,9 @@ namespace LiveSplit.Dishonored
             _cutsceneTimer.Tick += Timer_OnTick;
             _loadTimer = new Timer { Enabled = false };
             _loadTimer.Tick += Timer_OnTick;
+
+            _playerSpeedTimer = new Timer { Enabled = false };
+            _playerSpeedTimer.Tick += PlayerSpeed_OnTick;
         }
 
         public void Update()
@@ -539,20 +546,21 @@ namespace LiveSplit.Dishonored
             _injectedFuncPtr = _process.AllocateMemory(128);
             Debug.WriteLine($"injectedFuncPtr={_injectedFuncPtr.ToString("X")}");
 
-            _setWorldSpeedPtr = _process.AllocateMemory(sizeof(float));
-            _process.WriteBytes(_setWorldSpeedPtr, BitConverter.GetBytes(1f));
-            Debug.WriteLine($"setWorldSpeedPtr={_setWorldSpeedPtr.ToString("X")}");
+            _speedMultiplersPtr = _process.AllocateMemory(2*sizeof(float));
+            SetSpeed(1.0f);
+            Debug.WriteLine($"speedMultiplersPtr={_speedMultiplersPtr.ToString("X")}");
 
             var worldSpeedDetourBytes = new List<byte>();
             if (_process.Is64Bit())
             {
-                var worldSpeedOffset = (uint)_setWorldSpeedPtr - (uint)_injectedFuncPtr;
+                var playerSpeedOffset = (uint)_speedMultiplersPtr - (uint)_injectedFuncPtr;
+                var worldSpeedOffset = (uint)_speedMultiplersPtr + 4 - (uint)_injectedFuncPtr;
                 worldSpeedDetourBytes.AddRange(new byte[] {
-                    0xF3, 0x44, 0x0F, 0x59, 0x1D,                           // mulss xmm11,[setWorldSpeed]
+                    0xF3, 0x44, 0x0F, 0x59, 0x1D,                           // mulss xmm11,[playerSpeed]
                 });
-                worldSpeedDetourBytes.AddRange(BitConverter.GetBytes(worldSpeedOffset - 9));
+                worldSpeedDetourBytes.AddRange(BitConverter.GetBytes(playerSpeedOffset - 9));
                 worldSpeedDetourBytes.AddRange(new byte[] {
-                    0xF3, 0x44, 0x0F, 0x59, 0x2D,                           // mulss xmm13,[setWorldSpeed]
+                    0xF3, 0x44, 0x0F, 0x59, 0x2D,                           // mulss xmm13,[worldSpeed]
                 });
                 worldSpeedDetourBytes.AddRange(BitConverter.GetBytes(worldSpeedOffset - 18));
                 worldSpeedDetourBytes.AddRange(new byte[] {
@@ -562,15 +570,16 @@ namespace LiveSplit.Dishonored
             }
             else
             {
-                var setWorldSpeedPtrBytes = BitConverter.GetBytes((uint)_setWorldSpeedPtr);
+                var playerSpeedPtrBytes = BitConverter.GetBytes((uint)_speedMultiplersPtr);
+                var worldSpeedPtrBytes = BitConverter.GetBytes((uint)_speedMultiplersPtr + 4);
                 worldSpeedDetourBytes.AddRange(new byte[] {
-                    0xF3, 0x0F, 0x59, 0x05,                         // mulss xmm0,[setWorldSpeed]
+                    0xF3, 0x0F, 0x59, 0x05,                         // mulss xmm0,[playerSpeed]
                 });
-                worldSpeedDetourBytes.AddRange(setWorldSpeedPtrBytes);
+                worldSpeedDetourBytes.AddRange(playerSpeedPtrBytes);
                 worldSpeedDetourBytes.AddRange(new byte[] {
-                    0xF3, 0x0F, 0x59, 0x15,                         // mulss xmm2,[setWorldSpeed]
+                    0xF3, 0x0F, 0x59, 0x15,                         // mulss xmm2,[worldSpeed]
                 });
-                worldSpeedDetourBytes.AddRange(setWorldSpeedPtrBytes);
+                worldSpeedDetourBytes.AddRange(worldSpeedPtrBytes);
                 worldSpeedDetourBytes.AddRange(new byte[] {
                     0xF3, 0x0F, 0x11, 0x86, 0xAC, 0x03, 0x00, 0x00, // movss [esi+000003AC],xmm0
                 });
@@ -607,8 +616,8 @@ namespace LiveSplit.Dishonored
                 return;
 
             Debug.WriteLine("Freeing memory");
-            if (_setWorldSpeedPtr != IntPtr.Zero)
-                _process.FreeMemory(_setWorldSpeedPtr);
+            if (_speedMultiplersPtr != IntPtr.Zero)
+                _process.FreeMemory(_speedMultiplersPtr);
             if (_injectedFuncPtr != IntPtr.Zero)
                 _process.FreeMemory(_injectedFuncPtr);
             if (_copyWorldSpeedPtr != IntPtr.Zero)
@@ -620,6 +629,8 @@ namespace LiveSplit.Dishonored
             _movieTimer?.Dispose();
             _cutsceneTimer?.Dispose();
             _loadTimer?.Dispose();
+            
+            _playerSpeedTimer?.Dispose();
 
             if (_process == null || _process.HasExited)
                 return;
@@ -640,12 +651,27 @@ namespace LiveSplit.Dishonored
             }
         }
 
-        public void SetWorldSpeed(float value)
+        public void SetSpeed(float worldSpeed, int playerSpeedDelay = 0)
         {
-            if (_process == null || _process.HasExited || _setWorldSpeedPtr == IntPtr.Zero)
+            if (_process == null || _process.HasExited || _speedMultiplersPtr == IntPtr.Zero)
                 return;
 
-            _process.WriteBytes(_setWorldSpeedPtr, BitConverter.GetBytes(value));
+            _worldSpeed = worldSpeed;
+
+            var playerSpeed = worldSpeed;
+            
+            _playerSpeedTimer.Stop();
+
+            if (playerSpeedDelay > 0) {
+                playerSpeed = 1.0f;
+                
+                _playerSpeedTimer.Interval = playerSpeedDelay;
+                _playerSpeedTimer.Start();
+            }
+
+            var bytes = BitConverter.GetBytes(playerSpeed).Concat(BitConverter.GetBytes(worldSpeed)).ToArray();
+
+            _process.WriteBytes(_speedMultiplersPtr, bytes);
         }
 
         string GetEngineStringByID(int id)
@@ -661,10 +687,15 @@ namespace LiveSplit.Dishonored
             }
             return ptr.DerefString(_process, 32);
         }
-
+        
         void Timer_OnTick(object sender, EventArgs e)
         {
             ((Timer)sender).Stop();
+        }
+        
+        void PlayerSpeed_OnTick(object sender, EventArgs e)
+        {
+            SetSpeed(_worldSpeed);
         }
     }
 

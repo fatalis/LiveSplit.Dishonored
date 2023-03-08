@@ -22,6 +22,8 @@ namespace LiveSplit.Dishonored
         public float Tolerance { get; set; } = 1.0f;
         public Speedup Followup { get; set; }
 
+        public int PlayerSpeedDelay { get; set; } = 0;
+
         protected bool ApproxEqual(float value, float expected)
         {
             return float.IsNaN(expected) || (Math.Abs(value - expected) <= Tolerance);
@@ -185,7 +187,7 @@ namespace LiveSplit.Dishonored
                 new LoadSpeedup { Level = Level.PubMorning, PreviousLevel = Level.BoyleExterior, Duration = 3130, Y = -9403f, Tolerance = 4f },
                 new LoadSpeedup { Level = Level.TowerReturnYard, PreviousLevel = Level.PubMorning, Duration = 5250, X = -8714f, Y = 33057f },
                 new LoadSpeedup { Level = Level.PubDusk, PreviousLevel = Level.TowerReturnYard, Duration = 3340, Y = -10615f, Z = -583.1f, Tolerance = 2f },
-                new LoadSpeedup { Level = Level.FloodedIntro, PreviousLevel = Level.PubDusk, Duration = 5000, X = -23249f, Tolerance = 0.5f,
+                new LoadSpeedup { Level = Level.FloodedIntro, PreviousLevel = Level.PubDusk, Duration = 5000, X = -23249f, Tolerance = 0.5f, PlayerSpeedDelay = 2000,
                     Followup = new Speedup { Duration = 6850, Delay = 7850 } },
                 new LoadSpeedup { Level = Level.KingsparrowIsland, PreviousLevel = Level.Loyalists, Duration = 4550, Y = 18200f, Z = 1040.8f, Tolerance = 3.0f },
                 new LoadSpeedup { Level = Level.KingsparrowLighthouse, PreviousLevel = Level.KingsparrowIsland, Duration = 900, Z = 1060f, Tolerance = 10f },
@@ -404,18 +406,22 @@ namespace LiveSplit.Dishonored
                 return;
 
             Debug.WriteLine($"Triggering speedup for {speedup.Duration}ms");
+
             _timeMultiplier = 10;
-            _gameMemory.SetWorldSpeed(_timeMultiplier);
+            _gameMemory.SetSpeed(_timeMultiplier, speedup.PlayerSpeedDelay);
+
             _speedupTimer.Interval = speedup.Duration;
             _speedupTimer.Start();
+
             _currentSpeedup = speedup;
         }
 
         void EndSpeedup(bool stopAll = false)
         {
             Debug.WriteLine("Ending active speedup, if any");
-            _gameMemory.SetWorldSpeed(1f);
+            
             _timeMultiplier = 1;
+            _gameMemory.SetSpeed(_timeMultiplier);
 
             if (!stopAll && _currentSpeedup != null && _currentSpeedup.Followup != null)
                 DelaySpeedup(_currentSpeedup.Followup);
