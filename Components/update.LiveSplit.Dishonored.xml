@@ -1,5 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <updates>
+    <update version="1.3.3">
+        <files>
+            <file path="Components/LiveSplit.Dishonored.dll" status="changed"/>
+        </files>
+        <changelog>
+            <change>Hopefully fixed the flooded speedup bug.</change>
+            <change>Fixed the double speedup bug.</change>
+            <change>adjust some speedups </change>
+        </changelog>
+    </update>
     <update version="1.3.2">
         <files>
             <file path="Components/LiveSplit.Dishonored.dll" status="changed"/>

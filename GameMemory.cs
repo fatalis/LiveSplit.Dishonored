@@ -6,7 +6,6 @@ using System.Windows.Forms;
 using System.Numerics;
 using LiveSplit.ComponentUtil;
 using System.ComponentModel;
-using System.Security.Cryptography;
 
 namespace LiveSplit.Dishonored
 {
