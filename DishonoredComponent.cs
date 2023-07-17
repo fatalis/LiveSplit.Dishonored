@@ -272,13 +272,13 @@ namespace LiveSplit.Dishonored
 
         void gameMemory_OnFirstLevelLoading(object sender, EventArgs e)
         {
-            if (Settings.AutoStartEnd)
+            if (Settings.AutoReset && (!Settings.ResetProtection || _timer.CurrentState.CurrentSplitIndex == 0))
                 _timer.Reset();
         }
 
         void gameMemory_OnPlayerGainedControl(object sender, EventArgs e)
         {
-            if (Settings.AutoStartEnd)
+            if (Settings.AutoStart)
                 _timer.Start();
         }
 
@@ -325,7 +325,7 @@ namespace LiveSplit.Dishonored
 
         void gameMemory_OnPlayerLostControl(object sender, EventArgs e)
         {
-            if (Settings.AutoStartEnd)
+            if (Settings.AutoSplitEmily)
                 _timer.Split();
         }
 
