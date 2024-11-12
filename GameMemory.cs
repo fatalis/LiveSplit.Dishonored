@@ -36,6 +36,16 @@ namespace LiveSplit.Dishonored
                 StringTableBase = 0xFA3624;
                 IsLoading = new MemoryWatcher<bool>(new DeepPointer("binkw32.dll", 0x312F4));
             }
+            if (version == GameVersion.v13)
+            {
+                PlayerPos = new MemoryWatcher<Vector3>(new DeepPointer(0x100C810, 0xC4));
+                CurrentLevel = new MemoryWatcher<int>(new DeepPointer(0xFF73C8, 0x2C0, 0x314, 0, 0x38));
+                CurrentBikMovie = new StringWatcher(new DeepPointer(0x10099C0, 0x48, 0), 64); // or 0x104CB18
+                CutsceneActive = new MemoryWatcher<bool>(new DeepPointer(0xFF4D5C, 0x744));
+                MissionStatsScreenFlags = new MemoryWatcher<int>(new DeepPointer(0x101E904, 0x24, 0x41C, 0x2F4, 0xC4));
+                StringTableBase = 0xFE31B4;
+                IsLoading = new MemoryWatcher<bool>(new DeepPointer("binkw32.dll", 0x312F4));
+            }
             else if (version == GameVersion.v14)
             {
                 PlayerPos = new MemoryWatcher<Vector3>(new DeepPointer(0x1052DE8, 0xC4));
@@ -701,6 +711,7 @@ namespace LiveSplit.Dishonored
     enum GameVersion
     {
         v12,
+        v13,
         v14,
         v15,
         EGS,
