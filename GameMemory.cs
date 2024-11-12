@@ -491,7 +491,7 @@ namespace LiveSplit.Dishonored
                 case (int)ExpectedDllSizes.DishonoredExe12:
                     version = GameVersion.v12;
                     break;
-                case (int)ExpectedDllSizes.DishonoredExe13:
+                case (int)ExpectedDllSizes.DishonoredExe13Steam:
                     version = GameVersion.v13;
                     break;
                 case (int)ExpectedDllSizes.DishonoredExe13Steamless:
