@@ -206,8 +206,8 @@ namespace LiveSplit.Dishonored
             DishonoredExe12 = 18219008,
             DishonoredExe13Steam = 19091456,
             DishonoredExe13Steamless = 18526208,
-            DishonoredExe14Steamless = 18862080,
             DishonoredExe14Steam = 19427328,
+            DishonoredExe14Steamless = 18862080,
             DishonoredExe15 = 18903040,
             DishonoredExeEGS = 27553792,
             BinkW32Dll = 241664,
@@ -492,11 +492,11 @@ namespace LiveSplit.Dishonored
                     version = GameVersion.v12;
                     break;
                 case (int)ExpectedDllSizes.DishonoredExe13Steam:
+                case (int)ExpectedDllSizes.DishonoredExe13Steamless:
                     version = GameVersion.v13;
                     break;
-                case (int)ExpectedDllSizes.DishonoredExe13Steamless:
-                case (int)ExpectedDllSizes.DishonoredExe14Steamless:
                 case (int)ExpectedDllSizes.DishonoredExe14Steam:
+                case (int)ExpectedDllSizes.DishonoredExe14Steamless:
                     version = GameVersion.v14;
                     break;
                 case (int)ExpectedDllSizes.DishonoredExe15:
@@ -508,7 +508,7 @@ namespace LiveSplit.Dishonored
                 default:
                     Debug.WriteLine($"Unknown game of size {game.MainModuleWow64Safe().ModuleMemorySize} found");
                     _ignorePIDs.Add(game.Id);
-                    MessageBox.Show("Unexpected game version. Dishonored Steam (1.2, 1.4, or 1.5) or EGS is required.",
+                    MessageBox.Show("Unexpected game version. The Steam (1.2-1.5) or Epic Games Store version is required.",
                         "LiveSplit.Dishonored", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return false;
             }
@@ -522,7 +522,9 @@ namespace LiveSplit.Dishonored
 
         bool TryInjection()
         {
-            // scanning 1.4 doesn't seem to work immediately
+            // Scanning 1.4 doesn't seem to work immediately. This is due to Steamworks DRM.
+            // When the game was just launched it is still packed, so we can't find the code we're looking for.
+            // Solution is to try a few times until it's been unpacked, at which point it should work.
             _scanAttempts--;
             if (_scanAttempts < 0)
                 return false;
