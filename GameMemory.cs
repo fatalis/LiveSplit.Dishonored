@@ -204,6 +204,7 @@ namespace LiveSplit.Dishonored
         private enum ExpectedDllSizes
         {
             DishonoredExe12 = 18219008,
+            DishonoredExe13 = ???,
             DishonoredExe14Reloaded = 18862080,
             DishonoredExe14Steam = 19427328,
             DishonoredExe15 = 18903040,
@@ -488,6 +489,9 @@ namespace LiveSplit.Dishonored
             {
                 case (int)ExpectedDllSizes.DishonoredExe12:
                     version = GameVersion.v12;
+                    break;
+                case (int)ExpectedDllSizes.DishonoredExe13:
+                    version = GameVersion.v13;
                     break;
                 case (int)ExpectedDllSizes.DishonoredExe14Reloaded:
                 case (int)ExpectedDllSizes.DishonoredExe14Steam:
